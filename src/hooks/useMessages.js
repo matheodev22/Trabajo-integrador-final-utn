@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
 const initialMessages = {
-  // PRIVADO - tradeo
   1: [
     {
       id: 1,
@@ -26,14 +25,13 @@ const initialMessages = {
     },
   ],
 
-  // GRUPO - los pijes.fc
   2: [
     {
       id: 4,
-      text: "cuando vamos a jugar contra barcito? estan muy bocones en ig",
+      text: "ahora tradeo cuando vamos a jugar contra barcito? estan muy bocones en ig",
       sender: "received",
-      senderName: "tradeo",
-      senderAvatar: "",
+      senderName: "Nico",
+      senderAvatar: "N",
       time: "13:20",
       status: "read",
     },
@@ -41,49 +39,23 @@ const initialMessages = {
       id: 5,
       text: "este sabado le jugamos f8 en el conteiner",
       sender: "received",
-      senderName: "ortega",
-      senderAvatar: "",
+      senderName: "Mati",
+      senderAvatar: "M",
       time: "13:24",
       status: "unread",
     },
-    {
-      id: 6,
-      text: "yo puedo el sabado",
-      sender: "received",
-      senderName: "deyver",
-      senderAvatar: "",
-      time: "13:26",
-      status: "read",
-    },
-    {
-      id: 7,
-      text: "yo llego un poco mas tarde",
-      sender: "received",
-      senderName: "mati",
-      senderAvatar: "",
-      time: "13:28",
-      status: "read",
-    },
-    {
-      id: 8,
-      text: "d1 entonces tamos para el sabado",
-      sender: "sent",
-      time: "13:30",
-      status: "read",
-    },
   ],
 
-  // PRIVADO - weirdo
   3: [
     {
-      id: 9,
+      id: 6,
       text: "papoi no me voy mas de la facultad",
       sender: "received",
       time: "12:10",
       status: "read",
     },
     {
-      id: 10,
+      id: 7,
       text: "avisame si cuando salgo venis a buscarme",
       sender: "received",
       time: "12:11",
@@ -91,10 +63,9 @@ const initialMessages = {
     },
   ],
 
-  // PRIVADO - mama
   4: [
     {
-      id: 11,
+      id: 8,
       text: "matheo despertate!!!! 😡😡😡",
       sender: "received",
       time: "11:45",
@@ -102,55 +73,28 @@ const initialMessages = {
     },
   ],
 
-  // GRUPO - familia
   5: [
     {
-      id: 12,
-      text: "tu hermano se fue al colegio...??",
+      id: 9,
+      text: "mi hermano se fue al colegio??",
       sender: "received",
       senderName: "Mamá",
-      senderAvatar: "",
+      senderAvatar: "M",
       time: "10:30",
       status: "read",
     },
     {
-      id: 13,
+      id: 10,
       text: "si mama",
       sender: "sent",
       time: "10:31",
       status: "read",
     },
-    {
-      id: 14,
-      text: "yo también salgo ahora",
-      sender: "received",
-      senderName: "jere",
-      senderAvatar: "",
-      time: "10:32",
-      status: "read",
-    },
-    {
-      id: 15,
-      text: "avisen cuando lleguen",
-      sender: "received",
-      senderName: "Mamá",
-      senderAvatar: "",
-      time: "10:33",
-      status: "read",
-    },
-    {
-      id: 16,
-      text: "dale ma",
-      sender: "sent",
-      time: "10:34",
-      status: "read",
-    },
   ],
 
-  // PRIVADO - abuelo
   6: [
     {
-      id: 17,
+      id: 11,
       text: "matheo sabes si este finde vamos a poder ver la exposicion en la rural me acompañas?",
       sender: "received",
       time: "09:15",
@@ -169,14 +113,37 @@ function useMessages(selectedChatId) {
   });
 
   useEffect(() => {
-    localStorage.setItem(
-      "messages",
-      JSON.stringify(messages)
-    );
+    localStorage.setItem("messages", JSON.stringify(messages));
   }, [messages]);
 
-  const currentMessages =
-    messages[selectedChatId] || [];
+  // Marcar los mensajes recibidos como leídos
+  // cuando entramos a una conversación.
+  useEffect(() => {
+    if (!selectedChatId) return;
+
+    setMessages((current) => ({
+      ...current,
+      [selectedChatId]: (current[selectedChatId] || []).map(
+        (message) =>
+          message.sender === "received"
+            ? {
+                ...message,
+                status: "read",
+              }
+            : message
+      ),
+    }));
+
+    window.dispatchEvent(
+      new CustomEvent("chat-messages-read", {
+        detail: {
+          chatId: selectedChatId,
+        },
+      })
+    );
+  }, [selectedChatId]);
+
+  const currentMessages = messages[selectedChatId] || [];
 
   const sendMessage = (text) => {
     if (!text.trim()) return;
@@ -216,16 +183,15 @@ function useMessages(selectedChatId) {
 
     setMessages((current) => ({
       ...current,
-      [selectedChatId]: (
-        current[selectedChatId] || []
-      ).map((message) =>
-        message.id === messageId
-          ? {
-              ...message,
-              text: newText.trim(),
-              edited: true,
-            }
-          : message
+      [selectedChatId]: (current[selectedChatId] || []).map(
+        (message) =>
+          message.id === messageId
+            ? {
+                ...message,
+                text: newText.trim(),
+                edited: true,
+              }
+            : message
       ),
     }));
   };
@@ -233,9 +199,7 @@ function useMessages(selectedChatId) {
   const deleteMessage = (messageId) => {
     setMessages((current) => ({
       ...current,
-      [selectedChatId]: (
-        current[selectedChatId] || []
-      ).filter(
+      [selectedChatId]: (current[selectedChatId] || []).filter(
         (message) => message.id !== messageId
       ),
     }));

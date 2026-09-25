@@ -13,9 +13,12 @@ const emojis = [
 function ChatWindow({ selectedChat, onBack }) {
   const { user } = useAuth();
 
-  const { messages, sendMessage } = useMessages(
-    selectedChat?.id
-  );
+  const {
+    messages,
+    sendMessage,
+    editMessage,
+    deleteMessage,
+  } = useMessages(selectedChat?.id);
 
   const [messageText, setMessageText] = useState("");
   const [showContactProfile, setShowContactProfile] = useState(false);
@@ -24,7 +27,13 @@ function ChatWindow({ selectedChat, onBack }) {
   const [showError, setShowError] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
+  const [messageMenu, setMessageMenu] = useState(null);
+  const [editingMessageId, setEditingMessageId] = useState(null);
+  const [editingText, setEditingText] = useState("");
+
   const messagesEndRef = useRef(null);
+
+  const isGroup = selectedChat?.type === "group";
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
@@ -62,6 +71,37 @@ function ChatWindow({ selectedChat, onBack }) {
     onBack();
   };
 
+  const handleOpenMessageMenu = (messageId) => {
+    setMessageMenu((current) =>
+      current === messageId ? null : messageId
+    );
+  };
+
+  const handleStartEdit = (message) => {
+    setEditingMessageId(message.id);
+    setEditingText(message.text);
+    setMessageMenu(null);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingMessageId(null);
+    setEditingText("");
+  };
+
+  const handleSaveEdit = (messageId) => {
+    if (!editingText.trim()) return;
+
+    editMessage(messageId, editingText);
+
+    setEditingMessageId(null);
+    setEditingText("");
+  };
+
+  const handleDeleteMessage = (messageId) => {
+    deleteMessage(messageId);
+    setMessageMenu(null);
+  };
+
   if (!selectedChat) {
     return (
       <section className="chat-window">
@@ -83,12 +123,6 @@ function ChatWindow({ selectedChat, onBack }) {
     );
   }
 
-  const isGroup =
-    selectedChat.type === "group";
-
-  const groupParticipants =
-    selectedChat.participants?.length || 0;
-
   return (
     <>
       <section className="chat-window conversation">
@@ -105,25 +139,18 @@ function ChatWindow({ selectedChat, onBack }) {
           <button
             className="contact-header"
             onClick={() => setShowContactProfile(true)}
-            aria-label={
-              isGroup
-                ? "Ver información del grupo"
-                : "Ver perfil del contacto"
-            }
+            aria-label="Ver perfil del contacto"
           >
             <div className="avatar">
               {selectedChat.avatar}
             </div>
 
             <div className="conversation-info">
-              <h2>
-                {isGroup && "👥 "}
-                {selectedChat.name}
-              </h2>
+              <h2>{selectedChat.name}</h2>
 
               <p>
                 {isGroup
-                  ? `${groupParticipants || 0} participantes`
+                  ? `${selectedChat.participants?.length || 0} participantes`
                   : "En línea"}
               </p>
             </div>
@@ -171,51 +198,151 @@ function ChatWindow({ selectedChat, onBack }) {
               )}
 
             </div>
-
           </div>
         </header>
 
         <div className="messages">
-          {messages.map((message) => {
-            const showSender =
-              isGroup &&
-              message.sender === "received";
 
-            return (
-              <div
-                className={`message ${message.sender} ${
-                  isGroup ? "group-message" : ""
-                }`}
-                key={message.id}
-              >
-                {showSender && (
+          {messages.map((message) => (
+            <div
+              className={`message ${
+                message.sender
+              } ${isGroup ? "group-message" : ""}`}
+              key={message.id}
+            >
+
+              {isGroup &&
+                message.sender === "received" &&
+                message.senderName && (
                   <div className="message-sender">
                     <span className="message-sender-avatar">
-                      {message.senderAvatar || "👤"}
+                      {message.senderAvatar}
                     </span>
 
                     <strong>
-                      {message.senderName || "Participante"}
+                      {message.senderName}
                     </strong>
                   </div>
                 )}
 
-                <p>{message.text}</p>
+              {editingMessageId === message.id ? (
+                <div className="message-edit-container">
 
-                <span>
-                  {message.time}
+                  <input
+                    className="message-edit-input"
+                    type="text"
+                    value={editingText}
+                    autoFocus
+                    onChange={(event) =>
+                      setEditingText(event.target.value)
+                    }
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        handleSaveEdit(message.id);
+                      }
 
-                  {message.sender === "sent" && (
-                    <span className="message-status">
-                      {" "}✓✓
-                    </span>
-                  )}
-                </span>
-              </div>
-            );
-          })}
+                      if (event.key === "Escape") {
+                        handleCancelEdit();
+                      }
+                    }}
+                  />
+
+                  <div className="message-edit-actions">
+
+                    <button
+                      type="button"
+                      onClick={handleCancelEdit}
+                    >
+                      Cancelar
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleSaveEdit(message.id)
+                      }
+                    >
+                      Guardar
+                    </button>
+
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="message-content-row">
+
+                    <p>{message.text}</p>
+
+                    {message.sender === "sent" && (
+                      <div className="message-options">
+
+                        <button
+                          type="button"
+                          className="message-options-button"
+                          onClick={() =>
+                            handleOpenMessageMenu(
+                              message.id
+                            )
+                          }
+                          aria-label="Opciones del mensaje"
+                        >
+                          ⋮
+                        </button>
+
+                        {messageMenu === message.id && (
+                          <div className="message-menu">
+
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleStartEdit(message)
+                              }
+                            >
+                              ✏️ Editar
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleDeleteMessage(
+                                  message.id
+                                )
+                              }
+                            >
+                              🗑️ Eliminar
+                            </button>
+
+                          </div>
+                        )}
+
+                      </div>
+                    )}
+
+                  </div>
+
+                  <span>
+                    {message.edited && (
+                      <span className="edited-label">
+                        editado
+                      </span>
+                    )}
+
+                    {message.time}
+
+                    {message.sender === "sent" && (
+                      <span className="message-status">
+                        {" "}✓✓
+                      </span>
+                    )}
+                  </span>
+                </>
+              )}
+
+            </div>
+          ))}
 
           <div ref={messagesEndRef} />
+
         </div>
 
         <form
@@ -223,6 +350,7 @@ function ChatWindow({ selectedChat, onBack }) {
           onSubmit={handleSubmit}
         >
           <div className="emoji-container">
+
             <button
               type="button"
               className="emoji-button"
@@ -238,6 +366,7 @@ function ChatWindow({ selectedChat, onBack }) {
 
             {showEmojiPicker && (
               <div className="emoji-picker">
+
                 {emojis.map((emoji) => (
                   <button
                     type="button"
@@ -254,8 +383,10 @@ function ChatWindow({ selectedChat, onBack }) {
                     {emoji}
                   </button>
                 ))}
+
               </div>
             )}
+
           </div>
 
           <input
@@ -334,6 +465,7 @@ function ChatWindow({ selectedChat, onBack }) {
             </p>
 
             <div className="modal-actions">
+
               <button
                 className="modal-cancel"
                 onClick={() =>
@@ -349,6 +481,7 @@ function ChatWindow({ selectedChat, onBack }) {
               >
                 Borrar
               </button>
+
             </div>
           </div>
         </div>
@@ -368,6 +501,7 @@ function ChatWindow({ selectedChat, onBack }) {
             }
           >
             <div className="profile-header">
+
               <button
                 className="profile-close"
                 onClick={() =>
@@ -383,9 +517,11 @@ function ChatWindow({ selectedChat, onBack }) {
                   ? "Información del grupo"
                   : "Información del contacto"}
               </h2>
+
             </div>
 
             <div className="profile-content">
+
               <div className="profile-avatar">
                 {selectedChat.avatar}
               </div>
@@ -394,17 +530,12 @@ function ChatWindow({ selectedChat, onBack }) {
 
               <p className="profile-status">
                 {isGroup
-                  ? `${groupParticipants || 0} participantes`
+                  ? `${selectedChat.participants?.length || 0} participantes`
                   : "En línea"}
               </p>
 
               <div className="profile-section">
-                <span>
-                  {isGroup
-                    ? "Nombre del grupo"
-                    : "Nombre"}
-                </span>
-
+                <span>Nombre</span>
                 <strong>
                   {selectedChat.name}
                 </strong>
@@ -419,7 +550,9 @@ function ChatWindow({ selectedChat, onBack }) {
 
                 <strong>
                   {isGroup
-                    ? groupParticipants || 0
+                    ? selectedChat.participants?.join(
+                        ", "
+                      )
                     : "En línea"}
                 </strong>
               </div>
@@ -431,6 +564,7 @@ function ChatWindow({ selectedChat, onBack }) {
                   {messages.length}
                 </strong>
               </div>
+
             </div>
           </aside>
         </div>
