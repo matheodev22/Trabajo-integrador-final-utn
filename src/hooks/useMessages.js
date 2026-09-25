@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 const initialMessages = {
+  // PRIVADO - tradeo
   1: [
     {
       id: 1,
@@ -25,11 +26,14 @@ const initialMessages = {
     },
   ],
 
+  // GRUPO - los pijes.fc
   2: [
     {
       id: 4,
-      text: "ahora tradeo cuando vamos a jugar contra barcito? estan muy bocones en ig",
+      text: "cuando vamos a jugar contra barcito? estan muy bocones en ig",
       sender: "received",
+      senderName: "tradeo",
+      senderAvatar: "",
       time: "13:20",
       status: "read",
     },
@@ -37,21 +41,49 @@ const initialMessages = {
       id: 5,
       text: "este sabado le jugamos f8 en el conteiner",
       sender: "received",
+      senderName: "ortega",
+      senderAvatar: "",
       time: "13:24",
       status: "unread",
     },
-  ],
-
-  3: [
     {
       id: 6,
+      text: "yo puedo el sabado",
+      sender: "received",
+      senderName: "deyver",
+      senderAvatar: "",
+      time: "13:26",
+      status: "read",
+    },
+    {
+      id: 7,
+      text: "yo llego un poco mas tarde",
+      sender: "received",
+      senderName: "mati",
+      senderAvatar: "",
+      time: "13:28",
+      status: "read",
+    },
+    {
+      id: 8,
+      text: "d1 entonces tamos para el sabado",
+      sender: "sent",
+      time: "13:30",
+      status: "read",
+    },
+  ],
+
+  // PRIVADO - weirdo
+  3: [
+    {
+      id: 9,
       text: "papoi no me voy mas de la facultad",
       sender: "received",
       time: "12:10",
       status: "read",
     },
     {
-      id: 7,
+      id: 10,
       text: "avisame si cuando salgo venis a buscarme",
       sender: "received",
       time: "12:11",
@@ -59,9 +91,10 @@ const initialMessages = {
     },
   ],
 
+  // PRIVADO - mama
   4: [
     {
-      id: 8,
+      id: 11,
       text: "matheo despertate!!!! 😡😡😡",
       sender: "received",
       time: "11:45",
@@ -69,26 +102,55 @@ const initialMessages = {
     },
   ],
 
+  // GRUPO - familia
   5: [
     {
-      id: 9,
-      text: "mi hermano se fue al colegio??",
+      id: 12,
+      text: "tu hermano se fue al colegio...??",
       sender: "received",
+      senderName: "Mamá",
+      senderAvatar: "",
       time: "10:30",
       status: "read",
     },
     {
-      id: 10,
+      id: 13,
       text: "si mama",
-      sender: "received",
+      sender: "sent",
       time: "10:31",
+      status: "read",
+    },
+    {
+      id: 14,
+      text: "yo también salgo ahora",
+      sender: "received",
+      senderName: "jere",
+      senderAvatar: "",
+      time: "10:32",
+      status: "read",
+    },
+    {
+      id: 15,
+      text: "avisen cuando lleguen",
+      sender: "received",
+      senderName: "Mamá",
+      senderAvatar: "",
+      time: "10:33",
+      status: "read",
+    },
+    {
+      id: 16,
+      text: "dale ma",
+      sender: "sent",
+      time: "10:34",
       status: "read",
     },
   ],
 
+  // PRIVADO - abuelo
   6: [
     {
-      id: 11,
+      id: 17,
       text: "matheo sabes si este finde vamos a poder ver la exposicion en la rural me acompañas?",
       sender: "received",
       time: "09:15",

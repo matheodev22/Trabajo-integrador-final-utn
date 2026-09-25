@@ -10,7 +10,6 @@ const emojis = [
   "👌", "🤝", "💪", "👀", "😴",
 ];
 
-
 function ChatWindow({ selectedChat, onBack }) {
   const { user } = useAuth();
 
@@ -60,9 +59,6 @@ function ChatWindow({ selectedChat, onBack }) {
 
   const handleConfirmDelete = () => {
     setShowDeleteConfirm(false);
-
-    // Por ahora solamente volvemos a la lista de chats.
-    // Más adelante conectamos acá el borrado real de la conversación.
     onBack();
   };
 
@@ -87,6 +83,12 @@ function ChatWindow({ selectedChat, onBack }) {
     );
   }
 
+  const isGroup =
+    selectedChat.type === "group";
+
+  const groupParticipants =
+    selectedChat.participants?.length || 0;
+
   return (
     <>
       <section className="chat-window conversation">
@@ -101,19 +103,31 @@ function ChatWindow({ selectedChat, onBack }) {
           </button>
 
           <button
-  className="contact-header"
-  onClick={() => setShowContactProfile(true)}
-  aria-label="Ver perfil del contacto"
->
-  <div className="avatar">
-    {selectedChat.avatar}
-  </div>
+            className="contact-header"
+            onClick={() => setShowContactProfile(true)}
+            aria-label={
+              isGroup
+                ? "Ver información del grupo"
+                : "Ver perfil del contacto"
+            }
+          >
+            <div className="avatar">
+              {selectedChat.avatar}
+            </div>
 
-  <div className="conversation-info">
-    <h2>{selectedChat.name}</h2>
-    <p>En línea</p>
-  </div>
-</button>
+            <div className="conversation-info">
+              <h2>
+                {isGroup && "👥 "}
+                {selectedChat.name}
+              </h2>
+
+              <p>
+                {isGroup
+                  ? `${groupParticipants || 0} participantes`
+                  : "En línea"}
+              </p>
+            </div>
+          </button>
 
           <div className="conversation-actions">
 
@@ -139,7 +153,9 @@ function ChatWindow({ selectedChat, onBack }) {
 
               <button
                 className="header-action"
-                onClick={() => setShowMenu((current) => !current)}
+                onClick={() =>
+                  setShowMenu((current) => !current)
+                }
                 aria-label="Más opciones"
                 title="Más opciones"
               >
@@ -148,11 +164,9 @@ function ChatWindow({ selectedChat, onBack }) {
 
               {showMenu && (
                 <div className="chat-menu">
-
                   <button onClick={handleDeleteChat}>
                     🗑️ Borrar chat
                   </button>
-
                 </div>
               )}
 
@@ -162,24 +176,44 @@ function ChatWindow({ selectedChat, onBack }) {
         </header>
 
         <div className="messages">
-          {messages.map((message) => (
-            <div
-              className={`message ${message.sender}`}
-              key={message.id}
-            >
-              <p>{message.text}</p>
+          {messages.map((message) => {
+            const showSender =
+              isGroup &&
+              message.sender === "received";
 
-              <span>
-                {message.time}
+            return (
+              <div
+                className={`message ${message.sender} ${
+                  isGroup ? "group-message" : ""
+                }`}
+                key={message.id}
+              >
+                {showSender && (
+                  <div className="message-sender">
+                    <span className="message-sender-avatar">
+                      {message.senderAvatar || "👤"}
+                    </span>
 
-                {message.sender === "sent" && (
-                  <span className="message-status">
-                    {" "}✓✓
-                  </span>
+                    <strong>
+                      {message.senderName || "Participante"}
+                    </strong>
+                  </div>
                 )}
-              </span>
-            </div>
-          ))}
+
+                <p>{message.text}</p>
+
+                <span>
+                  {message.time}
+
+                  {message.sender === "sent" && (
+                    <span className="message-status">
+                      {" "}✓✓
+                    </span>
+                  )}
+                </span>
+              </div>
+            );
+          })}
 
           <div ref={messagesEndRef} />
         </div>
@@ -189,36 +223,40 @@ function ChatWindow({ selectedChat, onBack }) {
           onSubmit={handleSubmit}
         >
           <div className="emoji-container">
-  <button
-    type="button"
-    className="emoji-button"
-    onClick={() =>
-      setShowEmojiPicker((current) => !current)
-    }
-    aria-label="Abrir emojis"
-  >
-    😊
-  </button>
+            <button
+              type="button"
+              className="emoji-button"
+              onClick={() =>
+                setShowEmojiPicker(
+                  (current) => !current
+                )
+              }
+              aria-label="Abrir emojis"
+            >
+              😊
+            </button>
 
-  {showEmojiPicker && (
-    <div className="emoji-picker">
-      {emojis.map((emoji) => (
-        <button
-          type="button"
-          key={emoji}
-          onClick={() => {
-            setMessageText(
-              (current) => `${current}${emoji}`
-            );
-            setShowEmojiPicker(false);
-          }}
-        >
-          {emoji}
-        </button>
-      ))}
-    </div>
-  )}
-</div>
+            {showEmojiPicker && (
+              <div className="emoji-picker">
+                {emojis.map((emoji) => (
+                  <button
+                    type="button"
+                    key={emoji}
+                    onClick={() => {
+                      setMessageText(
+                        (current) =>
+                          `${current}${emoji}`
+                      );
+
+                      setShowEmojiPicker(false);
+                    }}
+                  >
+                    {emoji}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
           <input
             type="text"
@@ -246,7 +284,9 @@ function ChatWindow({ selectedChat, onBack }) {
         >
           <div
             className="modal-card"
-            onClick={(event) => event.stopPropagation()}
+            onClick={(event) =>
+              event.stopPropagation()
+            }
           >
             <div className="modal-icon">
               ⚠️
@@ -272,11 +312,15 @@ function ChatWindow({ selectedChat, onBack }) {
       {showDeleteConfirm && (
         <div
           className="modal-overlay"
-          onClick={() => setShowDeleteConfirm(false)}
+          onClick={() =>
+            setShowDeleteConfirm(false)
+          }
         >
           <div
             className="modal-card"
-            onClick={(event) => event.stopPropagation()}
+            onClick={(event) =>
+              event.stopPropagation()
+            }
           >
             <div className="modal-icon">
               🗑️
@@ -290,7 +334,6 @@ function ChatWindow({ selectedChat, onBack }) {
             </p>
 
             <div className="modal-actions">
-
               <button
                 className="modal-cancel"
                 onClick={() =>
@@ -306,61 +349,92 @@ function ChatWindow({ selectedChat, onBack }) {
               >
                 Borrar
               </button>
-
             </div>
           </div>
         </div>
       )}
+
       {showContactProfile && (
-  <div
-    className="profile-overlay"
-    onClick={() => setShowContactProfile(false)}
-  >
-    <aside
-      className="contact-profile"
-      onClick={(event) => event.stopPropagation()}
-    >
-      <div className="profile-header">
-        <button
-          className="profile-close"
-          onClick={() => setShowContactProfile(false)}
-          aria-label="Cerrar perfil"
+        <div
+          className="profile-overlay"
+          onClick={() =>
+            setShowContactProfile(false)
+          }
         >
-          ←
-        </button>
+          <aside
+            className="contact-profile"
+            onClick={(event) =>
+              event.stopPropagation()
+            }
+          >
+            <div className="profile-header">
+              <button
+                className="profile-close"
+                onClick={() =>
+                  setShowContactProfile(false)
+                }
+                aria-label="Cerrar perfil"
+              >
+                ←
+              </button>
 
-        <h2>Información del contacto</h2>
-      </div>
+              <h2>
+                {isGroup
+                  ? "Información del grupo"
+                  : "Información del contacto"}
+              </h2>
+            </div>
 
-      <div className="profile-content">
-        <div className="profile-avatar">
-          {selectedChat.avatar}
+            <div className="profile-content">
+              <div className="profile-avatar">
+                {selectedChat.avatar}
+              </div>
+
+              <h1>{selectedChat.name}</h1>
+
+              <p className="profile-status">
+                {isGroup
+                  ? `${groupParticipants || 0} participantes`
+                  : "En línea"}
+              </p>
+
+              <div className="profile-section">
+                <span>
+                  {isGroup
+                    ? "Nombre del grupo"
+                    : "Nombre"}
+                </span>
+
+                <strong>
+                  {selectedChat.name}
+                </strong>
+              </div>
+
+              <div className="profile-section">
+                <span>
+                  {isGroup
+                    ? "Participantes"
+                    : "Estado"}
+                </span>
+
+                <strong>
+                  {isGroup
+                    ? groupParticipants || 0
+                    : "En línea"}
+                </strong>
+              </div>
+
+              <div className="profile-section">
+                <span>Mensajes</span>
+
+                <strong>
+                  {messages.length}
+                </strong>
+              </div>
+            </div>
+          </aside>
         </div>
-
-        <h1>{selectedChat.name}</h1>
-
-        <p className="profile-status">
-          En línea
-        </p>
-
-        <div className="profile-section">
-          <span>Nombre</span>
-          <strong>{selectedChat.name}</strong>
-        </div>
-
-        <div className="profile-section">
-          <span>Estado</span>
-          <strong>En línea</strong>
-        </div>
-
-        <div className="profile-section">
-          <span>Mensajes</span>
-          <strong>{messages.length}</strong>
-        </div>
-      </div>
-    </aside>
-  </div>
-)}
+      )}
     </>
   );
 }
