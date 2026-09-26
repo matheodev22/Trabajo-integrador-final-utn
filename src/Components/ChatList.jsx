@@ -12,21 +12,21 @@ const initialChats = [
     type: "contact",
   },
   {
-  id: 2,
-  name: "los pijes.fc",
-  avatar: "LP",
-  lastMessage: "este sabado le jugamos f8 en el conteiner",
-  time: "13:24",
-  unread: 2,
-  type: "group",
-  participants: [
-    "joel",
-    "Mati",
-    "ortega",
-    "tradeo",
-    "Matheo",
-  ],
-},
+    id: 2,
+    name: "los pijes.fc",
+    avatar: "LP",
+    lastMessage: "este sabado le jugamos f8 en el conteiner",
+    time: "13:24",
+    unread: 2,
+    type: "group",
+    participants: [
+      "joel",
+      "Mati",
+      "ortega",
+      "tradeo",
+      "Matheo",
+    ],
+  },
   {
     id: 3,
     name: "weirdo",
@@ -45,20 +45,20 @@ const initialChats = [
     unread: 0,
     type: "contact",
   },
- {
-  id: 5,
-  name: "familia",
-  avatar: "F",
-  lastMessage: "si mama",
-  time: "10:31",
-  unread: 0,
-  type: "group",
-  participants: [
-    "Mamá",
-    "jere",
-    "Matheo",
-  ],
-},
+  {
+    id: 5,
+    name: "familia",
+    avatar: "F",
+    lastMessage: "si mama",
+    time: "10:31",
+    unread: 0,
+    type: "group",
+    participants: [
+      "Mamá",
+      "jere",
+      "Matheo",
+    ],
+  },
   {
     id: 6,
     name: "abuelo",
@@ -267,6 +267,40 @@ function ChatList({
       window.removeEventListener(
         "chat-messages-read",
         handleMessagesRead
+      );
+    };
+  }, []);
+
+  /*
+   * Cuando eliminamos un chat desde ChatWindow,
+   * lo quitamos de la lista y de los contactos vinculados.
+   */
+  useEffect(() => {
+    const handleDeleteChat = (event) => {
+      const { chatId } = event.detail;
+
+      setChatList((currentChats) =>
+        currentChats.filter(
+          (chat) => chat.id !== chatId
+        )
+      );
+
+      setContacts((currentContacts) =>
+        currentContacts.filter(
+          (contact) => contact.chatId !== chatId
+        )
+      );
+    };
+
+    window.addEventListener(
+      "chat-delete-requested",
+      handleDeleteChat
+    );
+
+    return () => {
+      window.removeEventListener(
+        "chat-delete-requested",
+        handleDeleteChat
       );
     };
   }, []);
@@ -683,6 +717,15 @@ function ChatList({
                                 currentChats.filter(
                                   (item) =>
                                     item.id !==
+                                    chat.id
+                                )
+                            );
+
+                            setContacts(
+                              (currentContacts) =>
+                                currentContacts.filter(
+                                  (contact) =>
+                                    contact.chatId !==
                                     chat.id
                                 )
                             );

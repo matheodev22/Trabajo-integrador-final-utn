@@ -67,6 +67,16 @@ function ChatWindow({ selectedChat, onBack }) {
   };
 
   const handleConfirmDelete = () => {
+    if (!selectedChat?.id) return;
+
+    window.dispatchEvent(
+      new CustomEvent("chat-delete-requested", {
+        detail: {
+          chatId: selectedChat.id,
+        },
+      })
+    );
+
     setShowDeleteConfirm(false);
     onBack();
   };
@@ -127,7 +137,6 @@ function ChatWindow({ selectedChat, onBack }) {
     <>
       <section className="chat-window conversation">
         <header className="conversation-header">
-
           <button
             className="back-button"
             onClick={onBack}
@@ -157,7 +166,6 @@ function ChatWindow({ selectedChat, onBack }) {
           </button>
 
           <div className="conversation-actions">
-
             <button
               className="header-action"
               onClick={handleCall}
@@ -177,7 +185,6 @@ function ChatWindow({ selectedChat, onBack }) {
             </button>
 
             <div className="menu-container">
-
               <button
                 className="header-action"
                 onClick={() =>
@@ -196,13 +203,11 @@ function ChatWindow({ selectedChat, onBack }) {
                   </button>
                 </div>
               )}
-
             </div>
           </div>
         </header>
 
         <div className="messages">
-
           {messages.map((message) => (
             <div
               className={`message ${
@@ -210,7 +215,6 @@ function ChatWindow({ selectedChat, onBack }) {
               } ${isGroup ? "group-message" : ""}`}
               key={message.id}
             >
-
               {isGroup &&
                 message.sender === "received" &&
                 message.senderName && (
@@ -227,7 +231,6 @@ function ChatWindow({ selectedChat, onBack }) {
 
               {editingMessageId === message.id ? (
                 <div className="message-edit-container">
-
                   <input
                     className="message-edit-input"
                     type="text"
@@ -248,7 +251,6 @@ function ChatWindow({ selectedChat, onBack }) {
                   />
 
                   <div className="message-edit-actions">
-
                     <button
                       type="button"
                       onClick={handleCancelEdit}
@@ -264,18 +266,15 @@ function ChatWindow({ selectedChat, onBack }) {
                     >
                       Guardar
                     </button>
-
                   </div>
                 </div>
               ) : (
                 <>
                   <div className="message-content-row">
-
                     <p>{message.text}</p>
 
                     {message.sender === "sent" && (
                       <div className="message-options">
-
                         <button
                           type="button"
                           className="message-options-button"
@@ -291,7 +290,6 @@ function ChatWindow({ selectedChat, onBack }) {
 
                         {messageMenu === message.id && (
                           <div className="message-menu">
-
                             <button
                               type="button"
                               onClick={() =>
@@ -311,13 +309,10 @@ function ChatWindow({ selectedChat, onBack }) {
                             >
                               🗑️ Eliminar
                             </button>
-
                           </div>
                         )}
-
                       </div>
                     )}
-
                   </div>
 
                   <span>
@@ -337,12 +332,10 @@ function ChatWindow({ selectedChat, onBack }) {
                   </span>
                 </>
               )}
-
             </div>
           ))}
 
           <div ref={messagesEndRef} />
-
         </div>
 
         <form
@@ -350,7 +343,6 @@ function ChatWindow({ selectedChat, onBack }) {
           onSubmit={handleSubmit}
         >
           <div className="emoji-container">
-
             <button
               type="button"
               className="emoji-button"
@@ -366,7 +358,6 @@ function ChatWindow({ selectedChat, onBack }) {
 
             {showEmojiPicker && (
               <div className="emoji-picker">
-
                 {emojis.map((emoji) => (
                   <button
                     type="button"
@@ -383,10 +374,8 @@ function ChatWindow({ selectedChat, onBack }) {
                     {emoji}
                   </button>
                 ))}
-
               </div>
             )}
-
           </div>
 
           <input
@@ -465,7 +454,6 @@ function ChatWindow({ selectedChat, onBack }) {
             </p>
 
             <div className="modal-actions">
-
               <button
                 className="modal-cancel"
                 onClick={() =>
@@ -481,7 +469,6 @@ function ChatWindow({ selectedChat, onBack }) {
               >
                 Borrar
               </button>
-
             </div>
           </div>
         </div>
@@ -501,7 +488,6 @@ function ChatWindow({ selectedChat, onBack }) {
             }
           >
             <div className="profile-header">
-
               <button
                 className="profile-close"
                 onClick={() =>
@@ -517,11 +503,9 @@ function ChatWindow({ selectedChat, onBack }) {
                   ? "Información del grupo"
                   : "Información del contacto"}
               </h2>
-
             </div>
 
             <div className="profile-content">
-
               <div className="profile-avatar">
                 {selectedChat.avatar}
               </div>
@@ -536,6 +520,7 @@ function ChatWindow({ selectedChat, onBack }) {
 
               <div className="profile-section">
                 <span>Nombre</span>
+
                 <strong>
                   {selectedChat.name}
                 </strong>
@@ -564,7 +549,6 @@ function ChatWindow({ selectedChat, onBack }) {
                   {messages.length}
                 </strong>
               </div>
-
             </div>
           </aside>
         </div>

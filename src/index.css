@@ -440,11 +440,6 @@ body {
   color: #8b949e;
   font-size: 14px;
 }
-.no-messages {
-  margin: auto;
-  color: #8b949e;
-  font-size: 14px;
-}
 .user-profile {
   display: flex;
   align-items: center;
@@ -487,21 +482,6 @@ body {
   font-size: 12px;
 }
 
-.logout-button {
-  width: 35px;
-  height: 35px;
-  border: none;
-  border-radius: 50%;
-  background: transparent;
-  color: #9ba5ad;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-.logout-button:hover {
-  background: #303941;
-  color: white;
-}
 .not-found-page {
   min-height: 100vh;
   display: flex;
@@ -561,25 +541,6 @@ body {
   font-size: 10px;
   margin-left: 3px;
 }
-.delete-chat-button {
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: 50%;
-  background: transparent;
-  color: #8b949e;
-  cursor: pointer;
-  opacity: 0;
-  transition: 0.2s;
-}
-
-.chat-item:hover .delete-chat-button {
-  opacity: 1;
-}
-
-.delete-chat-button:hover {
-  background: #3a2929;
-}
 .chat-menu-container {
   position: relative;
   flex-shrink: 0;
@@ -638,26 +599,6 @@ body {
   background: #303941;
 }
 /* Botón de tema */
-.theme-button {
-  
-  position: fixed;
-  top: 880px;
-  right: 1815px;
-  z-index: 200;
-  width: 42px;
-  height: 42px;
-  border: 1px solid #3a444b;
-  border-radius: 50%;
-  background: #20282d;
-  color: #ffffff;
-  font-size: 18px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.theme-button:hover {
-  transform: scale(1.05);
-}
 .filter.active:hover{
   background-color: #00b894;
 }
@@ -785,11 +726,6 @@ body.light-mode .chat-item.selected{
   background: #d8d9db73;
 }
 
-body.light-mode .theme-button {
-  background: #ffffff;
-  border-color: #d1d7db;
-  color: #111b21;
-}
 body.light-mode .messages {
  background: #efeae2;
 }
@@ -813,7 +749,7 @@ body.light-mode .login-form input{
       color: #000;
 }
 body.light-mode .login-button{
-  border: 1px #00b894;
+  border: 1px solid #00b894;
 }
 
 body.light-mode .new-chat-form input{
@@ -832,11 +768,6 @@ body.light-mode .new-chat-actions button[type="submit"]{
 body.light-mode .emoji-picker{
   background-color: white;
 }
-@media (max-width: 700px) {
-  .delete-chat-button {
-    opacity: 1;
-  }
-}
 /* =========================
    RESPONSIVE
 ========================= */
@@ -846,7 +777,7 @@ body.light-mode .emoji-picker{
   display: flex;
   align-items: center;
   justify-content: center;
-  border: #00b894;
+  border: none;
   background-color: #8b949e4b;
   width: 30px;
   height: 30px;
@@ -1585,38 +1516,10 @@ body.light-mode .profile-close{
 
     z-index: 100;
   }
-
-
-  /* =====================================================
-     BOTÓN MODO DÍA / NOCHE
-     
-     IMPORTANTE:
-     React lo oculta cuando mobileChatOpen = true.
-     Acá solamente le damos una posición correcta.
-  ===================================================== */
-
-  .theme-button {
-    position: fixed !important;
-
-    top: 12px !important;
-    right: 12px !important;
-
-    width: 42px !important;
-    height: 42px !important;
-
-    z-index: 200 !important;
-
-    display: flex !important;
-
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 50% !important;
-  }
-
-
   /* =====================================================
      PERFIL DEL CONTACTO
+  ===================================================== */
+
   ===================================================== */
 
   .profile-overlay {
@@ -1663,7 +1566,7 @@ body.light-mode .profile-close{
   .chat-list {
     border-radius: 0 !important;
   }
-}
+} 
 /* ================================
    NAVEGACION INFERIOR
    ================================ */
