@@ -148,14 +148,14 @@ const initialStatuses = [
     id: 2,
     name: "weirdo",
     avatar: "W",
-    image: img7515,
+    image: img5053,
     time: "Hace 1 h",
   },
   {
     id: 3,
     name: "mama",
     avatar: "M",
-    image: img5053,
+    image: img7515,
     time: "Hace 2 h",
   },
 ];
