@@ -97,7 +97,7 @@ const initialMessages = {
     },
   ],
 
-  4: [
+  5: [
     {
       id: 8,
       text: "matheo despertate!!!! 😡😡😡",
@@ -107,7 +107,7 @@ const initialMessages = {
     },
   ],
 
-  5: [
+  6: [
     {
       id: 9,
       text: "Tu hermano se fue al colegio??",
@@ -135,7 +135,7 @@ const initialMessages = {
     },
   ],
 
-  6: [
+  7: [
     {
       id: 11,
       text: "matheo sabes si este finde vamos a poder ver la exposicion en la rural me acompañas?",
@@ -151,6 +151,38 @@ const initialMessages = {
       status: "read",
     },
   ],
+  4: [
+  {
+    id: 1,
+    text: "che leo q onda con la uni?",
+    sender: "sent",
+    time: "17:15",
+    status: "read",
+  },
+  {
+    id: 2,
+    text: "me estan garchando boludo",
+    sender: "received",
+    senderName: "zaro",
+    senderAvatar: "Z",
+    time: "17:20",
+  },
+  {
+    id: 3,
+    text: "xd pero q onda tanto?",
+    sender: "sent",
+    time: "17:57",
+    status: "read",
+  },
+  {
+    id: 4,
+    text: "si no me paran de dar temas nuevos y no entiendo nada",
+    sender: "received",
+    senderName: "zaro",
+    senderAvatar: "Z",
+    time: "17:58",
+  },
+],
 };
 
 function useMessages(selectedChatId) {

@@ -20,7 +20,7 @@ const initialChats = [
     avatar: "LP",
     lastMessage: "este sabado le jugamos f8 en el conteiner",
     time: "13:24",
-    unread: 2,
+    unread: 0,
     type: "group",
     participants: [
       "joel",
@@ -36,7 +36,7 @@ const initialChats = [
     avatar: "W",
     lastMessage: "gorda ya salgo y te cruzo te extraño",
     time: "12:11",
-    unread: 2,
+    unread: 0,
     type: "contact",
   },
   {
@@ -72,6 +72,15 @@ const initialChats = [
     unread: 0,
     type: "contact",
   },
+  {
+  id: 7,
+  name: "zaro",
+  avatar: "Z",
+  lastMessage: "me estan matando en la carrera",
+  time: "11:58",
+  unread: 1,
+  type: "contact",
+},
 ];
 
 const initialContacts = [
@@ -79,25 +88,51 @@ const initialContacts = [
     id: 1,
     name: "tradeo",
     avatar: "T",
-    chatId: 1,
+  },
+  {
+    id: 2,
+    name: "weirdo",
+    avatar: "W",
   },
   {
     id: 3,
-    name: "weirdo",
-    avatar: "W",
-    chatId: 3,
+    name: "mama",
+    avatar: "M",
   },
   {
     id: 4,
-    name: "mama",
-    avatar: "M",
-    chatId: 4,
+    name: "abuelo",
+    avatar: "A",
+  },
+  {
+    id: 5,
+    name: "Ortega",
+    avatar: "S",
   },
   {
     id: 6,
-    name: "abuelo",
+    name: "Agus",
     avatar: "A",
-    chatId: 6,
+  },
+  {
+    id: 7,
+    name: "Joel",
+    avatar: "J",
+  },
+  {
+    id: 8,
+    name: "Mati",
+    avatar: "M",
+  },
+  {
+    id: 9,
+    name: "Jere",
+    avatar: "J",
+  },
+  {
+    id: 10,
+    name: "zaro",
+    avatar: "z",
   },
 ];
 
