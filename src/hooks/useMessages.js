@@ -25,26 +25,51 @@ const initialMessages = {
     },
   ],
 
-  2: [
-    {
-      id: 4,
-      text: "ahora tradeo cuando vamos a jugar contra barcito? estan muy bocones en ig",
-      sender: "received",
-      senderName: "Nico",
-      senderAvatar: "N",
-      time: "13:20",
-      status: "read",
-    },
-    {
-      id: 5,
-      text: "este sabado le jugamos f8 en el conteiner",
-      sender: "received",
-      senderName: "Mati",
-      senderAvatar: "M",
-      time: "13:24",
-      status: "unread",
-    },
-  ],
+ 2: [
+  {
+    id: 4,
+    text: "ahora tradeo cuando vamos a jugar contra barcito? estan muy bocones en ig",
+    sender: "received",
+    senderName: "tradeo",
+    senderAvatar: "T",
+    time: "13:20",
+    status: "read",
+  },
+  {
+    id: 5,
+    text: "este sabado le jugamos f8 en el conteiner",
+    sender: "received",
+    senderName: "Ortega",
+    senderAvatar: "S",
+    time: "13:24",
+    status: "unread",
+  },
+  {
+    id: 12,
+    text: "yo puedo el sabado",
+    sender: "received",
+    senderName: "Joel",
+    senderAvatar: "J",
+    time: "13:26",
+    status: "read",
+  },
+  {
+    id: 13,
+    text: "yo llego un poco mas tarde",
+    sender: "received",
+    senderName: "Mati",
+    senderAvatar: "M",
+    time: "13:28",
+    status: "read",
+  },
+  {
+    id: 16,
+    text: "listo de una jugamos el sabado",
+    time: "14:50",
+    status: "read",
+    sender: "sent",
+  },
+],
 
   3: [
     {
@@ -56,10 +81,19 @@ const initialMessages = {
     },
     {
       id: 7,
-      text: "avisame si cuando salgo venis a buscarme",
+      
+      text: "avisame asi cuando salgo venis a buscarme",
       sender: "received",
       time: "12:11",
       status: "read",
+    },
+    {
+      id: 15,
+      text: "gorda ya salgo y te cruzo te extraño",
+      sender: "sent",
+      time: "12:30",
+      status: "read"
+
     },
   ],
 
@@ -76,7 +110,7 @@ const initialMessages = {
   5: [
     {
       id: 9,
-      text: "mi hermano se fue al colegio??",
+      text: "Tu hermano se fue al colegio??",
       sender: "received",
       senderName: "Mamá",
       senderAvatar: "M",
@@ -90,6 +124,15 @@ const initialMessages = {
       time: "10:31",
       status: "read",
     },
+    {
+      id:14,
+      text: "dejaste comida hecha ma?",
+      sender: "received",
+      senderName: "Jere",
+      senderAvatar: "J",
+      time: "11:30",
+      status: "read",
+    },
   ],
 
   6: [
@@ -98,6 +141,13 @@ const initialMessages = {
       text: "matheo sabes si este finde vamos a poder ver la exposicion en la rural me acompañas?",
       sender: "received",
       time: "09:15",
+      status: "read",
+    },
+    {
+      id:17,
+      text: "Hola abuelo sisi estoy el finde",
+      sender: "sent",
+      time: "15:32",
       status: "read",
     },
   ],

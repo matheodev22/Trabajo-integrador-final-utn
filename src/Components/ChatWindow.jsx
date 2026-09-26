@@ -117,7 +117,7 @@ function ChatWindow({ selectedChat, onBack }) {
       <section className="chat-window">
         <div className="welcome-content">
           <div className="welcome-icon">
-            💬
+            <i className="bi bi-chat-dots"></i>
           </div>
 
           <h1>
@@ -141,8 +141,9 @@ function ChatWindow({ selectedChat, onBack }) {
             className="back-button"
             onClick={onBack}
             aria-label="Volver a los chats"
+            title="Volver"
           >
-            ←
+            <i className="bi bi-arrow-left"></i>
           </button>
 
           <button
@@ -172,7 +173,7 @@ function ChatWindow({ selectedChat, onBack }) {
               aria-label="Llamar"
               title="Llamar"
             >
-              📞
+              <i className="bi bi-telephone"></i>
             </button>
 
             <button
@@ -181,7 +182,7 @@ function ChatWindow({ selectedChat, onBack }) {
               aria-label="Videollamada"
               title="Videollamada"
             >
-              🎥
+              <i className="bi bi-camera-video"></i>
             </button>
 
             <div className="menu-container">
@@ -193,13 +194,14 @@ function ChatWindow({ selectedChat, onBack }) {
                 aria-label="Más opciones"
                 title="Más opciones"
               >
-                ⋮
+                <i className="bi bi-three-dots-vertical"></i>
               </button>
 
               {showMenu && (
                 <div className="chat-menu">
                   <button onClick={handleDeleteChat}>
-                    🗑️ Borrar chat
+                    <i className="bi bi-trash"></i>
+                    <span> Borrar chat</span>
                   </button>
                 </div>
               )}
@@ -285,7 +287,7 @@ function ChatWindow({ selectedChat, onBack }) {
                           }
                           aria-label="Opciones del mensaje"
                         >
-                          ⋮
+                          <i className="bi bi-three-dots"></i>
                         </button>
 
                         {messageMenu === message.id && (
@@ -296,7 +298,8 @@ function ChatWindow({ selectedChat, onBack }) {
                                 handleStartEdit(message)
                               }
                             >
-                              ✏️ Editar
+                              <i className="bi bi-pencil"></i>
+                              <span>Editar</span>
                             </button>
 
                             <button
@@ -307,7 +310,8 @@ function ChatWindow({ selectedChat, onBack }) {
                                 )
                               }
                             >
-                              🗑️ Eliminar
+                              <i className="bi bi-trash"></i>
+                              <span>Eliminar</span>
                             </button>
                           </div>
                         )}
@@ -326,7 +330,8 @@ function ChatWindow({ selectedChat, onBack }) {
 
                     {message.sender === "sent" && (
                       <span className="message-status">
-                        {" "}✓✓
+                        {" "}
+                        <i className="bi bi-check2-all"></i>
                       </span>
                     )}
                   </span>
@@ -352,8 +357,9 @@ function ChatWindow({ selectedChat, onBack }) {
                 )
               }
               aria-label="Abrir emojis"
+              title="Emojis"
             >
-              😊
+              <i className="bi bi-emoji-smile"></i>
             </button>
 
             {showEmojiPicker && (
@@ -391,8 +397,9 @@ function ChatWindow({ selectedChat, onBack }) {
           <button
             type="submit"
             aria-label="Enviar mensaje"
+            title="Enviar mensaje"
           >
-            ➤
+            <i className="bi bi-send-fill"></i>
           </button>
         </form>
       </section>
@@ -409,7 +416,7 @@ function ChatWindow({ selectedChat, onBack }) {
             }
           >
             <div className="modal-icon">
-              ⚠️
+              <i className="bi bi-exclamation-triangle"></i>
             </div>
 
             <h2>Función no disponible</h2>
@@ -443,7 +450,7 @@ function ChatWindow({ selectedChat, onBack }) {
             }
           >
             <div className="modal-icon">
-              🗑️
+              <i className="bi bi-trash"></i>
             </div>
 
             <h2>¿Borrar conversación?</h2>
@@ -494,8 +501,9 @@ function ChatWindow({ selectedChat, onBack }) {
                   setShowContactProfile(false)
                 }
                 aria-label="Cerrar perfil"
+                title="Cerrar"
               >
-                ←
+                <i className="bi bi-arrow-left"></i>
               </button>
 
               <h2>

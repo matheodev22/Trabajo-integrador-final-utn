@@ -713,7 +713,7 @@ body.light-mode .chat-menu-button:hover {
   background: #0d11179a;
 }
 body.light-mode .chat-menu{
-  background-color: #f0f2f5;
+  background-color: white;
   border: #f0f2f5 none;
 }
 body.light-mode .chat-menu button{
@@ -767,6 +767,16 @@ body.light-mode .new-chat-actions button[type="submit"]{
 }
 body.light-mode .emoji-picker{
   background-color: white;
+}
+body.light-mode .modal-card{
+  background-color: white;
+}
+body.light-mode .modal-card h2{
+  color: #000;
+}
+body.light-mode .modal-icon{
+  color: #000;
+  
 }
 /* =========================
    RESPONSIVE
@@ -1216,6 +1226,14 @@ body.light-mode .profile-header{
 body.light-mode .profile-close{
   color: #000;
 }
+body.light-mode .message-menu {
+  background: white;
+
+}
+body.light-mode .message-menu button{
+  color: #000;
+  
+}
 /* =========================================================
    MOBILE FINAL
    NO MODIFICA EL DISEÑO DE PC
@@ -1520,7 +1538,7 @@ body.light-mode .profile-close{
      PERFIL DEL CONTACTO
   ===================================================== */
 
-  ===================================================== */
+  
 
   .profile-overlay {
     width: 100%;
@@ -1856,7 +1874,7 @@ body.light-mode .contact-item:hover {
 @media (max-width: 768px) {
   .bottom-navigation {
     min-height: 64px;
-    padding: 0px 0px;
+    padding: 0;
     justify-content: center;
     border-radius: 30px;
     margin-bottom: 25px;
@@ -1869,15 +1887,15 @@ body.light-mode .contact-item:hover {
   .bottom-navigation button small {
     font-size: 10px;
   }
-  .bottom-navigation button.active{
+
+  .bottom-navigation button.active {
     border-radius: 30px;
   }
 
-
-
-body.light-mode .bottom-navigation {
+  body.light-mode .bottom-navigation {
     background: #f5f6f6;
     border-top-color: #e5e5e5;
+  }
 
   .status-item,
   .contact-item {
@@ -1890,7 +1908,7 @@ body.light-mode .bottom-navigation {
   }
 }
 
-}
+
 /* ========================================
    CONFIGURACION
    ======================================== */

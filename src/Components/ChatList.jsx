@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../Context/AuthContext";
+import img0749 from "../img/IMG_0749.PNG";
+import img7515 from "../img/IMG_1755.png";
+import img5053 from "../img/IMG_5053.png";
 
 const initialChats = [
   {
@@ -31,7 +34,7 @@ const initialChats = [
     id: 3,
     name: "weirdo",
     avatar: "W",
-    lastMessage: "avisame si cuando salgo venis a buscarme",
+    lastMessage: "gorda ya salgo y te cruzo te extraño",
     time: "12:11",
     unread: 2,
     type: "contact",
@@ -42,7 +45,7 @@ const initialChats = [
     avatar: "M",
     lastMessage: "matheo despertate!!!! 😡😡😡",
     time: "11:45",
-    unread: 0,
+    unread: 1,
     type: "contact",
   },
   {
@@ -51,7 +54,7 @@ const initialChats = [
     avatar: "F",
     lastMessage: "si mama",
     time: "10:31",
-    unread: 0,
+    unread: 1,
     type: "group",
     participants: [
       "Mamá",
@@ -64,8 +67,8 @@ const initialChats = [
     name: "abuelo",
     avatar: "A",
     lastMessage:
-      "matheo sabes si este finde vamos a poder ver la exposicion en la rural me acompañas?",
-    time: "09:15",
+      "Hola abuelo sisi estoy el finde?",
+    time: "15:32",
     unread: 0,
     type: "contact",
   },
@@ -103,29 +106,22 @@ const initialStatuses = [
     id: 1,
     name: "tradeo",
     avatar: "T",
-    image: "https://picsum.photos/500/800?random=21",
+    image: img0749,
     time: "Hace 20 min",
   },
   {
     id: 2,
     name: "weirdo",
     avatar: "W",
-    image: "https://picsum.photos/500/800?random=22",
+    image: img7515,
     time: "Hace 1 h",
   },
   {
     id: 3,
     name: "mama",
     avatar: "M",
-    image: "https://picsum.photos/500/800?random=23",
+    image: img5053,
     time: "Hace 2 h",
-  },
-  {
-    id: 4,
-    name: "abuelo",
-    avatar: "A",
-    image: "https://picsum.photos/500/800?random=24",
-    time: "Hace 3 h",
   },
 ];
 
@@ -526,7 +522,7 @@ function ChatList({
               title="Nuevo contacto"
               onClick={openNewContactForm}
             >
-              +
+              <i className="bi bi-plus-lg"></i>
             </button>
           </header>
 
@@ -733,7 +729,8 @@ function ChatList({
                             setOpenMenu(null);
                           }}
                         >
-                          🗑️ Eliminar
+                          <i className="bi bi-trash"></i>
+                          <span>Eliminar</span>
                         </button>
                       </div>
                     )}
@@ -809,7 +806,7 @@ function ChatList({
               title="Nuevo contacto"
               onClick={openNewContactForm}
             >
-              +
+              <i className="bi bi-plus-lg"></i>
             </button>
           </header>
 
@@ -923,7 +920,11 @@ function ChatList({
               onClick={onToggleTheme}
             >
               <span className="settings-icon">
-                {darkMode ? "☀️" : "🌙"}
+                {darkMode ? (
+  <i className="bi bi-sun"></i>
+) : (
+  <i className="bi bi-moon"></i>
+)}
               </span>
 
               <div>
@@ -944,7 +945,7 @@ function ChatList({
               onClick={logout}
             >
               <span className="settings-icon">
-                ↪
+                <i className="bi bi-box-arrow-right"></i>
               </span>
 
               <div>
@@ -976,7 +977,9 @@ function ChatList({
             setActiveSection("chats")
           }
         >
-          <span>💬</span>
+          <span>
+  <i className="bi bi-chat-dots"></i>
+</span>
           <small>Chats</small>
         </button>
 
@@ -990,7 +993,9 @@ function ChatList({
             setActiveSection("statuses")
           }
         >
-          <span>◉</span>
+          <span>
+  <i className="bi bi-circle"></i>
+</span>
           <small>Estados</small>
         </button>
 
@@ -1004,7 +1009,9 @@ function ChatList({
             setActiveSection("contacts")
           }
         >
-          <span>👥</span>
+          <span>
+  <i className="bi bi-people"></i>
+</span>
           <small>Contactos</small>
         </button>
 
@@ -1018,7 +1025,9 @@ function ChatList({
             setActiveSection("settings")
           }
         >
-          <span>⚙️</span>
+          <span>
+  <i className="bi bi-gear"></i>
+</span>
           <small>Config.</small>
         </button>
       </nav>
@@ -1045,7 +1054,7 @@ function ChatList({
                 setSelectedStatus(null)
               }
             >
-              ←
+              <i className="bi bi-arrow-left"></i>
             </button>
 
             <div>
@@ -1090,7 +1099,7 @@ function ChatList({
                   setShowProfile(false)
                 }
               >
-                ←
+                <i className="bi bi-arrow-left"></i>
               </button>
 
               <h2>Perfil</h2>
