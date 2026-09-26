@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../Context/AuthContext";
+
 import img0749 from "../img/IMG_0749.PNG";
 import img7515 from "../img/IMG_1755.png";
 import img5053 from "../img/IMG_5053.png";
@@ -23,11 +24,11 @@ const initialChats = [
     unread: 0,
     type: "group",
     participants: [
-      "joel",
-      "Mati",
-      "ortega",
       "tradeo",
-      "Matheo",
+      "Mati Ortega",
+      "Agus",
+      "Joel",
+      "Juan Mati",
     ],
   },
   {
@@ -37,6 +38,15 @@ const initialChats = [
     lastMessage: "gorda ya salgo y te cruzo te extraño",
     time: "12:11",
     unread: 0,
+    type: "contact",
+  },
+  {
+    id: 7,
+    name: "zaro",
+    avatar: "Z",
+    lastMessage: "me estan matando en la carrera",
+    time: "11:58",
+    unread: 1,
     type: "contact",
   },
   {
@@ -58,7 +68,7 @@ const initialChats = [
     type: "group",
     participants: [
       "Mamá",
-      "jere",
+      "Jere",
       "Matheo",
     ],
   },
@@ -66,21 +76,11 @@ const initialChats = [
     id: 6,
     name: "abuelo",
     avatar: "A",
-    lastMessage:
-      "Hola abuelo sisi estoy el finde?",
+    lastMessage: "Hola abuelo sisi estoy el finde?",
     time: "15:32",
     unread: 0,
     type: "contact",
   },
-  {
-  id: 7,
-  name: "zaro",
-  avatar: "Z",
-  lastMessage: "me estan matando en la carrera",
-  time: "11:58",
-  unread: 1,
-  type: "contact",
-},
 ];
 
 const initialContacts = [
@@ -88,21 +88,25 @@ const initialContacts = [
     id: 1,
     name: "tradeo",
     avatar: "T",
+    chatId: 1,
   },
   {
     id: 2,
     name: "weirdo",
     avatar: "W",
+    chatId: 3,
   },
   {
     id: 3,
     name: "mama",
     avatar: "M",
+    chatId: 4,
   },
   {
-    id: 4,
+    id: 10,
     name: "abuelo",
     avatar: "A",
+    chatId: 6,
   },
   {
     id: 5,
@@ -111,8 +115,8 @@ const initialContacts = [
   },
   {
     id: 6,
-    name: "Agus",
-    avatar: "A",
+    name: "pa",
+    avatar: "P",
   },
   {
     id: 7,
@@ -130,11 +134,74 @@ const initialContacts = [
     avatar: "J",
   },
   {
-    id: 10,
+    id: 4,
     name: "zaro",
-    avatar: "z",
+    avatar: "Z",
+    chatId: 7,
   },
 ];
+
+const normalizeSavedContacts = (savedContacts) => {
+  if (!savedContacts) {
+    return initialContacts;
+  }
+
+  return savedContacts.map((contact) => {
+    if (contact.name === "Ortega") {
+      return {
+        ...contact,
+        name: "Mati Ortega",
+        avatar: "MO",
+      };
+    }
+
+    if (contact.name === "Mati") {
+      return {
+        ...contact,
+        name: "Juan Mati",
+        avatar: "JM",
+      };
+    }
+
+    if (contact.name === "zaro") {
+      return {
+        ...contact,
+        avatar: "Z",
+        chatId: 7,
+      };
+    }
+
+    if (contact.name === "tradeo") {
+      return {
+        ...contact,
+        chatId: 1,
+      };
+    }
+
+    if (contact.name === "weirdo") {
+      return {
+        ...contact,
+        chatId: 3,
+      };
+    }
+
+    if (contact.name === "mama") {
+      return {
+        ...contact,
+        chatId: 4,
+      };
+    }
+
+    if (contact.name === "abuelo") {
+      return {
+        ...contact,
+        chatId: 6,
+      };
+    }
+
+    return contact;
+  });
+};
 
 const initialStatuses = [
   {
@@ -173,15 +240,19 @@ function ChatList({
   const [chatList, setChatList] = useState(() => {
     const savedChats = localStorage.getItem("chatList");
 
-    return savedChats ? JSON.parse(savedChats) : initialChats;
+    return savedChats
+      ? JSON.parse(savedChats)
+      : initialChats;
   });
 
   const [contacts, setContacts] = useState(() => {
     const savedContacts = localStorage.getItem("contacts");
 
-    return savedContacts
-      ? JSON.parse(savedContacts)
-      : initialContacts;
+    return normalizeSavedContacts(
+      savedContacts
+        ? JSON.parse(savedContacts)
+        : null
+    );
   });
 
   const [activeSection, setActiveSection] = useState("chats");
@@ -219,12 +290,77 @@ function ChatList({
   }, [contacts]);
 
   /*
+   * Vincular automáticamente contactos viejos
+   * con los chats que ya existen.
+   *
+   * Esto evita que se creen chats duplicados.
+   */
+  useEffect(() => {
+    setContacts((currentContacts) => {
+      let changed = false;
+
+      const updatedContacts = currentContacts.map(
+        (contact) => {
+          const matchingChat = chatList.find(
+            (chat) =>
+              chat.type === "contact" &&
+              (
+                chat.id === contact.chatId ||
+                chat.name.toLowerCase() ===
+                  contact.name.toLowerCase()
+              )
+          );
+
+          if (
+            matchingChat &&
+            contact.chatId !== matchingChat.id
+          ) {
+            changed = true;
+
+            return {
+              ...contact,
+              chatId: matchingChat.id,
+            };
+          }
+
+          /*
+           * Si el chat fue eliminado, el contacto
+           * sigue existiendo en la agenda pero
+           * queda sin chat.
+           */
+          if (
+            !matchingChat &&
+            contact.chatId
+          ) {
+            const { chatId, ...contactWithoutChat } =
+              contact;
+
+            changed = true;
+
+            return contactWithoutChat;
+          }
+
+          return contact;
+        }
+      );
+
+      return changed
+        ? updatedContacts
+        : currentContacts;
+    });
+  }, [chatList]);
+
+  /*
    * Cuando enviamos un mensaje desde ChatWindow,
    * actualizamos la vista previa del chat.
    */
   useEffect(() => {
     const handleChatMessage = (event) => {
-      const { chatId, message, time } = event.detail;
+      const {
+        chatId,
+        message,
+        time,
+      } = event.detail;
 
       setChatList((currentChats) => {
         const updatedChat = currentChats.find(
@@ -235,14 +371,15 @@ function ChatList({
           return currentChats;
         }
 
-        const updatedChats = currentChats.map((chat) =>
-          chat.id === chatId
-            ? {
-                ...chat,
-                lastMessage: message,
-                time,
-              }
-            : chat
+        const updatedChats = currentChats.map(
+          (chat) =>
+            chat.id === chatId
+              ? {
+                  ...chat,
+                  lastMessage: message,
+                  time,
+                }
+              : chat
         );
 
         return [
@@ -270,8 +407,8 @@ function ChatList({
   }, []);
 
   /*
-   * Cuando abrimos un chat y sus mensajes pasan a vistos,
-   * ponemos el contador del chat en 0.
+   * Cuando abrimos un chat y sus mensajes
+   * pasan a vistos.
    */
   useEffect(() => {
     const handleMessagesRead = (event) => {
@@ -303,8 +440,10 @@ function ChatList({
   }, []);
 
   /*
-   * Cuando eliminamos un chat desde ChatWindow,
-   * lo quitamos de la lista y de los contactos vinculados.
+   * Cuando eliminamos un chat:
+   * el contacto NO desaparece.
+   *
+   * Queda en la agenda sin chat.
    */
   useEffect(() => {
     const handleDeleteChat = (event) => {
@@ -317,9 +456,18 @@ function ChatList({
       );
 
       setContacts((currentContacts) =>
-        currentContacts.filter(
-          (contact) => contact.chatId !== chatId
-        )
+        currentContacts.map((contact) => {
+          if (contact.chatId === chatId) {
+            const {
+              chatId: removedChatId,
+              ...contactWithoutChat
+            } = contact;
+
+            return contactWithoutChat;
+          }
+
+          return contact;
+        })
       );
     };
 
@@ -345,7 +493,10 @@ function ChatList({
       .includes(search.toLowerCase());
 
     if (activeFilter === "no-leidos") {
-      return matchesSearch && chat.unread > 0;
+      return (
+        matchesSearch &&
+        chat.unread > 0
+      );
     }
 
     if (activeFilter === "grupos") {
@@ -361,11 +512,39 @@ function ChatList({
   /*
    * Filtro de contactos
    */
-  const filteredContacts = contacts.filter((contact) =>
-    contact.name
-      .toLowerCase()
-      .includes(contactSearch.toLowerCase())
+  const filteredContacts = contacts.filter(
+    (contact) =>
+      contact.name
+        .toLowerCase()
+        .includes(
+          contactSearch.toLowerCase()
+        )
   );
+
+  /*
+   * Buscar el chat de un contacto.
+   *
+   * Primero usamos chatId.
+   * Como respaldo buscamos por nombre.
+   */
+  const getContactChat = (contact) => {
+    if (contact.chatId) {
+      const chatById = chatList.find(
+        (chat) => chat.id === contact.chatId
+      );
+
+      if (chatById) {
+        return chatById;
+      }
+    }
+
+    return chatList.find(
+      (chat) =>
+        chat.type === "contact" &&
+        chat.name.toLowerCase() ===
+          contact.name.toLowerCase()
+    );
+  };
 
   /*
    * Abrir formulario de nuevo contacto
@@ -384,7 +563,10 @@ function ChatList({
   };
 
   /*
-   * Crear contacto + crear su chat automáticamente.
+   * Crear solamente el contacto.
+   *
+   * No crea un chat automáticamente.
+   * El chat se crea cuando se toca el contacto.
    */
   const handleCreateContact = (event) => {
     event.preventDefault();
@@ -394,39 +576,28 @@ function ChatList({
     }
 
     const name = newContactName.trim();
+
+    const alreadyExists = contacts.some(
+      (contact) =>
+        contact.name.toLowerCase() ===
+        name.toLowerCase()
+    );
+
+    if (alreadyExists) {
+      return;
+    }
+
     const newId = Date.now();
 
     const avatar = name
       .slice(0, 2)
       .toUpperCase();
 
-    /*
-     * Creamos el chat
-     */
-    const newChat = {
-      id: newId,
-      name,
-      avatar,
-      lastMessage: "",
-      time: "",
-      unread: 0,
-      type: "contact",
-    };
-
-    /*
-     * Creamos el contacto vinculado al chat
-     */
     const newContact = {
       id: newId,
       name,
       avatar,
-      chatId: newId,
     };
-
-    setChatList((currentChats) => [
-      newChat,
-      ...currentChats,
-    ]);
 
     setContacts((currentContacts) => [
       newContact,
@@ -437,35 +608,29 @@ function ChatList({
     setShowNewContact(false);
 
     /*
-     * Abrimos automáticamente el chat nuevo.
+     * Vamos directamente a Contactos para
+     * que se vea el contacto recién creado.
      */
-    onSelectChat(newChat);
+    setActiveSection("contacts");
   };
 
   /*
    * Abrir un contacto.
    *
-   * Si ya tiene chat, abre ese chat.
+   * Si ya tiene chat:
+   * abre el mismo chat existente.
    *
-   * Si quedó de una versión anterior sin chatId,
-   * se crea automáticamente.
+   * Si no tiene chat:
+   * crea uno y lo vincula al contacto.
    */
   const handleContactClick = (contact) => {
-    /*
-     * Contacto ya vinculado a un chat
-     */
-    if (contact.chatId) {
-      const chat = chatList.find(
-        (item) => item.id === contact.chatId
-      );
+    const existingChat =
+      getContactChat(contact);
 
-      if (!chat) {
-        return;
-      }
-
+    if (existingChat) {
       setChatList((currentChats) =>
         currentChats.map((item) =>
-          item.id === chat.id
+          item.id === existingChat.id
             ? {
                 ...item,
                 unread: 0,
@@ -474,22 +639,35 @@ function ChatList({
         )
       );
 
-      window.dispatchEvent(
-        new CustomEvent("chat-messages-read", {
-          detail: {
-            chatId: chat.id,
-          },
-        })
+      setContacts((currentContacts) =>
+        currentContacts.map((item) =>
+          item.id === contact.id
+            ? {
+                ...item,
+                chatId: existingChat.id,
+              }
+            : item
+        )
       );
 
-      onSelectChat(chat);
+      window.dispatchEvent(
+        new CustomEvent(
+          "chat-messages-read",
+          {
+            detail: {
+              chatId: existingChat.id,
+            },
+          }
+        )
+      );
+
+      onSelectChat(existingChat);
 
       return;
     }
 
     /*
-     * Contacto viejo sin chat.
-     * Le creamos uno.
+     * El contacto todavía no tiene chat.
      */
     const newChatId = Date.now();
 
@@ -522,6 +700,35 @@ function ChatList({
     onSelectChat(newChat);
   };
 
+  /*
+   * Abrir chat reciente
+   */
+  const handleChatClick = (chat) => {
+    setChatList((currentChats) =>
+      currentChats.map((item) =>
+        item.id === chat.id
+          ? {
+              ...item,
+              unread: 0,
+            }
+          : item
+      )
+    );
+
+    window.dispatchEvent(
+      new CustomEvent(
+        "chat-messages-read",
+        {
+          detail: {
+            chatId: chat.id,
+          },
+        }
+      )
+    );
+
+    onSelectChat(chat);
+  };
+
   return (
     <aside className="sidebar">
       {/* PERFIL DEL USUARIO */}
@@ -537,8 +744,13 @@ function ChatList({
         </div>
 
         <div className="user-profile-info">
-          <strong>{user?.username}</strong>
-          <span>Disponible</span>
+          <strong>
+            {user?.username}
+          </strong>
+
+          <span>
+            Disponible
+          </span>
         </div>
       </div>
 
@@ -567,7 +779,9 @@ function ChatList({
               onSubmit={handleCreateContact}
             >
               <div className="new-contact-title">
-                <strong>Nuevo contacto</strong>
+                <strong>
+                  Nuevo contacto
+                </strong>
 
                 <span>
                   Agregá un contacto a tu lista
@@ -664,33 +878,9 @@ function ChatList({
                       : ""
                   }`}
                   key={chat.id}
-                  onClick={() => {
-                    setChatList(
-                      (currentChats) =>
-                        currentChats.map(
-                          (item) =>
-                            item.id === chat.id
-                              ? {
-                                  ...item,
-                                  unread: 0,
-                                }
-                              : item
-                        )
-                    );
-
-                    window.dispatchEvent(
-                      new CustomEvent(
-                        "chat-messages-read",
-                        {
-                          detail: {
-                            chatId: chat.id,
-                          },
-                        }
-                      )
-                    );
-
-                    onSelectChat(chat);
-                  }}
+                  onClick={() =>
+                    handleChatClick(chat)
+                  }
                 >
                   <div className="avatar">
                     {chat.avatar}
@@ -734,7 +924,7 @@ function ChatList({
                       }}
                       aria-label={`Opciones de ${chat.name}`}
                     >
-                      ⋮
+                      <i className="bi bi-three-dots-vertical"></i>
                     </button>
 
                     {openMenu === chat.id && (
@@ -752,12 +942,28 @@ function ChatList({
                                 )
                             );
 
+                            /*
+                             * El contacto queda en
+                             * la agenda, pero sin chat.
+                             */
                             setContacts(
                               (currentContacts) =>
-                                currentContacts.filter(
-                                  (contact) =>
-                                    contact.chatId !==
-                                    chat.id
+                                currentContacts.map(
+                                  (contact) => {
+                                    if (
+                                      contact.chatId ===
+                                      chat.id
+                                    ) {
+                                      const {
+                                        chatId,
+                                        ...rest
+                                      } = contact;
+
+                                      return rest;
+                                    }
+
+                                    return contact;
+                                  }
                                 )
                             );
 
@@ -765,7 +971,10 @@ function ChatList({
                           }}
                         >
                           <i className="bi bi-trash"></i>
-                          <span>Eliminar</span>
+
+                          <span>
+                            Eliminar
+                          </span>
                         </button>
                       </div>
                     )}
@@ -851,7 +1060,9 @@ function ChatList({
               onSubmit={handleCreateContact}
             >
               <div className="new-contact-title">
-                <strong>Nuevo contacto</strong>
+                <strong>
+                  Nuevo contacto
+                </strong>
 
                 <span>
                   Agregá un contacto a tu lista
@@ -901,10 +1112,19 @@ function ChatList({
 
           <div className="contacts-list">
             {filteredContacts.length > 0 ? (
-              filteredContacts.map(
-                (contact) => (
+              filteredContacts.map((contact) => {
+                const contactChat =
+                  getContactChat(contact);
+
+                return (
                   <button
-                    className="contact-item"
+                    className={`contact-item ${
+                      contactChat &&
+                      selectedChat?.id ===
+                        contactChat.id
+                        ? "selected"
+                        : ""
+                    }`}
                     key={contact.id}
                     onClick={() =>
                       handleContactClick(
@@ -921,15 +1141,21 @@ function ChatList({
                         {contact.name}
                       </strong>
 
-                      {!contact.chatId && (
-                        <span>
-                          Sin chat
-                        </span>
+                      {contactChat && (
+                        <p>
+                          {contactChat.lastMessage}
+                        </p>
                       )}
                     </div>
+
+                    {contactChat?.time && (
+                      <span className="chat-time">
+                        {contactChat.time}
+                      </span>
+                    )}
                   </button>
-                )
-              )
+                );
+              })
             ) : (
               <p className="no-results">
                 No se encontraron contactos.
@@ -956,10 +1182,10 @@ function ChatList({
             >
               <span className="settings-icon">
                 {darkMode ? (
-  <i className="bi bi-sun"></i>
-) : (
-  <i className="bi bi-moon"></i>
-)}
+                  <i className="bi bi-sun"></i>
+                ) : (
+                  <i className="bi bi-moon"></i>
+                )}
               </span>
 
               <div>
@@ -1013,9 +1239,12 @@ function ChatList({
           }
         >
           <span>
-  <i className="bi bi-chat-dots"></i>
-</span>
-          <small>Chats</small>
+            <i className="bi bi-chat-dots"></i>
+          </span>
+
+          <small>
+            Chats
+          </small>
         </button>
 
         <button
@@ -1029,9 +1258,12 @@ function ChatList({
           }
         >
           <span>
-  <i className="bi bi-circle"></i>
-</span>
-          <small>Estados</small>
+            <i className="bi bi-circle"></i>
+          </span>
+
+          <small>
+            Estados
+          </small>
         </button>
 
         <button
@@ -1045,9 +1277,12 @@ function ChatList({
           }
         >
           <span>
-  <i className="bi bi-people"></i>
-</span>
-          <small>Contactos</small>
+            <i className="bi bi-people"></i>
+          </span>
+
+          <small>
+            Contactos
+          </small>
         </button>
 
         <button
@@ -1061,9 +1296,12 @@ function ChatList({
           }
         >
           <span>
-  <i className="bi bi-gear"></i>
-</span>
-          <small>Config.</small>
+            <i className="bi bi-gear"></i>
+          </span>
+
+          <small>
+            Config.
+          </small>
         </button>
       </nav>
 
@@ -1137,7 +1375,9 @@ function ChatList({
                 <i className="bi bi-arrow-left"></i>
               </button>
 
-              <h2>Perfil</h2>
+              <h2>
+                Perfil
+              </h2>
             </div>
 
             <div className="profile-panel-content">
@@ -1148,7 +1388,9 @@ function ChatList({
               </div>
 
               <div className="profile-detail">
-                <span>Nombre</span>
+                <span>
+                  Nombre
+                </span>
 
                 <strong>
                   {user?.username}
@@ -1156,7 +1398,9 @@ function ChatList({
               </div>
 
               <div className="profile-detail">
-                <span>Estado</span>
+                <span>
+                  Estado
+                </span>
 
                 <strong>
                   Disponible
