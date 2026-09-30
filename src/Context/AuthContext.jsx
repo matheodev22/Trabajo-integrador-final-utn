@@ -1,15 +1,16 @@
 import { createContext, useContext, useState } from "react";
+import {
+  getStorageItem,
+  setStorageItem,
+  removeStorageItem,
+} from "../Logic/storageLogic";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("user");
-
-    return savedUser
-      ? JSON.parse(savedUser)
-      : null;
-  });
+  return getStorageItem("user", null);
+});
 
   const login = (username) => {
     const newUser = {
@@ -18,15 +19,12 @@ export function AuthProvider({ children }) {
 
     setUser(newUser);
 
-    localStorage.setItem(
-      "user",
-      JSON.stringify(newUser)
-    );
+    setStorageItem("user", newUser);
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("user");
+    removeStorageItem("user");
   };
 
   return (

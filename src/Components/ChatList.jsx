@@ -1,4 +1,8 @@
 import { useEffect, useState } from "react";
+import {
+  getStorageItem,
+  setStorageItem,
+} from "../Logic/storageLogic";
 import { useAuth } from "../Context/AuthContext";
 import {
   initialChats,
@@ -10,41 +14,14 @@ import {
   updateChatLastMessage,
   deleteChat,
   removeChatFromContact,
+  syncContactsWithChats,
+  openContactChat,
 } from "../Logic/chatLogic";
 import {
   createContact,
   getContactChat,
 } from "../Logic/contactLogic";
-import img0749 from "../img/IMG_0749.PNG";
-import img7515 from "../img/IMG_1755.png";
-import img5053 from "../img/IMG_5053.png";
-
-
-
-
-const initialStatuses = [
-  {
-    id: 1,
-    name: "tradeo",
-    avatar: "T",
-    image: img0749,
-    time: "Hace 20 min",
-  },
-  {
-    id: 2,
-    name: "weirdo",
-    avatar: "W",
-    image: img5053,
-    time: "Hace 1 h",
-  },
-  {
-    id: 3,
-    name: "mama",
-    avatar: "M",
-    image: img7515,
-    time: "Hace 2 h",
-  },
-];
+import { initialStatuses } from "../Logic/statusLogic";
 
 function ChatList({
   selectedChat,
@@ -57,22 +34,17 @@ function ChatList({
   const { user, logout } = useAuth();
 
   const [chatList, setChatList] = useState(() => {
-    const savedChats = localStorage.getItem("chatList");
-
-    return savedChats
-      ? JSON.parse(savedChats)
-      : initialChats;
-  });
+  return getStorageItem("chatList", initialChats);
+});
 
   const [contacts, setContacts] = useState(() => {
-    const savedContacts = localStorage.getItem("contacts");
+  const savedContacts = getStorageItem(
+    "contacts",
+    null
+  );
 
-    return normalizeSavedContacts(
-      savedContacts
-        ? JSON.parse(savedContacts)
-        : null
-    );
-  });
+  return normalizeSavedContacts(savedContacts);
+});
 
   const [activeSection, setActiveSection] = useState("chats");
   const [activeFilter, setActiveFilter] = useState("todos");
@@ -89,162 +61,58 @@ function ChatList({
   const [showProfile, setShowProfile] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem(
-      "chatList",
-      JSON.stringify(chatList)
-    );
-  }, [chatList]);
+  setStorageItem("chatList", chatList);
+}, [chatList]);
 
-  useEffect(() => {
-    localStorage.setItem(
-      "contacts",
-      JSON.stringify(contacts)
-    );
-  }, [contacts]);
+ useEffect(() => {
+  setStorageItem("contacts", contacts);
+}, [contacts]);
 
   /*
    * Vincular contactos con los chats existentes.
    */
   useEffect(() => {
-    setContacts((currentContacts) => {
-      let changed = false;
-
-      const updatedContacts = currentContacts.map(
-        (contact) => {
-          const matchingChat = chatList.find(
-            (chat) =>
-              chat.type === "contact" &&
-              (
-                chat.id === contact.chatId ||
-                chat.name.toLowerCase() ===
-                  contact.name.toLowerCase()
-              )
-          );
-
-          if (
-            matchingChat &&
-            contact.chatId !== matchingChat.id
-          ) {
-            changed = true;
-
-            return {
-              ...contact,
-              chatId: matchingChat.id,
-            };
-          }
-
-          if (
-            !matchingChat &&
-            contact.chatId
-          ) {
-            const {
-              chatId,
-              ...contactWithoutChat
-            } = contact;
-
-            changed = true;
-
-            return contactWithoutChat;
-          }
-
-          return contact;
-        }
-      );
-
-      return changed
-        ? updatedContacts
-        : currentContacts;
-    });
-  }, [chatList]);
-
-  /*
-   * Actualizar vista previa cuando se envía
-   * un mensaje.
-   */
-  useEffect(() => {
-    const handleChatMessage = (event) => {
-      const {
-        chatId,
-        message,
-        time,
-      } = event.detail;
-
-      setChatList((currentChats) => {
-        const updatedChat = currentChats.find(
-          (chat) => chat.id === chatId
-        );
-
-        if (!updatedChat) {
-          return currentChats;
-        }
-
-        const updatedChats = currentChats.map(
-          (chat) =>
-            chat.id === chatId
-              ? {
-                  ...chat,
-                  lastMessage: message,
-                  time,
-                }
-              : chat
-        );
-
-        return [
-          updatedChats.find(
-            (chat) => chat.id === chatId
-          ),
-          ...updatedChats.filter(
-            (chat) => chat.id !== chatId
-          ),
-        ];
-      });
-    };
-
-    window.addEventListener(
-      "chat-message-sent",
-      handleChatMessage
-    );
-
-    return () => {
-      window.removeEventListener(
-        "chat-message-sent",
-        handleChatMessage
-      );
-    };
-  }, []);
+  setContacts((currentContacts) =>
+    syncContactsWithChats(
+      currentContacts,
+      chatList
+    )
+  );
+}, [chatList]);
 
   /*
    * Marcar chat como leído.
    */
   useEffect(() => {
-    const handleMessagesRead = (event) => {
-      const { chatId } = event.detail;
+  const handleChatMessage = (event) => {
+    const {
+      chatId,
+      message,
+      time,
+    } = event.detail;
 
-      setChatList((currentChats) =>
-        currentChats.map((chat) =>
-          chat.id === chatId
-            ? {
-                ...chat,
-                unread: 0,
-              }
-            : chat
-        )
-      );
-    };
-
-    window.addEventListener(
-      "chat-messages-read",
-      handleMessagesRead
+    setChatList((currentChats) =>
+      updateChatLastMessage(
+        currentChats,
+        chatId,
+        message,
+        time
+      )
     );
+  };
 
-    return () => {
-      window.removeEventListener(
-        "chat-messages-read",
-        handleMessagesRead
-      );
-    };
-  }, []);
+  window.addEventListener(
+    "chat-message-sent",
+    handleChatMessage
+  );
 
+  return () => {
+    window.removeEventListener(
+      "chat-message-sent",
+      handleChatMessage
+    );
+  };
+}, []);
   /*
    * Eliminar chat pero conservar contacto.
    */
@@ -253,25 +121,18 @@ function ChatList({
       const { chatId } = event.detail;
 
       setChatList((currentChats) =>
-        currentChats.filter(
-          (chat) => chat.id !== chatId
-        )
-      );
+  deleteChat(
+    currentChats,
+    chatId
+  )
+);
 
       setContacts((currentContacts) =>
-        currentContacts.map((contact) => {
-          if (contact.chatId === chatId) {
-            const {
-              chatId: removedChatId,
-              ...contactWithoutChat
-            } = contact;
-
-            return contactWithoutChat;
-          }
-
-          return contact;
-        })
-      );
+  removeChatFromContact(
+    currentContacts,
+    chatId
+  )
+);
     };
 
     window.addEventListener(
@@ -345,24 +206,24 @@ function ChatList({
    * Abrir contacto.
    */
   const handleContactClick = (contact) => {
-    const existingChat = getContactChat(
-  contact,
-  chatList
-  );
+    const result = openContactChat(
+      contact,
+      chatList,
+      contacts
+    );
 
-    if (existingChat) {
-  setChatList((currentChats) =>
-    markChatAsRead(currentChats, existingChat.id)
-  );
+    setContacts(result.contacts);
 
-      setContacts((currentContacts) =>
-        currentContacts.map((item) =>
-          item.id === contact.id
-            ? {
-                ...item,
-                chatId: existingChat.id,
-              }
-            : item
+    if (result.newChat) {
+      setChatList((currentChats) => [
+        result.chat,
+        ...currentChats,
+      ]);
+    } else {
+      setChatList((currentChats) =>
+        markChatAsRead(
+          currentChats,
+          result.chat.id
         )
       );
 
@@ -371,49 +232,14 @@ function ChatList({
           "chat-messages-read",
           {
             detail: {
-              chatId: existingChat.id,
+              chatId: result.chat.id,
             },
           }
         )
       );
-
-      onSelectChat(existingChat);
-
-      return;
     }
 
-    /*
-     * Crear chat nuevo si no existe.
-     */
-    const newChatId = Date.now();
-
-    const newChat = {
-      id: newChatId,
-      name: contact.name,
-      avatar: contact.avatar,
-      lastMessage: "",
-      time: "",
-      unread: 0,
-      type: "contact",
-    };
-
-    setChatList((currentChats) => [
-      newChat,
-      ...currentChats,
-    ]);
-
-    setContacts((currentContacts) =>
-      currentContacts.map((item) =>
-        item.id === contact.id
-          ? {
-              ...item,
-              chatId: newChatId,
-            }
-          : item
-      )
-    );
-
-    onSelectChat(newChat);
+    onSelectChat(result.chat);
   };
 
   /*
@@ -421,15 +247,11 @@ function ChatList({
    */
   const handleChatClick = (chat) => {
     setChatList((currentChats) =>
-      currentChats.map((item) =>
-        item.id === chat.id
-          ? {
-              ...item,
-              unread: 0,
-            }
-          : item
-      )
-    );
+  markChatAsRead(
+    currentChats,
+    chat.id
+  )
+);
 
     window.dispatchEvent(
       new CustomEvent(
@@ -648,34 +470,18 @@ function ChatList({
                           onClick={(event) => {
                             event.stopPropagation();
 
-                            setChatList(
-                              (currentChats) =>
-                                currentChats.filter(
-                                  (item) =>
-                                    item.id !==
-                                    chat.id
-                                )
+                            setChatList((currentChats) =>
+                              deleteChat(
+                                currentChats,
+                                chat.id
+                              )
                             );
 
-                            setContacts(
-                              (currentContacts) =>
-                                currentContacts.map(
-                                  (contact) => {
-                                    if (
-                                      contact.chatId ===
-                                      chat.id
-                                    ) {
-                                      const {
-                                        chatId,
-                                        ...rest
-                                      } = contact;
-
-                                      return rest;
-                                    }
-
-                                    return contact;
-                                  }
-                                )
+                            setContacts((currentContacts) =>
+                              removeChatFromContact(
+                                currentContacts,
+                                chat.id
+                              )
                             );
 
                             setOpenMenu(null);

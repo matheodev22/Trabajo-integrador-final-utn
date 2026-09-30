@@ -1,14 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../Context/AuthContext";
 import useMessages from "../hooks/useMessages.js";
+import { emojis } from "../Logic/messageLogic";
 
-const emojis = [
-  "😀", "😂", "🤣", "😊", "😍",
-  "🥰", "😎", "😢", "😭", "😡",
-  "😱", "🤔", "👍", "👎", "👏",
-  "🙏", "🔥", "❤️", "💯", "🎉",
-  "👌", "🤝", "💪", "👀", "😴",
-];
 
 function ChatWindow({ selectedChat, onBack }) {
   const { user } = useAuth();

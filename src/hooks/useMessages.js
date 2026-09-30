@@ -1,4 +1,10 @@
 import { useEffect, useState } from "react";
+import {
+  createMessage,
+  editMessage as editMessageLogic,
+  deleteMessage as deleteMessageLogic,
+  markMessagesAsRead,
+} from "../Logic/messageLogic";
 
 const initialMessages = {
   // 1 — tradeo
@@ -220,17 +226,11 @@ function useMessages(selectedChatId) {
     if (!selectedChatId) return;
 
     setMessages((current) => ({
-      ...current,
-      [selectedChatId]: (current[selectedChatId] || []).map(
-        (message) =>
-          message.sender === "received"
-            ? {
-                ...message,
-                status: "read",
-              }
-            : message
-      ),
-    }));
+  ...current,
+  [selectedChatId]: markMessagesAsRead(
+    current[selectedChatId] || []
+  ),
+}));
 
     window.dispatchEvent(
       new CustomEvent("chat-messages-read", {
@@ -246,16 +246,9 @@ function useMessages(selectedChatId) {
   const sendMessage = (text) => {
     if (!text.trim()) return;
 
-    const newMessage = {
-      id: Date.now(),
-      text: text.trim(),
-      sender: "sent",
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      status: "read",
-    };
+    const newMessage = createMessage(text);
+
+if (!newMessage) return;
 
     setMessages((current) => ({
       ...current,
@@ -277,31 +270,25 @@ function useMessages(selectedChatId) {
   };
 
   const editMessage = (messageId, newText) => {
-    if (!newText.trim()) return;
-
-    setMessages((current) => ({
-      ...current,
-      [selectedChatId]: (current[selectedChatId] || []).map(
-        (message) =>
-          message.id === messageId
-            ? {
-                ...message,
-                text: newText.trim(),
-                edited: true,
-              }
-            : message
-      ),
-    }));
-  };
+  setMessages((current) => ({
+    ...current,
+    [selectedChatId]: editMessageLogic(
+      current[selectedChatId] || [],
+      messageId,
+      newText
+    ),
+  }));
+};
 
   const deleteMessage = (messageId) => {
-    setMessages((current) => ({
-      ...current,
-      [selectedChatId]: (current[selectedChatId] || []).filter(
-        (message) => message.id !== messageId
-      ),
-    }));
-  };
+  setMessages((current) => ({
+    ...current,
+    [selectedChatId]: deleteMessageLogic(
+      current[selectedChatId] || [],
+      messageId
+    ),
+  }));
+};
 
   return {
     messages: currentMessages,
