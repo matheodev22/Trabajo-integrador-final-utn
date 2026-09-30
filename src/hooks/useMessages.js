@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 const initialMessages = {
+  // 1 — tradeo
   1: [
     {
       id: 1,
@@ -25,78 +26,119 @@ const initialMessages = {
     },
   ],
 
- 2: [
-  {
-    id: 4,
-    text: "ahora tradeo cuando vamos a jugar contra barcito? estan muy bocones en ig",
-    sender: "received",
-    senderName: "tradeo",
-    senderAvatar: "T",
-    time: "13:20",
-    status: "read",
-  },
-  {
-    id: 5,
-    text: "este sabado le jugamos f8 en el conteiner",
-    sender: "received",
-    senderName: "Ortega",
-    senderAvatar: "S",
-    time: "13:24",
-    status: "unread",
-  },
-  {
-    id: 12,
-    text: "yo puedo el sabado",
-    sender: "received",
-    senderName: "Joel",
-    senderAvatar: "J",
-    time: "13:26",
-    status: "read",
-  },
-  {
-    id: 13,
-    text: "yo llego un poco mas tarde",
-    sender: "received",
-    senderName: "Mati",
-    senderAvatar: "M",
-    time: "13:28",
-    status: "read",
-  },
-  {
-    id: 16,
-    text: "listo de una jugamos el sabado",
-    time: "14:50",
-    status: "read",
-    sender: "sent",
-  },
-],
+  // 2 — los pijes.fc
+  2: [
+    {
+      id: 4,
+      text: "ahora tradeo cuando vamos a jugar contra barcito? estan muy bocones en ig",
+      sender: "received",
+      senderName: "tradeo",
+      senderAvatar: "T",
+      time: "13:20",
+      status: "read",
+    },
+    {
+      id: 5,
+      text: "este sabado le jugamos f8 en el conteiner",
+      sender: "received",
+      senderName: "Mati Ortega",
+      senderAvatar: "MO",
+      time: "13:24",
+      status: "read",
+    },
+    {
+      id: 12,
+      text: "yo puedo el sabado",
+      sender: "received",
+      senderName: "Agus",
+      senderAvatar: "A",
+      time: "13:26",
+      status: "read",
+    },
+    {
+      id: 13,
+      text: "yo llego un poco mas tarde",
+      sender: "received",
+      senderName: "Joel",
+      senderAvatar: "J",
+      time: "13:28",
+      status: "read",
+    },
+    {
+      id: 14,
+      text: "yo también puedo",
+      sender: "received",
+      senderName: "Juan Mati",
+      senderAvatar: "JM",
+      time: "13:30",
+      status: "read",
+    },
+    {
+      id: 16,
+      text: "listo de una jugamos el sabado",
+      sender: "sent",
+      time: "14:50",
+      status: "read",
+    },
+  ],
 
+  // 3 — weirdo
   3: [
     {
       id: 6,
-      text: "papoi no me voy mas de la facultad",
-      sender: "received",
-      time: "12:10",
+      text: "si papoi te cruzo en el camino",
+      sender: "sent",
+      time: "12:30",
       status: "read",
     },
     {
       id: 7,
-      
-      text: "avisame asi cuando salgo venis a buscarme",
+      text: "dale bb",
       sender: "received",
-      time: "12:11",
+      senderName: "weirdo",
+      senderAvatar: "W",
+      time: "12:31",
       status: "read",
-    },
-    {
-      id: 15,
-      text: "gorda ya salgo y te cruzo te extraño",
-      sender: "sent",
-      time: "12:30",
-      status: "read"
-
     },
   ],
 
+  // 4 — zaro
+  4: [
+    {
+      id: 17,
+      text: "che zaro q onda con la carrera?",
+      sender: "sent",
+      time: "17:15",
+      status: "read",
+    },
+    {
+      id: 18,
+      text: "y amigo me estan matando jajaj",
+      sender: "received",
+      senderName: "zaro",
+      senderAvatar: "Z",
+      time: "17:20",
+      status: "read",
+    },
+    {
+      id: 19,
+      text: "mal, es una banda o q?",
+      sender: "sent",
+      time: "17:57",
+      status: "read",
+    },
+    {
+      id: 20,
+      text: "si boludo, no paro de tener cosas para hacer",
+      sender: "received",
+      senderName: "zaro",
+      senderAvatar: "Z",
+      time: "17:58",
+      status: "read",
+    },
+  ],
+
+  // 5 — mama
   5: [
     {
       id: 8,
@@ -107,6 +149,7 @@ const initialMessages = {
     },
   ],
 
+  // 6 — familia
   6: [
     {
       id: 9,
@@ -125,7 +168,7 @@ const initialMessages = {
       status: "read",
     },
     {
-      id:14,
+      id: 14,
       text: "dejaste comida hecha ma?",
       sender: "received",
       senderName: "Jere",
@@ -135,6 +178,7 @@ const initialMessages = {
     },
   ],
 
+  // 7 — abuelo
   7: [
     {
       id: 11,
@@ -144,62 +188,34 @@ const initialMessages = {
       status: "read",
     },
     {
-      id:17,
+      id: 21,
       text: "Hola abuelo sisi estoy el finde",
       sender: "sent",
-      time: "15:32",
+      time: "10:32",
       status: "read",
     },
   ],
-  4: [
-  {
-    id: 1,
-    text: "che leo q onda con la uni?",
-    sender: "sent",
-    time: "17:15",
-    status: "read",
-  },
-  {
-    id: 2,
-    text: "me estan garchando boludo",
-    sender: "received",
-    senderName: "zaro",
-    senderAvatar: "Z",
-    time: "17:20",
-  },
-  {
-    id: 3,
-    text: "xd pero q onda tanto?",
-    sender: "sent",
-    time: "17:57",
-    status: "read",
-  },
-  {
-    id: 4,
-    text: "si no me paran de dar temas nuevos y no entiendo nada",
-    sender: "received",
-    senderName: "zaro",
-    senderAvatar: "Z",
-    time: "17:58",
-  },
-],
 };
 
 function useMessages(selectedChatId) {
   const [messages, setMessages] = useState(() => {
     const savedMessages = localStorage.getItem("messages");
 
-    return savedMessages
-      ? JSON.parse(savedMessages)
-      : initialMessages;
+    if (savedMessages) {
+      try {
+        return JSON.parse(savedMessages);
+      } catch {
+        return initialMessages;
+      }
+    }
+
+    return initialMessages;
   });
 
   useEffect(() => {
     localStorage.setItem("messages", JSON.stringify(messages));
   }, [messages]);
 
-  // Marcar los mensajes recibidos como leídos
-  // cuando entramos a una conversación.
   useEffect(() => {
     if (!selectedChatId) return;
 
