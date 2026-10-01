@@ -1,119 +1,310 @@
-// ================================
-// CHAT LOGIC
-// ================================
+// ========================================
+// CHATS INICIALES
+// ========================================
 
-// Chats iniciales
 export const initialChats = [
-  // Si ya tenías chats iniciales, colocá acá tus objetos.
+  {
+    id: 1,
+    name: "tradeo",
+    avatar: "T",
+    lastMessage:
+      "boludo hay q matarlo no puede ser tan burro",
+    time: "14:34",
+    unread: 0,
+    type: "contact",
+  },
+
+  {
+    id: 2,
+    name: "los pijes.fc",
+    avatar: "LP",
+    lastMessage:
+      "listo de una jugamos el sabado",
+    time: "14:50",
+    unread: 0,
+    type: "group",
+    participants: [
+      "tradeo",
+      "Mati Ortega",
+      "Agus",
+      "Joel",
+      "Juan Mati",
+    ],
+  },
+
+  {
+    id: 3,
+    name: "weirdo",
+    avatar: "W",
+    lastMessage: "dale bb",
+    time: "12:31",
+    unread: 0,
+    type: "contact",
+  },
+
+  {
+    id: 4,
+    name: "zaro",
+    avatar: "Z",
+    lastMessage:
+      "si boludo, no paro de tener cosas para hacer",
+    time: "17:58",
+    unread: 0,
+    type: "contact",
+  },
+
+  {
+    id: 5,
+    name: "mama",
+    avatar: "M",
+    lastMessage:
+      "matheo despertate!!!! 😡😡😡",
+    time: "11:45",
+    unread: 0,
+    type: "contact",
+  },
+
+  {
+    id: 6,
+    name: "familia",
+    avatar: "F",
+    lastMessage:
+      "dejaste comida hecha ma?",
+    time: "11:30",
+    unread: 0,
+    type: "group",
+    participants: [
+      "Mamá",
+      "Jere",
+      "Matheo",
+    ],
+  },
+
+  {
+    id: 7,
+    name: "abuelo",
+    avatar: "A",
+    lastMessage:
+      "Hola abuelo sisi estoy el finde",
+    time: "10:32",
+    unread: 0,
+    type: "contact",
+  },
 ];
 
-// Contactos iniciales
+
+// ========================================
+// CONTACTOS INICIALES
+// ========================================
+
 export const initialContacts = [
-  // Si ya tenías contactos iniciales, colocá acá tus objetos.
+  {
+    id: 1,
+    name: "tradeo",
+    avatar: "T",
+    chatId: 1,
+  },
+
+  {
+    id: 2,
+    name: "weirdo",
+    avatar: "W",
+    chatId: 3,
+  },
+
+  {
+    id: 3,
+    name: "mama",
+    avatar: "M",
+    chatId: 5,
+  },
+
+  {
+    id: 4,
+    name: "abuelo",
+    avatar: "A",
+    chatId: 7,
+  },
+
+  {
+    id: 5,
+    name: "Mati Ortega",
+    avatar: "MO",
+    chatId: 2,
+  },
+
+  {
+    id: 6,
+    name: "Agus",
+    avatar: "A",
+    chatId: 2,
+  },
+
+  {
+    id: 7,
+    name: "Joel",
+    avatar: "J",
+    chatId: 2,
+  },
+
+  {
+    id: 8,
+    name: "Juan Mati",
+    avatar: "JM",
+    chatId: 2,
+  },
+
+  {
+    id: 9,
+    name: "Jere",
+    avatar: "J",
+    chatId: 6,
+  },
+
+  {
+    id: 10,
+    name: "zaro",
+    avatar: "Z",
+    chatId: 4,
+  },
 ];
 
 
-// ================================
-// NORMALIZAR CONTACTOS GUARDADOS
-// ================================
+// ========================================
+// NORMALIZAR CONTACTOS
+// ========================================
 
-export const normalizeSavedContacts = (savedContacts) => {
-  if (!Array.isArray(savedContacts)) {
+export const normalizeSavedContacts = (
+  savedContacts
+) => {
+  if (!savedContacts) {
     return initialContacts;
   }
 
-  return savedContacts.map((contact) => ({
-    ...contact,
-    id: contact.id ?? crypto.randomUUID(),
-    name: contact.name ?? "Sin nombre",
-    avatar:
-      contact.avatar ??
-      contact.name?.slice(0, 2).toUpperCase() ??
-      "??",
-    chatId: contact.chatId ?? null,
-  }));
-};
-
-
-// ================================
-// FILTRAR CHATS
-// ================================
-
-export const filterChats = (
-  chats,
-  search = "",
-  activeFilter = "todos"
-) => {
-  if (!Array.isArray(chats)) {
-    return [];
-  }
-
-  const normalizedSearch = search.trim().toLowerCase();
-
-  return chats.filter((chat) => {
-    // Buscar por nombre o último mensaje
-    const matchesSearch =
-      !normalizedSearch ||
-      chat.name?.toLowerCase().includes(normalizedSearch) ||
-      chat.lastMessage
-        ?.toLowerCase()
-        .includes(normalizedSearch);
-
-    if (!matchesSearch) {
-      return false;
+  return savedContacts.map((contact) => {
+    if (contact.name === "Ortega") {
+      return {
+        ...contact,
+        name: "Mati Ortega",
+        avatar: "MO",
+        chatId: 2,
+      };
     }
 
-    // Filtro de no leídos
-    if (activeFilter === "no-leidos") {
-      return Number(chat.unread) > 0;
+    if (contact.name === "Mati") {
+      return {
+        ...contact,
+        name: "Juan Mati",
+        avatar: "JM",
+        chatId: 2,
+      };
     }
 
-    // Filtro de grupos
-    if (activeFilter === "grupos") {
-      return chat.isGroup === true || chat.type === "group";
+    if (contact.name === "zaro") {
+      return {
+        ...contact,
+        avatar: "Z",
+        chatId: 4,
+      };
     }
 
-    return true;
+    if (contact.name === "tradeo") {
+      return {
+        ...contact,
+        chatId: 1,
+      };
+    }
+
+    if (contact.name === "weirdo") {
+      return {
+        ...contact,
+        chatId: 3,
+      };
+    }
+
+    if (contact.name === "mama") {
+      return {
+        ...contact,
+        chatId: 5,
+      };
+    }
+
+    if (contact.name === "abuelo") {
+      return {
+        ...contact,
+        chatId: 7,
+      };
+    }
+
+    if (contact.name === "Jere") {
+      return {
+        ...contact,
+        chatId: 6,
+      };
+    }
+
+    return contact;
   });
 };
 
 
-// ================================
+// ========================================
+// FILTRAR CHATS
+// ========================================
+
+export const filterChats = (
+  chats,
+  search,
+  activeFilter
+) => {
+  return chats.filter((chat) => {
+    const matchesSearch = chat.name
+      .toLowerCase()
+      .includes(search.toLowerCase());
+
+    if (activeFilter === "no-leidos") {
+      return (
+        matchesSearch &&
+        chat.unread > 0
+      );
+    }
+
+    if (activeFilter === "grupos") {
+      return (
+        matchesSearch &&
+        chat.type === "group"
+      );
+    }
+
+    return matchesSearch;
+  });
+};
+
+
+// ========================================
 // FILTRAR CONTACTOS
-// ================================
+// ========================================
 
 export const filterContacts = (
   contacts,
-  search = ""
+  search
 ) => {
-  if (!Array.isArray(contacts)) {
-    return [];
-  }
-
-  const normalizedSearch = search.trim().toLowerCase();
-
-  if (!normalizedSearch) {
-    return contacts;
-  }
-
   return contacts.filter((contact) =>
-    contact.name?.toLowerCase().includes(normalizedSearch)
+    contact.name
+      .toLowerCase()
+      .includes(search.toLowerCase())
   );
 };
 
 
-// ================================
+// ========================================
 // MARCAR CHAT COMO LEÍDO
-// ================================
+// ========================================
 
 export const markChatAsRead = (
   chats,
   chatId
 ) => {
-  if (!Array.isArray(chats)) {
-    return [];
-  }
-
   return chats.map((chat) =>
     chat.id === chatId
       ? {
@@ -125,9 +316,9 @@ export const markChatAsRead = (
 };
 
 
-// ================================
+// ========================================
 // ACTUALIZAR ÚLTIMO MENSAJE
-// ================================
+// ========================================
 
 export const updateChatLastMessage = (
   chats,
@@ -135,53 +326,52 @@ export const updateChatLastMessage = (
   message,
   time
 ) => {
-  if (!Array.isArray(chats)) {
-    return [];
-  }
+  return chats
+    .map((chat) =>
+      chat.id === chatId
+        ? {
+            ...chat,
+            lastMessage: message,
+            time,
+          }
+        : chat
+    )
+    .sort((a, b) => {
+      if (a.id === chatId) {
+        return -1;
+      }
 
-  return chats.map((chat) =>
-    chat.id === chatId
-      ? {
-          ...chat,
-          lastMessage: message,
-          time: time ?? chat.time,
-          unread: Number(chat.unread || 0) + 1,
-        }
-      : chat
-  );
+      if (b.id === chatId) {
+        return 1;
+      }
+
+      return 0;
+    });
 };
 
 
-// ================================
+// ========================================
 // ELIMINAR CHAT
-// ================================
+// ========================================
 
 export const deleteChat = (
   chats,
   chatId
 ) => {
-  if (!Array.isArray(chats)) {
-    return [];
-  }
-
   return chats.filter(
     (chat) => chat.id !== chatId
   );
 };
 
 
-// ================================
+// ========================================
 // QUITAR CHAT DEL CONTACTO
-// ================================
+// ========================================
 
 export const removeChatFromContact = (
   contacts,
   chatId
 ) => {
-  if (!Array.isArray(contacts)) {
-    return [];
-  }
-
   return contacts.map((contact) =>
     contact.chatId === chatId
       ? {
@@ -193,39 +383,30 @@ export const removeChatFromContact = (
 };
 
 
-// ================================
+// ========================================
 // SINCRONIZAR CONTACTOS CON CHATS
-// ================================
+// ========================================
 
 export const syncContactsWithChats = (
   contacts,
   chats
 ) => {
-  if (!Array.isArray(contacts)) {
-    return [];
-  }
-
-  if (!Array.isArray(chats)) {
-    return contacts;
-  }
-
   return contacts.map((contact) => {
-    // Si ya tiene chatId y ese chat existe,
-    // lo conservamos.
     if (
       contact.chatId &&
       chats.some(
-        (chat) => chat.id === contact.chatId
+        (chat) =>
+          chat.id === contact.chatId
       )
     ) {
       return contact;
     }
 
-    // Buscar un chat por nombre
     const matchingChat = chats.find(
       (chat) =>
-        chat.contactId === contact.id ||
-        chat.name === contact.name
+        chat.type === "contact" &&
+        chat.name.toLowerCase() ===
+          contact.name.toLowerCase()
     );
 
     if (matchingChat) {
@@ -235,7 +416,6 @@ export const syncContactsWithChats = (
       };
     }
 
-    // Si no hay chat, queda como contacto solamente
     return {
       ...contact,
       chatId: null,
@@ -244,34 +424,26 @@ export const syncContactsWithChats = (
 };
 
 
-// ================================
+// ========================================
 // ABRIR CHAT DESDE CONTACTO
-// ================================
+// ========================================
 
 export const openContactChat = (
   contact,
   chats,
   contacts
 ) => {
-  if (!contact) {
-    return {
-      chat: null,
-      newChat: false,
-      contacts,
-    };
-  }
-
-  // Buscar si el contacto ya tiene un chat
   let existingChat = null;
 
+  // Buscar por chatId
   if (contact.chatId) {
     existingChat = chats.find(
-      (chat) => chat.id === contact.chatId
+      (chat) =>
+        chat.id === contact.chatId
     );
   }
 
-  // Si no encontró por chatId,
-  // intenta encontrarlo por contactId
+  // Buscar por contactId
   if (!existingChat) {
     existingChat = chats.find(
       (chat) =>
@@ -279,28 +451,30 @@ export const openContactChat = (
     );
   }
 
-  // Si tampoco lo encontró, busca por nombre
+  // Buscar por nombre
   if (!existingChat) {
     existingChat = chats.find(
       (chat) =>
-        chat.name === contact.name
+        chat.type === "contact" &&
+        chat.name.toLowerCase() ===
+          contact.name.toLowerCase()
     );
   }
 
-  // ================================
-  // CHAT YA EXISTE
-  // ================================
+  // ========================================
+  // CHAT EXISTENTE
+  // ========================================
 
   if (existingChat) {
-    const updatedContacts = contacts.map(
-      (item) =>
+    const updatedContacts =
+      contacts.map((item) =>
         item.id === contact.id
           ? {
               ...item,
               chatId: existingChat.id,
             }
           : item
-    );
+      );
 
     return {
       chat: existingChat,
@@ -309,32 +483,30 @@ export const openContactChat = (
     };
   }
 
-  // ================================
+  // ========================================
   // CREAR CHAT NUEVO
-  // ================================
-
-  const newChatId = crypto.randomUUID();
+  // ========================================
 
   const newChat = {
-    id: newChatId,
+    id: Date.now(),
     contactId: contact.id,
     name: contact.name,
     avatar: contact.avatar,
     lastMessage: "",
     time: "",
     unread: 0,
-    messages: [],
+    type: "contact",
   };
 
-  const updatedContacts = contacts.map(
-    (item) =>
+  const updatedContacts =
+    contacts.map((item) =>
       item.id === contact.id
         ? {
             ...item,
-            chatId: newChatId,
+            chatId: newChat.id,
           }
         : item
-  );
+    );
 
   return {
     chat: newChat,

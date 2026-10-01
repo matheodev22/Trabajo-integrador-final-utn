@@ -1,38 +1,26 @@
-// ================================
-// CONTACT LOGIC
-// ================================
-
-
-// ================================
-// CREAR CONTACTO
-// ================================
-
 export const createContact = (
   name,
-  contacts = []
+  contacts
 ) => {
-  const cleanName = name?.trim();
+  const cleanName =
+    name?.trim();
 
-  // No crear contacto vacío
   if (!cleanName) {
     return null;
   }
 
-  // Evitar contactos duplicados
-  const alreadyExists = contacts.some(
+  const exists = contacts.some(
     (contact) =>
-      contact.name?.toLowerCase() ===
+      contact.name.toLowerCase() ===
       cleanName.toLowerCase()
   );
 
-  if (alreadyExists) {
+  if (exists) {
     return null;
   }
 
-  const id = crypto.randomUUID();
-
   return {
-    id,
+    id: Date.now(),
     name: cleanName,
     avatar: cleanName
       .slice(0, 2)
@@ -42,42 +30,31 @@ export const createContact = (
 };
 
 
-// ================================
-// BUSCAR CHAT DE UN CONTACTO
-// ================================
-
 export const getContactChat = (
   contact,
-  chats = []
+  chats
 ) => {
-  if (!contact || !Array.isArray(chats)) {
+  if (!contact || !chats) {
     return null;
   }
 
-  // Primero buscar por chatId
   if (contact.chatId) {
-    const chatById = chats.find(
-      (chat) => chat.id === contact.chatId
+    const chat = chats.find(
+      (item) =>
+        item.id === contact.chatId
     );
 
-    if (chatById) {
-      return chatById;
+    if (chat) {
+      return chat;
     }
   }
 
-  // Después buscar por contactId
-  const chatByContactId = chats.find(
-    (chat) => chat.contactId === contact.id
+  return (
+    chats.find(
+      (chat) =>
+        chat.type === "contact" &&
+        chat.name.toLowerCase() ===
+          contact.name.toLowerCase()
+    ) || null
   );
-
-  if (chatByContactId) {
-    return chatByContactId;
-  }
-
-  // Último recurso: buscar por nombre
-  const chatByName = chats.find(
-    (chat) => chat.name === contact.name
-  );
-
-  return chatByName ?? null;
 };
