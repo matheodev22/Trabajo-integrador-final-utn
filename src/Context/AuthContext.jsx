@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+
 import {
   getStorageItem,
   setStorageItem,
@@ -9,16 +10,15 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-  return getStorageItem("user", null);
-});
+    return getStorageItem("user", null);
+  });
 
   const login = (username) => {
     const newUser = {
-      username: username,
+      username,
     };
 
     setUser(newUser);
-
     setStorageItem("user", newUser);
   };
 
@@ -28,13 +28,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        login,
-        logout,
-      }}
-    >
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

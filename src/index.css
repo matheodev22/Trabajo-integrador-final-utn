@@ -1308,7 +1308,12 @@ body.light-mode .message-menu button{
 
     z-index: 3;
   }
-
+  .chat-window {
+  transform: translateX(100%);
+}
+.chat-window {
+  display: none;
+}
   .mobile-chat-open .chat-window {
     transform: translateX(0);
   }

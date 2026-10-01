@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
 import {
-  getStorageItem,
-  setStorageItem,
+  getSavedMessages,
+  saveMessages,
 } from "../Logic/storageLogic";
 
 import {
@@ -14,75 +14,44 @@ import {
   markMessagesAsRead,
 } from "../Logic/messageLogic";
 
-
 function useMessages(selectedChat) {
   const chatId = selectedChat?.id;
 
   const [messages, setMessages] = useState(() => {
-    return getStorageItem(
-      "messages",
-      initialMessages
-    );
-  });
-
-
-  // ========================================
-  // GUARDAR MENSAJES
-  // ========================================
-
+  return getSavedMessages(
+    initialMessages
+  );
+});
+  // Guardar mensajes en localStorage
   useEffect(() => {
-    setStorageItem(
-      "messages",
-      messages
-    );
-  }, [messages]);
+  saveMessages(messages);
+}, [messages]);
 
-
-  // ========================================
-  // MARCAR MENSAJES COMO LEÍDOS
-  // ========================================
-
+  // Marcar mensajes como leídos al abrir un chat
   useEffect(() => {
-    if (!chatId) {
-      return;
-    }
+    if (!chatId) return;
 
     setMessages((currentMessages) =>
-      markMessagesAsRead(
-        currentMessages,
-        chatId
-      )
+      markMessagesAsRead(currentMessages, chatId)
     );
   }, [chatId]);
 
-
-  // ========================================
-  // ESCUCHAR CUANDO CHATLIST MARCA LEÍDO
-  // ========================================
-
+  // Escuchar cuando otro componente marca un chat como leído
   useEffect(() => {
     const handleMessagesRead = (event) => {
-      const { chatId: eventChatId } =
-        event.detail;
+      const { chatId: eventChatId } = event.detail;
 
-      if (!eventChatId) {
-        return;
-      }
+      if (!eventChatId) return;
 
       setMessages((currentMessages) =>
-        markMessagesAsRead(
-          currentMessages,
-          eventChatId
-        )
+        markMessagesAsRead(currentMessages, eventChatId)
       );
     };
-
 
     window.addEventListener(
       "chat-messages-read",
       handleMessagesRead
     );
-
 
     return () => {
       window.removeEventListener(
@@ -92,61 +61,34 @@ function useMessages(selectedChat) {
     };
   }, []);
 
-
-  // ========================================
-  // ENVIAR MENSAJE
-  // ========================================
-
+  // Enviar mensaje
   const sendMessage = (text) => {
-    if (!chatId) {
-      return null;
-    }
+    if (!chatId) return null;
 
     const message = createMessage(text);
 
-    if (!message) {
-      return null;
-    }
-
+    if (!message) return null;
 
     setMessages((currentMessages) =>
-      addMessage(
-        currentMessages,
-        chatId,
-        message
-      )
+      addMessage(currentMessages, chatId, message)
     );
-
 
     window.dispatchEvent(
-      new CustomEvent(
-        "chat-message-sent",
-        {
-          detail: {
-            chatId,
-            message: message.text,
-            time: message.time,
-          },
-        }
-      )
+      new CustomEvent("chat-message-sent", {
+        detail: {
+          chatId,
+          message: message.text,
+          time: message.time,
+        },
+      })
     );
-
 
     return message;
   };
 
-
-  // ========================================
-  // EDITAR MENSAJE
-  // ========================================
-
-  const handleEditMessage = (
-    messageId,
-    newText
-  ) => {
-    if (!chatId) {
-      return;
-    }
+  // Editar mensaje
+  const handleEditMessage = (messageId, newText) => {
+    if (!chatId) return;
 
     setMessages((currentMessages) =>
       editMessage(
@@ -158,17 +100,9 @@ function useMessages(selectedChat) {
     );
   };
 
-
-  // ========================================
-  // ELIMINAR MENSAJE
-  // ========================================
-
-  const handleDeleteMessage = (
-    messageId
-  ) => {
-    if (!chatId) {
-      return;
-    }
+  // Eliminar mensaje
+  const handleDeleteMessage = (messageId) => {
+    if (!chatId) return;
 
     setMessages((currentMessages) =>
       deleteMessage(
@@ -179,16 +113,10 @@ function useMessages(selectedChat) {
     );
   };
 
-
-  // ========================================
-  // MENSAJES DEL CHAT ACTUAL
-  // ========================================
-
-  const chatMessages =
-    chatId
-      ? messages[chatId] || []
-      : [];
-
+  // Mensajes del chat seleccionado
+  const chatMessages = chatId
+    ? messages[chatId] || []
+    : [];
 
   return {
     messages: chatMessages,
@@ -197,6 +125,5 @@ function useMessages(selectedChat) {
     deleteMessage: handleDeleteMessage,
   };
 }
-
 
 export default useMessages;

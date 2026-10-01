@@ -1,28 +1,30 @@
-// ========================================
+// ============================================
+// CHAT LOGIC
+// Toda la lógica relacionada con chats
+// ============================================
+
+
+// ============================================
 // CHATS INICIALES
-// ========================================
+// ============================================
 
 export const initialChats = [
   {
     id: 1,
     name: "tradeo",
+    type: "contact",
+    contactId: 1,
     avatar: "T",
-    lastMessage:
-      "boludo hay q matarlo no puede ser tan burro",
+    lastMessage: "boludo hay q matarlo no puede ser tan burro",
     time: "14:34",
     unread: 0,
-    type: "contact",
   },
 
   {
     id: 2,
     name: "los pijes.fc",
-    avatar: "LP",
-    lastMessage:
-      "listo de una jugamos el sabado",
-    time: "14:50",
-    unread: 0,
     type: "group",
+    avatar: "LP",
     participants: [
       "tradeo",
       "Mati Ortega",
@@ -30,72 +32,75 @@ export const initialChats = [
       "Joel",
       "Juan Mati",
     ],
+    lastMessage: "listo de una jugamos el sabado",
+    time: "14:50",
+    unread: 2,
   },
 
   {
     id: 3,
     name: "weirdo",
+    type: "contact",
+    contactId: 2,
     avatar: "W",
     lastMessage: "dale bb",
     time: "12:31",
-    unread: 0,
-    type: "contact",
+    unread: 2,
   },
 
   {
     id: 4,
     name: "zaro",
+    type: "contact",
+    contactId: 10,
     avatar: "Z",
-    lastMessage:
-      "si boludo, no paro de tener cosas para hacer",
+    lastMessage: "si boludo, no paro de tener cosas para hacer",
     time: "17:58",
     unread: 0,
-    type: "contact",
   },
 
   {
     id: 5,
     name: "mama",
+    type: "contact",
+    contactId: 3,
     avatar: "M",
-    lastMessage:
-      "matheo despertate!!!! 😡😡😡",
+    lastMessage: "matheo despertate!!!! 😡😡😡",
     time: "11:45",
     unread: 0,
-    type: "contact",
   },
 
   {
     id: 6,
     name: "familia",
-    avatar: "F",
-    lastMessage:
-      "dejaste comida hecha ma?",
-    time: "11:30",
-    unread: 0,
     type: "group",
+    avatar: "F",
     participants: [
       "Mamá",
       "Jere",
       "Matheo",
     ],
+    lastMessage: "dejaste comida hecha ma?",
+    time: "11:30",
+    unread: 0,
   },
 
   {
     id: 7,
     name: "abuelo",
+    type: "contact",
+    contactId: 4,
     avatar: "A",
-    lastMessage:
-      "Hola abuelo sisi estoy el finde",
+    lastMessage: "Hola abuelo sisi estoy el finde",
     time: "10:32",
     unread: 0,
-    type: "contact",
   },
 ];
 
 
-// ========================================
+// ============================================
 // CONTACTOS INICIALES
-// ========================================
+// ============================================
 
 export const initialContacts = [
   {
@@ -127,186 +132,272 @@ export const initialContacts = [
   },
 
   {
+    id: 10,
+    name: "zaro",
+    avatar: "Z",
+    chatId: 4,
+  },
+
+  {
     id: 5,
     name: "Mati Ortega",
-    avatar: "MO",
-    chatId: 2,
+    avatar: "M",
+    chatId: null,
   },
 
   {
     id: 6,
     name: "Agus",
     avatar: "A",
-    chatId: 2,
+    chatId: null,
   },
 
   {
     id: 7,
     name: "Joel",
     avatar: "J",
-    chatId: 2,
+    chatId: null,
   },
 
   {
     id: 8,
     name: "Juan Mati",
-    avatar: "JM",
-    chatId: 2,
+    avatar: "J",
+    chatId: null,
   },
 
   {
     id: 9,
     name: "Jere",
     avatar: "J",
-    chatId: 6,
-  },
-
-  {
-    id: 10,
-    name: "zaro",
-    avatar: "Z",
-    chatId: 4,
+    chatId: null,
   },
 ];
 
 
-// ========================================
-// NORMALIZAR CONTACTOS
-// ========================================
+// ============================================
+// NORMALIZAR CONTACTOS GUARDADOS
+// ============================================
 
 export const normalizeSavedContacts = (
-  savedContacts
+  contacts,
+  chats
 ) => {
-  if (!savedContacts) {
-    return initialContacts;
+  if (!Array.isArray(contacts)) {
+    return [];
   }
 
-  return savedContacts.map((contact) => {
-    if (contact.name === "Ortega") {
-      return {
-        ...contact,
-        name: "Mati Ortega",
-        avatar: "MO",
-        chatId: 2,
-      };
-    }
+  if (!Array.isArray(chats)) {
+    return contacts;
+  }
 
-    if (contact.name === "Mati") {
-      return {
-        ...contact,
-        name: "Juan Mati",
-        avatar: "JM",
-        chatId: 2,
-      };
-    }
+  return contacts.map((contact) => {
+    const existingChat = chats.find(
+      (chat) => {
+        if (
+          chat.type !== "contact"
+        ) {
+          return false;
+        }
 
-    if (contact.name === "zaro") {
-      return {
-        ...contact,
-        avatar: "Z",
-        chatId: 4,
-      };
-    }
+        if (
+          Number(chat.contactId) ===
+          Number(contact.id)
+        ) {
+          return true;
+        }
 
-    if (contact.name === "tradeo") {
-      return {
-        ...contact,
-        chatId: 1,
-      };
-    }
+        if (
+          chat.name?.trim().toLowerCase() ===
+          contact.name?.trim().toLowerCase()
+        ) {
+          return true;
+        }
 
-    if (contact.name === "weirdo") {
-      return {
-        ...contact,
-        chatId: 3,
-      };
-    }
+        return false;
+      }
+    );
 
-    if (contact.name === "mama") {
-      return {
-        ...contact,
-        chatId: 5,
-      };
-    }
-
-    if (contact.name === "abuelo") {
-      return {
-        ...contact,
-        chatId: 7,
-      };
-    }
-
-    if (contact.name === "Jere") {
-      return {
-        ...contact,
-        chatId: 6,
-      };
-    }
-
-    return contact;
+    return {
+      ...contact,
+      chatId:
+        existingChat?.id ??
+        contact.chatId ??
+        null,
+    };
   });
 };
 
 
-// ========================================
-// FILTRAR CHATS
-// ========================================
+// ============================================
+// BUSCAR CHAT POR ID
+// ============================================
 
-export const filterChats = (
+export const getChatById = (
   chats,
-  search,
-  activeFilter
+  chatId
 ) => {
-  return chats.filter((chat) => {
-    const matchesSearch = chat.name
-      .toLowerCase()
-      .includes(search.toLowerCase());
+  if (!Array.isArray(chats)) {
+    return null;
+  }
 
-    if (activeFilter === "no-leidos") {
-      return (
-        matchesSearch &&
-        chat.unread > 0
-      );
-    }
+  if (
+    chatId === null ||
+    chatId === undefined
+  ) {
+    return null;
+  }
 
-    if (activeFilter === "grupos") {
-      return (
-        matchesSearch &&
-        chat.type === "group"
-      );
-    }
-
-    return matchesSearch;
-  });
-};
-
-
-// ========================================
-// FILTRAR CONTACTOS
-// ========================================
-
-export const filterContacts = (
-  contacts,
-  search
-) => {
-  return contacts.filter((contact) =>
-    contact.name
-      .toLowerCase()
-      .includes(search.toLowerCase())
+  return (
+    chats.find(
+      (chat) =>
+        Number(chat.id) ===
+        Number(chatId)
+    ) || null
   );
 };
 
 
-// ========================================
+// ============================================
+// BUSCAR CHAT DE UN CONTACTO
+// ============================================
+
+export const getChatByContact = (
+  chats,
+  contact
+) => {
+  if (
+    !Array.isArray(chats) ||
+    !contact
+  ) {
+    return null;
+  }
+
+  return (
+    chats.find(
+      (chat) => {
+        if (
+          chat.type !== "contact"
+        ) {
+          return false;
+        }
+
+        if (
+          Number(chat.contactId) ===
+          Number(contact.id)
+        ) {
+          return true;
+        }
+
+        if (
+          contact.chatId !== null &&
+          contact.chatId !== undefined &&
+          Number(chat.id) ===
+            Number(contact.chatId)
+        ) {
+          return true;
+        }
+
+        return (
+          chat.name?.trim().toLowerCase() ===
+          contact.name?.trim().toLowerCase()
+        );
+      }
+    ) || null
+  );
+};
+
+
+// ============================================
+// FILTRAR CHATS
+// ============================================
+
+// ============================================
+// FILTRAR CHATS
+// ============================================
+
+export const filterChats = (
+  chats,
+  search = "",
+  activeFilter = "todos"
+) => {
+  if (!Array.isArray(chats)) {
+    return [];
+  }
+
+  const cleanSearch =
+    search.trim().toLowerCase();
+
+  return chats.filter((chat) => {
+
+    // ========================================
+    // BUSCADOR
+    // ========================================
+
+    const matchesSearch =
+      !cleanSearch ||
+      chat.name
+        ?.toLowerCase()
+        .includes(cleanSearch) ||
+      chat.lastMessage
+        ?.toLowerCase()
+        .includes(cleanSearch);
+
+    if (!matchesSearch) {
+      return false;
+    }
+
+    // ========================================
+    // TODOS
+    // ========================================
+
+    if (activeFilter === "todos") {
+      return true;
+    }
+
+    // ========================================
+    // NO LEÍDOS
+    // ========================================
+
+    if (activeFilter === "no-leidos") {
+      return Number(chat.unread) > 0;
+    }
+
+    // ========================================
+    // GRUPOS
+    // ========================================
+
+    if (activeFilter === "grupos") {
+      return chat.type === "group";
+    }
+
+    return true;
+  });
+};
+
+
+// ============================================
 // MARCAR CHAT COMO LEÍDO
-// ========================================
+// ============================================
 
 export const markChatAsRead = (
   chats,
   chatId
 ) => {
+  if (!Array.isArray(chats)) {
+    return [];
+  }
+
+  if (
+    chatId === null ||
+    chatId === undefined
+  ) {
+    return chats;
+  }
+
   return chats.map((chat) =>
-    chat.id === chatId
+    Number(chat.id) ===
+    Number(chatId)
       ? {
           ...chat,
           unread: 0,
@@ -316,9 +407,9 @@ export const markChatAsRead = (
 };
 
 
-// ========================================
+// ============================================
 // ACTUALIZAR ÚLTIMO MENSAJE
-// ========================================
+// ============================================
 
 export const updateChatLastMessage = (
   chats,
@@ -326,191 +417,218 @@ export const updateChatLastMessage = (
   message,
   time
 ) => {
-  return chats
-    .map((chat) =>
-      chat.id === chatId
-        ? {
-            ...chat,
-            lastMessage: message,
-            time,
-          }
-        : chat
-    )
-    .sort((a, b) => {
-      if (a.id === chatId) {
-        return -1;
-      }
+  if (!Array.isArray(chats)) {
+    return [];
+  }
 
-      if (b.id === chatId) {
-        return 1;
-      }
+  if (
+    chatId === null ||
+    chatId === undefined
+  ) {
+    return chats;
+  }
 
-      return 0;
-    });
+  return chats.map((chat) =>
+    Number(chat.id) ===
+    Number(chatId)
+      ? {
+          ...chat,
+          lastMessage: message,
+          time,
+        }
+      : chat
+  );
 };
 
 
-// ========================================
+// ============================================
 // ELIMINAR CHAT
-// ========================================
+// ============================================
 
 export const deleteChat = (
   chats,
   chatId
 ) => {
+  if (!Array.isArray(chats)) {
+    return [];
+  }
+
+  if (
+    chatId === null ||
+    chatId === undefined
+  ) {
+    return chats;
+  }
+
   return chats.filter(
-    (chat) => chat.id !== chatId
+    (chat) =>
+      Number(chat.id) !==
+      Number(chatId)
   );
 };
 
 
-// ========================================
+// ============================================
 // QUITAR CHAT DEL CONTACTO
-// ========================================
+// ============================================
 
 export const removeChatFromContact = (
   contacts,
   chatId
 ) => {
-  return contacts.map((contact) =>
-    contact.chatId === chatId
-      ? {
-          ...contact,
-          chatId: null,
-        }
-      : contact
+  if (!Array.isArray(contacts)) {
+    return [];
+  }
+
+  if (
+    chatId === null ||
+    chatId === undefined
+  ) {
+    return contacts;
+  }
+
+  return contacts.map(
+    (contact) =>
+      Number(contact.chatId) ===
+      Number(chatId)
+        ? {
+            ...contact,
+            chatId: null,
+          }
+        : contact
   );
 };
 
 
-// ========================================
+// ============================================
 // SINCRONIZAR CONTACTOS CON CHATS
-// ========================================
+// ============================================
 
 export const syncContactsWithChats = (
   contacts,
   chats
 ) => {
+  if (!Array.isArray(contacts)) {
+    return [];
+  }
+
+  if (!Array.isArray(chats)) {
+    return contacts;
+  }
+
   return contacts.map((contact) => {
-    if (
-      contact.chatId &&
-      chats.some(
-        (chat) =>
-          chat.id === contact.chatId
-      )
-    ) {
-      return contact;
-    }
-
-    const matchingChat = chats.find(
-      (chat) =>
-        chat.type === "contact" &&
-        chat.name.toLowerCase() ===
-          contact.name.toLowerCase()
+    const chat = getChatByContact(
+      chats,
+      contact
     );
-
-    if (matchingChat) {
-      return {
-        ...contact,
-        chatId: matchingChat.id,
-      };
-    }
 
     return {
       ...contact,
-      chatId: null,
+      chatId:
+        chat?.id ?? null,
     };
   });
 };
 
 
-// ========================================
-// ABRIR CHAT DESDE CONTACTO
-// ========================================
+// ============================================
+// ABRIR CHAT DE CONTACTO
+// ============================================
 
 export const openContactChat = (
   contact,
-  chats,
-  contacts
+  chats
 ) => {
-  let existingChat = null;
-
-  // Buscar por chatId
-  if (contact.chatId) {
-    existingChat = chats.find(
-      (chat) =>
-        chat.id === contact.chatId
-    );
+  if (!contact) {
+    return null;
   }
 
-  // Buscar por contactId
-  if (!existingChat) {
-    existingChat = chats.find(
-      (chat) =>
-        chat.contactId === contact.id
-    );
+  return getChatByContact(
+    chats,
+    contact
+  );
+};
+
+
+// ============================================
+// PROCESAR MENSAJE ENTRANTE / ENVIADO
+// ============================================
+
+export const handleIncomingMessage = (
+  chats,
+  chatId,
+  message,
+  time
+) => {
+  if (!Array.isArray(chats)) {
+    return [];
   }
 
-  // Buscar por nombre
-  if (!existingChat) {
-    existingChat = chats.find(
-      (chat) =>
-        chat.type === "contact" &&
-        chat.name.toLowerCase() ===
-          contact.name.toLowerCase()
-    );
+  if (
+    chatId === null ||
+    chatId === undefined
+  ) {
+    return chats;
   }
 
-  // ========================================
-  // CHAT EXISTENTE
-  // ========================================
+  return updateChatLastMessage(
+    chats,
+    chatId,
+    message,
+    time
+  );
+};
 
-  if (existingChat) {
-    const updatedContacts =
-      contacts.map((item) =>
-        item.id === contact.id
-          ? {
-              ...item,
-              chatId: existingChat.id,
-            }
-          : item
-      );
 
+// ============================================
+// ELIMINAR CHAT Y DESVINCULAR CONTACTO
+// ============================================
+
+export const handleChatDeletion = (
+  chats,
+  contacts,
+  chatId
+) => {
+  if (!Array.isArray(chats)) {
     return {
-      chat: existingChat,
-      newChat: false,
-      contacts: updatedContacts,
+      chats: [],
+      contacts: Array.isArray(contacts)
+        ? contacts
+        : [],
     };
   }
 
-  // ========================================
-  // CREAR CHAT NUEVO
-  // ========================================
+  if (!Array.isArray(contacts)) {
+    return {
+      chats,
+      contacts: [],
+    };
+  }
 
-  const newChat = {
-    id: Date.now(),
-    contactId: contact.id,
-    name: contact.name,
-    avatar: contact.avatar,
-    lastMessage: "",
-    time: "",
-    unread: 0,
-    type: "contact",
-  };
+  if (
+    chatId === null ||
+    chatId === undefined
+  ) {
+    return {
+      chats,
+      contacts,
+    };
+  }
+
+  const updatedChats =
+    deleteChat(
+      chats,
+      chatId
+    );
 
   const updatedContacts =
-    contacts.map((item) =>
-      item.id === contact.id
-        ? {
-            ...item,
-            chatId: newChat.id,
-          }
-        : item
+    removeChatFromContact(
+      contacts,
+      chatId
     );
 
   return {
-    chat: newChat,
-    newChat: true,
+    chats: updatedChats,
     contacts: updatedContacts,
   };
 };

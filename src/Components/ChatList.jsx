@@ -1,9 +1,20 @@
+```jsx
 import { useEffect, useState } from "react";
+
 import {
-  getStorageItem,
-  setStorageItem,
+  createContactWithChat,
+  openOrCreateContactChat,
+} from "../Logic/contactLogic";
+
+import {
+  getSavedChats,
+  saveChats,
+  getSavedContacts,
+  saveContacts,
 } from "../Logic/storageLogic";
+
 import { useAuth } from "../Context/AuthContext";
+
 import {
   initialChats,
   initialContacts,
@@ -11,17 +22,13 @@ import {
   filterChats,
   filterContacts,
   markChatAsRead,
-  updateChatLastMessage,
-  deleteChat,
-  removeChatFromContact,
-  syncContactsWithChats,
-  openContactChat,
+  getChatByContact,
+  handleIncomingMessage,
+  handleChatDeletion,
 } from "../Logic/chatLogic";
-import {
-  createContact,
-  getContactChat,
-} from "../Logic/contactLogic";
+
 import { initialStatuses } from "../Logic/statusLogic";
+
 
 function ChatList({
   selectedChat,
@@ -34,140 +41,169 @@ function ChatList({
   const { user, logout } = useAuth();
 
   const [chatList, setChatList] = useState(() => {
-  return getStorageItem("chatList", initialChats);
-});
+    return getSavedChats(initialChats);
+  });
 
   const [contacts, setContacts] = useState(() => {
-  const savedContacts = getStorageItem(
-    "contacts",
-    null
-  );
+    const savedContacts = getSavedContacts(initialContacts);
+    const savedChats = getSavedChats(initialChats);
 
-  return normalizeSavedContacts(savedContacts);
-});
+    return normalizeSavedContacts(
+      savedContacts,
+      savedChats
+    );
+  });
 
-  const [activeSection, setActiveSection] = useState("chats");
-  const [activeFilter, setActiveFilter] = useState("todos");
+  const [activeSection, setActiveSection] =
+    useState("chats");
 
-  const [showNewContact, setShowNewContact] = useState(false);
-  const [newContactName, setNewContactName] = useState("");
+  const [activeFilter, setActiveFilter] =
+    useState("todos");
 
-  const [contactSearch, setContactSearch] = useState("");
+  const [showNewContact, setShowNewContact] =
+    useState(false);
 
-  const [openMenu, setOpenMenu] = useState(null);
+  const [newContactName, setNewContactName] =
+    useState("");
 
-  const [selectedStatus, setSelectedStatus] = useState(null);
+  const [contactSearch, setContactSearch] =
+    useState("");
 
-  const [showProfile, setShowProfile] = useState(false);
+  const [openMenu, setOpenMenu] =
+    useState(null);
+
+  const [selectedStatus, setSelectedStatus] =
+    useState(null);
+
+  const [showProfile, setShowProfile] =
+    useState(false);
+
+
+  // ========================================
+  // GUARDAR CHATS
+  // ========================================
 
   useEffect(() => {
-  setStorageItem("chatList", chatList);
-}, [chatList]);
+    saveChats(chatList);
+  }, [chatList]);
 
- useEffect(() => {
-  setStorageItem("contacts", contacts);
-}, [contacts]);
 
-  /*
-   * Vincular contactos con los chats existentes.
-   */
+  // ========================================
+  // GUARDAR CONTACTOS
+  // ========================================
+
   useEffect(() => {
-  setContacts((currentContacts) =>
-    syncContactsWithChats(
-      currentContacts,
-      chatList
-    )
-  );
-}, [chatList]);
+    saveContacts(contacts);
+  }, [contacts]);
 
-  /*
-   * Marcar chat como leído.
-   */
+
+  // ========================================
+  // RECIBIR MENSAJE ENVIADO
+  // ========================================
+
   useEffect(() => {
-  const handleChatMessage = (event) => {
-    const {
-      chatId,
-      message,
-      time,
-    } = event.detail;
-
-    setChatList((currentChats) =>
-      updateChatLastMessage(
-        currentChats,
+    const handleMessageSent = (event) => {
+      const {
         chatId,
         message,
-        time
-      )
-    );
-  };
-
-  window.addEventListener(
-    "chat-message-sent",
-    handleChatMessage
-  );
-
-  return () => {
-    window.removeEventListener(
-      "chat-message-sent",
-      handleChatMessage
-    );
-  };
-}, []);
-  /*
-   * Eliminar chat pero conservar contacto.
-   */
-  useEffect(() => {
-    const handleDeleteChat = (event) => {
-      const { chatId } = event.detail;
+        time,
+      } = event.detail;
 
       setChatList((currentChats) =>
-  deleteChat(
-    currentChats,
-    chatId
-  )
-);
+        handleIncomingMessage(
+          currentChats,
+          chatId,
+          message,
+          time
+        )
+      );
+    };
 
-      setContacts((currentContacts) =>
-  removeChatFromContact(
-    currentContacts,
-    chatId
-  )
-);
+    window.addEventListener(
+      "chat-message-sent",
+      handleMessageSent
+    );
+
+    return () => {
+      window.removeEventListener(
+        "chat-message-sent",
+        handleMessageSent
+      );
+    };
+  }, []);
+
+
+  // ========================================
+  // ELIMINAR CHAT
+  // ========================================
+
+  useEffect(() => {
+    const handleChatDelete = (event) => {
+      const { chatId } = event.detail;
+
+      if (
+        chatId === null ||
+        chatId === undefined
+      ) {
+        return;
+      }
+
+      const result = handleChatDeletion(
+        chatList,
+        contacts,
+        chatId
+      );
+
+      setChatList(result.chats);
+      setContacts(result.contacts);
+
+      if (
+        selectedChat &&
+        Number(selectedChat.id) ===
+          Number(chatId)
+      ) {
+        onSelectChat(null);
+      }
     };
 
     window.addEventListener(
       "chat-delete-requested",
-      handleDeleteChat
+      handleChatDelete
     );
 
     return () => {
       window.removeEventListener(
         "chat-delete-requested",
-        handleDeleteChat
+        handleChatDelete
       );
     };
-  }, []);
+  }, [
+    chatList,
+    contacts,
+    selectedChat,
+    onSelectChat,
+  ]);
 
-  /*
-   * Filtros de chats.
-   */
- const filteredChats = filterChats(
-  chatList,
-  search,
-  activeFilter
-);
-  /*
-   * Filtro de contactos.
-   */
+
+  // ========================================
+  // FILTROS
+  // ========================================
+
+  const filteredChats = filterChats(
+    chatList,
+    search,
+    activeFilter
+  );
+
   const filteredContacts = filterContacts(
-  contacts,
-  contactSearch
-);
+    contacts,
+    contactSearch
+  );
 
-  /*
-   * Buscar chat de contacto.
-   */
-  
+
+  // ========================================
+  // NUEVO CONTACTO
+  // ========================================
 
   const openNewContactForm = () => {
     setNewContactName("");
@@ -179,47 +215,67 @@ function ChatList({
     setNewContactName("");
   };
 
-  /*
-   * Crear contacto sin crear chat.
-   */
+
+  // ========================================
+  // CREAR CONTACTO + CHAT
+  // ========================================
+
   const handleCreateContact = (event) => {
-  event.preventDefault();
+    event.preventDefault();
 
-  const newContact = createContact(
-    newContactName,
-    contacts
-  );
+    const result = createContactWithChat(
+      newContactName,
+      contacts
+    );
 
-  if (!newContact) return;
+    if (!result) {
+      alert(
+        "Ingresá un nombre válido o el contacto ya existe"
+      );
+      return;
+    }
 
-  setContacts((currentContacts) => [
-    newContact,
-    ...currentContacts,
-  ]);
+    setContacts((currentContacts) => [
+      result.contact,
+      ...currentContacts,
+    ]);
 
-  setNewContactName("");
-  setShowNewContact(false);
-  setActiveSection("contacts");
-};
+    setChatList((currentChats) => [
+      result.chat,
+      ...currentChats,
+    ]);
 
-  /*
-   * Abrir contacto.
-   */
+    setNewContactName("");
+    setShowNewContact(false);
+
+    setActiveSection("chats");
+
+    onSelectChat(result.chat);
+  };
+
+
+  // ========================================
+  // ABRIR CONTACTO
+  // ========================================
+
   const handleContactClick = (contact) => {
-    const result = openContactChat(
+    if (!contact) {
+      return;
+    }
+
+    const result = openOrCreateContactChat(
       contact,
       chatList,
       contacts
     );
 
+    if (!result || !result.chat) {
+      return;
+    }
+
     setContacts(result.contacts);
 
-    if (result.newChat) {
-      setChatList((currentChats) => [
-        result.chat,
-        ...currentChats,
-      ]);
-    } else {
+    if (!result.newChat) {
       setChatList((currentChats) =>
         markChatAsRead(
           currentChats,
@@ -242,16 +298,22 @@ function ChatList({
     onSelectChat(result.chat);
   };
 
-  /*
-   * Abrir chat reciente.
-   */
+
+  // ========================================
+  // ABRIR CHAT
+  // ========================================
+
   const handleChatClick = (chat) => {
+    if (!chat) {
+      return;
+    }
+
     setChatList((currentChats) =>
-  markChatAsRead(
-    currentChats,
-    chat.id
-  )
-);
+      markChatAsRead(
+        currentChats,
+        chat.id
+      )
+    );
 
     window.dispatchEvent(
       new CustomEvent(
@@ -267,6 +329,60 @@ function ChatList({
     onSelectChat(chat);
   };
 
+
+  // ========================================
+  // MENÚ DE CHAT
+  // ========================================
+
+  const handleOpenChatMenu = (
+    event,
+    chatId
+  ) => {
+    event.stopPropagation();
+
+    setOpenMenu((current) =>
+      current === chatId
+        ? null
+        : chatId
+    );
+  };
+
+
+  // ========================================
+  // ELIMINAR CHAT DESDE LISTA
+  // ========================================
+
+  const handleDeleteFromList = (
+    event,
+    chatId
+  ) => {
+    event.stopPropagation();
+
+    const result = handleChatDeletion(
+      chatList,
+      contacts,
+      chatId
+    );
+
+    setChatList(result.chats);
+    setContacts(result.contacts);
+
+    if (
+      selectedChat &&
+      Number(selectedChat.id) ===
+        Number(chatId)
+    ) {
+      onSelectChat(null);
+    }
+
+    setOpenMenu(null);
+  };
+
+
+  // ========================================
+  // RENDER
+  // ========================================
+
   return (
     <aside className="sidebar">
 
@@ -274,8 +390,11 @@ function ChatList({
 
       <div
         className="user-profile"
-        onClick={() => setShowProfile(true)}
+        onClick={() =>
+          setShowProfile(true)
+        }
       >
+
         <div className="user-avatar">
           {user?.username
             ?.slice(0, 2)
@@ -291,16 +410,25 @@ function ChatList({
             Disponible
           </span>
         </div>
+
       </div>
 
-      {/* CHATS */}
+
+      {/* ==================================
+          CHATS
+      ================================== */}
 
       {activeSection === "chats" && (
         <>
+
           <header className="sidebar-header">
-            <h2>Chats</h2>
+
+            <h2>
+              Chats
+            </h2>
 
             <button
+              type="button"
               className="new-chat-button"
               aria-label="Nuevo contacto"
               title="Nuevo contacto"
@@ -308,14 +436,20 @@ function ChatList({
             >
               <i className="bi bi-plus-lg"></i>
             </button>
+
           </header>
+
+
+          {/* NUEVO CONTACTO */}
 
           {showNewContact && (
             <form
               className="new-chat-form"
               onSubmit={handleCreateContact}
             >
+
               <div className="new-contact-title">
+
                 <strong>
                   Nuevo contacto
                 </strong>
@@ -323,6 +457,7 @@ function ChatList({
                 <span>
                   Agregá un contacto a tu lista
                 </span>
+
               </div>
 
               <input
@@ -338,6 +473,7 @@ function ChatList({
               />
 
               <div className="new-chat-actions">
+
                 <button
                   type="button"
                   onClick={closeNewContactForm}
@@ -348,29 +484,45 @@ function ChatList({
                 <button type="submit">
                   Guardar
                 </button>
+
               </div>
+
             </form>
           )}
 
+
+          {/* BUSCADOR */}
+
           <div className="search-box">
+
             <input
               type="search"
               placeholder="Buscar un chat..."
               aria-label="Buscar un chat"
               value={search}
               onChange={(event) =>
-                onSearch(event.target.value)
+                onSearch(
+                  event.target.value
+                )
               }
             />
+
           </div>
 
+
+          {/* ==================================
+              FILTROS
+          ================================== */}
+
           <div className="chat-filters">
+
             <button
-              className={`filter ${
+              type="button"
+              className={
                 activeFilter === "todos"
-                  ? "active"
-                  : ""
-              }`}
+                  ? "filter active"
+                  : "filter"
+              }
               onClick={() =>
                 setActiveFilter("todos")
               }
@@ -378,12 +530,14 @@ function ChatList({
               Todos
             </button>
 
+
             <button
-              className={`filter ${
+              type="button"
+              className={
                 activeFilter === "no-leidos"
-                  ? "active"
-                  : ""
-              }`}
+                  ? "filter active"
+                  : "filter"
+              }
               onClick={() =>
                 setActiveFilter("no-leidos")
               }
@@ -391,26 +545,36 @@ function ChatList({
               No leídos
             </button>
 
+
             <button
-              className={`filter ${
+              type="button"
+              className={
                 activeFilter === "grupos"
-                  ? "active"
-                  : ""
-              }`}
+                  ? "filter active"
+                  : "filter"
+              }
               onClick={() =>
                 setActiveFilter("grupos")
               }
             >
               Grupos
             </button>
+
           </div>
 
+
+          {/* LISTA DE CHATS */}
+
           <div className="chat-list">
+
             {filteredChats.length > 0 ? (
+
               filteredChats.map((chat) => (
+
                 <article
                   className={`chat-item ${
-                    selectedChat?.id === chat.id
+                    selectedChat?.id ===
+                    chat.id
                       ? "selected"
                       : ""
                   }`}
@@ -419,11 +583,13 @@ function ChatList({
                     handleChatClick(chat)
                   }
                 >
+
                   <div className="avatar">
                     {chat.avatar}
                   </div>
 
                   <div className="chat-info">
+
                     <strong>
                       {chat.name}
                     </strong>
@@ -431,133 +597,178 @@ function ChatList({
                     <p>
                       {chat.lastMessage}
                     </p>
+
                   </div>
 
                   <div className="chat-meta">
+
                     {chat.time && (
                       <span className="chat-time">
                         {chat.time}
                       </span>
                     )}
 
-                    {chat.unread > 0 && (
+                    {Number(chat.unread) > 0 && (
                       <span className="unread">
                         {chat.unread}
                       </span>
                     )}
+
                   </div>
 
-                  <div className="chat-menu-container">
-                    <button
-                      className="chat-menu-button"
-                      onClick={(event) => {
-                        event.stopPropagation();
 
-                        setOpenMenu(
-                          openMenu === chat.id
-                            ? null
-                            : chat.id
-                        );
-                      }}
-                      aria-label={`Opciones de ${chat.name}`}
+                  {/* MENÚ */}
+
+                  <div className="chat-menu-container">
+
+                    <button
+                      type="button"
+                      className="chat-menu-button"
+                      onClick={(event) =>
+                        handleOpenChatMenu(
+                          event,
+                          chat.id
+                        )
+                      }
+                      aria-label={
+                        `Opciones de ${chat.name}`
+                      }
                     >
                       <i className="bi bi-three-dots-vertical"></i>
                     </button>
 
+
                     {openMenu === chat.id && (
+
                       <div className="chat-menu">
+
                         <button
-                          onClick={(event) => {
-                            event.stopPropagation();
-
-                            setChatList((currentChats) =>
-                              deleteChat(
-                                currentChats,
-                                chat.id
-                              )
-                            );
-
-                            setContacts((currentContacts) =>
-                              removeChatFromContact(
-                                currentContacts,
-                                chat.id
-                              )
-                            );
-
-                            setOpenMenu(null);
-                          }}
+                          type="button"
+                          onClick={(event) =>
+                            handleDeleteFromList(
+                              event,
+                              chat.id
+                            )
+                          }
                         >
+
                           <i className="bi bi-trash"></i>
 
                           <span>
                             Eliminar
                           </span>
+
                         </button>
+
                       </div>
+
                     )}
+
                   </div>
+
                 </article>
+
               ))
+
             ) : (
+
               <p className="no-results">
                 No se encontraron chats.
               </p>
+
             )}
+
           </div>
+
         </>
       )}
 
-      {/* ESTADOS */}
+
+      {/* ==================================
+          ESTADOS
+      ================================== */}
 
       {activeSection === "statuses" && (
+
         <div className="statuses-section">
+
           <header className="sidebar-header">
-            <h2>Estados</h2>
+
+            <h2>
+              Estados
+            </h2>
+
           </header>
 
           <div className="status-list">
-            {initialStatuses.map((status) => (
-              <button
-                className="status-item"
-                key={status.id}
-                onClick={() =>
-                  setSelectedStatus(status)
-                }
-              >
-                <div className="status-avatar">
-                  <img
-                    src={status.image}
-                    alt=""
-                  />
 
-                  <span>
-                    {status.avatar}
-                  </span>
-                </div>
+            {initialStatuses.map(
+              (status) => (
 
-                <div className="status-info">
-                  <strong>
-                    {status.name}
-                  </strong>
+                <button
+                  type="button"
+                  className="status-item"
+                  key={status.id}
+                  onClick={() =>
+                    setSelectedStatus(
+                      status
+                    )
+                  }
+                >
 
-                  <small>
-                    {status.time}
-                  </small>
-                </div>
-              </button>
-            ))}
+                  <div className="status-avatar">
+
+                    <img
+                      src={status.image}
+                      alt=""
+                    />
+
+                    <span>
+                      {status.avatar}
+                    </span>
+
+                  </div>
+
+                  <div className="status-info">
+
+                    <strong>
+                      {status.name}
+                    </strong>
+
+                    <small>
+                      {status.time}
+                    </small>
+
+                  </div>
+
+                </button>
+
+              )
+            )}
+
           </div>
+
         </div>
+
       )}
 
-      {/* CONTACTOS */}
+
+      {/* ==================================
+          CONTACTOS
+      ================================== */}
 
       {activeSection === "contacts" && (
+
         <div className="contacts-section">
+
           <header className="sidebar-header">
-            <h2>Contactos</h2>
+
+            <h2>
+              Contactos
+            </h2>
 
             <button
+              type="button"
               className="new-chat-button"
               aria-label="Nuevo contacto"
               title="Nuevo contacto"
@@ -565,14 +776,19 @@ function ChatList({
             >
               <i className="bi bi-plus-lg"></i>
             </button>
+
           </header>
 
+
           {showNewContact && (
+
             <form
               className="new-chat-form"
               onSubmit={handleCreateContact}
             >
+
               <div className="new-contact-title">
+
                 <strong>
                   Nuevo contacto
                 </strong>
@@ -580,6 +796,7 @@ function ChatList({
                 <span>
                   Agregá un contacto a tu lista
                 </span>
+
               </div>
 
               <input
@@ -595,6 +812,7 @@ function ChatList({
               />
 
               <div className="new-chat-actions">
+
                 <button
                   type="button"
                   onClick={closeNewContactForm}
@@ -605,11 +823,16 @@ function ChatList({
                 <button type="submit">
                   Guardar
                 </button>
+
               </div>
+
             </form>
+
           )}
 
+
           <div className="search-box">
+
             <input
               type="search"
               placeholder="Buscar un contacto..."
@@ -621,85 +844,123 @@ function ChatList({
                 )
               }
             />
+
           </div>
 
+
           <div className="contacts-list">
+
             {filteredContacts.length > 0 ? (
-              filteredContacts.map((contact) => {
-                const contactChat =
-                  getContactChat(contact, chatList);
 
-                return (
-                  <button
-                    className={`contact-item ${
-                      contactChat &&
-                      selectedChat?.id ===
+              filteredContacts.map(
+                (contact) => {
+
+                  const contactChat =
+                    getChatByContact(
+                      chatList,
+                      contact
+                    );
+
+                  return (
+
+                    <button
+                      type="button"
+                      className={`contact-item ${
+                        contactChat &&
+                        selectedChat?.id ===
                         contactChat.id
-                        ? "selected"
-                        : ""
-                    }`}
-                    key={contact.id}
-                    onClick={() =>
-                      handleContactClick(
-                        contact
-                      )
-                    }
-                  >
-                    <div className="avatar">
-                      {contact.avatar}
-                    </div>
+                          ? "selected"
+                          : ""
+                      }`}
+                      key={contact.id}
+                      onClick={() =>
+                        handleContactClick(
+                          contact
+                        )
+                      }
+                    >
 
-                    <div className="contact-info">
-                      <strong>
-                        {contact.name}
-                      </strong>
+                      <div className="avatar">
+                        {contact.avatar}
+                      </div>
 
-                      {contactChat && (
-                        <p>
-                          {contactChat.lastMessage}
-                        </p>
+                      <div className="contact-info">
+
+                        <strong>
+                          {contact.name}
+                        </strong>
+
+                        {contactChat && (
+                          <p>
+                            {contactChat.lastMessage}
+                          </p>
+                        )}
+
+                      </div>
+
+                      {contactChat?.time && (
+                        <span className="chat-time">
+                          {contactChat.time}
+                        </span>
                       )}
-                    </div>
 
-                    {contactChat?.time && (
-                      <span className="chat-time">
-                        {contactChat.time}
-                      </span>
-                    )}
-                  </button>
-                );
-              })
+                    </button>
+
+                  );
+                }
+              )
+
             ) : (
+
               <p className="no-results">
                 No se encontraron contactos.
               </p>
+
             )}
+
           </div>
+
         </div>
+
       )}
 
-      {/* CONFIGURACIÓN */}
+
+      {/* ==================================
+          CONFIGURACIÓN
+      ================================== */}
 
       {activeSection === "settings" && (
+
         <div className="settings-section">
+
           <header className="sidebar-header">
-            <h2>Configuración</h2>
+
+            <h2>
+              Configuración
+            </h2>
+
           </header>
 
           <div className="settings-list">
+
             <button
+              type="button"
               className="settings-item"
               onClick={onToggleTheme}
             >
+
               <span className="settings-icon">
+
                 {darkMode ? (
                   <i className="bi bi-sun"></i>
                 ) : (
                   <i className="bi bi-moon"></i>
                 )}
+
               </span>
 
               <div>
+
                 <strong>
                   {darkMode
                     ? "Tema claro"
@@ -709,18 +970,26 @@ function ChatList({
                 <small>
                   Cambiar apariencia
                 </small>
+
               </div>
+
             </button>
 
+
             <button
+              type="button"
               className="settings-item logout-setting"
               onClick={logout}
             >
+
               <span className="settings-icon">
+
                 <i className="bi bi-box-arrow-right"></i>
+
               </span>
 
               <div>
+
                 <strong>
                   Cerrar sesión
                 </strong>
@@ -728,16 +997,26 @@ function ChatList({
                 <small>
                   Salir de tu cuenta
                 </small>
+
               </div>
+
             </button>
+
           </div>
+
         </div>
+
       )}
 
-      {/* NAVEGACIÓN */}
+
+      {/* ==================================
+          NAVEGACIÓN
+      ================================== */}
 
       <nav className="bottom-navigation">
+
         <button
+          type="button"
           className={
             activeSection === "chats"
               ? "active"
@@ -747,6 +1026,7 @@ function ChatList({
             setActiveSection("chats")
           }
         >
+
           <span>
             <i className="bi bi-chat-dots"></i>
           </span>
@@ -754,9 +1034,12 @@ function ChatList({
           <small>
             Chats
           </small>
+
         </button>
 
+
         <button
+          type="button"
           className={
             activeSection === "statuses"
               ? "active"
@@ -766,6 +1049,7 @@ function ChatList({
             setActiveSection("statuses")
           }
         >
+
           <span>
             <i className="bi bi-circle"></i>
           </span>
@@ -773,9 +1057,12 @@ function ChatList({
           <small>
             Estados
           </small>
+
         </button>
 
+
         <button
+          type="button"
           className={
             activeSection === "contacts"
               ? "active"
@@ -785,6 +1072,7 @@ function ChatList({
             setActiveSection("contacts")
           }
         >
+
           <span>
             <i className="bi bi-people"></i>
           </span>
@@ -792,9 +1080,12 @@ function ChatList({
           <small>
             Contactos
           </small>
+
         </button>
 
+
         <button
+          type="button"
           className={
             activeSection === "settings"
               ? "active"
@@ -804,6 +1095,7 @@ function ChatList({
             setActiveSection("settings")
           }
         >
+
           <span>
             <i className="bi bi-gear"></i>
           </span>
@@ -811,25 +1103,34 @@ function ChatList({
           <small>
             Config.
           </small>
+
         </button>
+
       </nav>
 
-      {/* VISOR DE ESTADOS */}
+
+      {/* ==================================
+          VISOR DE ESTADOS
+      ================================== */}
 
       {selectedStatus && (
+
         <div
           className="status-viewer"
           onClick={() =>
             setSelectedStatus(null)
           }
         >
+
           <div
             className="status-viewer-header"
             onClick={(event) =>
               event.stopPropagation()
             }
           >
+
             <button
+              type="button"
               onClick={() =>
                 setSelectedStatus(null)
               }
@@ -838,6 +1139,7 @@ function ChatList({
             </button>
 
             <div>
+
               <strong>
                 {selectedStatus.name}
               </strong>
@@ -845,34 +1147,48 @@ function ChatList({
               <small>
                 {selectedStatus.time}
               </small>
+
             </div>
+
           </div>
 
           <img
             className="status-viewer-image"
             src={selectedStatus.image}
-            alt={`Estado de ${selectedStatus.name}`}
+            alt={
+              `Estado de ${selectedStatus.name}`
+            }
           />
+
         </div>
+
       )}
 
-      {/* PERFIL */}
+
+      {/* ==================================
+          PERFIL
+      ================================== */}
 
       {showProfile && (
+
         <div
           className="profile-panel-overlay"
           onClick={() =>
             setShowProfile(false)
           }
         >
+
           <div
             className="profile-panel"
             onClick={(event) =>
               event.stopPropagation()
             }
           >
+
             <div className="profile-panel-header">
+
               <button
+                type="button"
                 onClick={() =>
                   setShowProfile(false)
                 }
@@ -883,16 +1199,23 @@ function ChatList({
               <h2>
                 Perfil
               </h2>
+
             </div>
 
+
             <div className="profile-panel-content">
+
               <div className="profile-large-avatar">
+
                 {user?.username
                   ?.slice(0, 2)
                   .toUpperCase()}
+
               </div>
 
+
               <div className="profile-detail">
+
                 <span>
                   Nombre
                 </span>
@@ -900,9 +1223,12 @@ function ChatList({
                 <strong>
                   {user?.username}
                 </strong>
+
               </div>
 
+
               <div className="profile-detail">
+
                 <span>
                   Estado
                 </span>
@@ -910,13 +1236,20 @@ function ChatList({
                 <strong>
                   Disponible
                 </strong>
+
               </div>
+
             </div>
+
           </div>
+
         </div>
+
       )}
+
     </aside>
   );
 }
 
 export default ChatList;
+```

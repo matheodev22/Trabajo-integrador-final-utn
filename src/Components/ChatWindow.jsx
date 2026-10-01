@@ -1,33 +1,90 @@
 import { useEffect, useRef, useState } from "react";
+
 import { useAuth } from "../Context/AuthContext";
+
 import useMessages from "../hooks/useMessages.js";
+
 import { emojis } from "../Logic/messageLogic";
 
 
-function ChatWindow({ selectedChat, onBack }) {
+function ChatWindow({
+  selectedChat,
+  onBack,
+}) {
   const { user } = useAuth();
+
+
+  // ========================================
+  // MENSAJES
+  // ========================================
 
   const {
     messages,
     sendMessage,
     editMessage,
     deleteMessage,
-  } = useMessages(selectedChat?.id);
+  } = useMessages(selectedChat);
 
-  const [messageText, setMessageText] = useState("");
-  const [showContactProfile, setShowContactProfile] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [showError, setShowError] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const [messageMenu, setMessageMenu] = useState(null);
-  const [editingMessageId, setEditingMessageId] = useState(null);
-  const [editingText, setEditingText] = useState("");
+  // ========================================
+  // ESTADOS DE LA INTERFAZ
+  // ========================================
 
-  const messagesEndRef = useRef(null);
+  const [messageText, setMessageText] =
+    useState("");
 
-  const isGroup = selectedChat?.type === "group";
+  const [
+    showContactProfile,
+    setShowContactProfile,
+  ] = useState(false);
+
+  const [showMenu, setShowMenu] =
+    useState(false);
+
+  const [
+    showEmojiPicker,
+    setShowEmojiPicker,
+  ] = useState(false);
+
+  const [showError, setShowError] =
+    useState(false);
+
+  const [
+    showDeleteConfirm,
+    setShowDeleteConfirm,
+  ] = useState(false);
+
+  const [messageMenu, setMessageMenu] =
+    useState(null);
+
+  const [
+    editingMessageId,
+    setEditingMessageId,
+  ] = useState(null);
+
+  const [editingText, setEditingText] =
+    useState("");
+
+
+  // ========================================
+  // REFERENCIA DEL SCROLL
+  // ========================================
+
+  const messagesEndRef =
+    useRef(null);
+
+
+  // ========================================
+  // TIPO DE CHAT
+  // ========================================
+
+  const isGroup =
+    selectedChat?.type === "group";
+
+
+  // ========================================
+  // SCROLL AUTOMÁTICO
+  // ========================================
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
@@ -35,102 +92,241 @@ function ChatWindow({ selectedChat, onBack }) {
     });
   }, [messages]);
 
+
+  // ========================================
+  // LIMPIAR ESTADOS AL CAMBIAR DE CHAT
+  // ========================================
+
+  useEffect(() => {
+    setMessageText("");
+    setShowMenu(false);
+    setShowEmojiPicker(false);
+    setShowError(false);
+    setShowDeleteConfirm(false);
+    setMessageMenu(null);
+    setEditingMessageId(null);
+    setEditingText("");
+    setShowContactProfile(false);
+  }, [selectedChat?.id]);
+
+
+  // ========================================
+  // ENVIAR MENSAJE
+  // ========================================
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (!messageText.trim()) return;
+    const cleanMessage =
+      messageText.trim();
 
-    sendMessage(messageText);
+    if (!cleanMessage) {
+      return;
+    }
+
+    const message =
+      sendMessage(cleanMessage);
+
+    if (!message) {
+      return;
+    }
 
     setMessageText("");
+    setShowEmojiPicker(false);
   };
+
+
+  // ========================================
+  // LLAMADA
+  // ========================================
 
   const handleCall = () => {
     setShowMenu(false);
     setShowError(true);
   };
 
+
+  // ========================================
+  // VIDEOLLAMADA
+  // ========================================
+
   const handleVideoCall = () => {
     setShowMenu(false);
     setShowError(true);
   };
+
+
+  // ========================================
+  // BORRAR CHAT
+  // ========================================
 
   const handleDeleteChat = () => {
     setShowMenu(false);
     setShowDeleteConfirm(true);
   };
 
+
   const handleConfirmDelete = () => {
-    if (!selectedChat?.id) return;
+    if (
+      selectedChat?.id === null ||
+      selectedChat?.id === undefined
+    ) {
+      return;
+    }
 
     window.dispatchEvent(
-      new CustomEvent("chat-delete-requested", {
-        detail: {
-          chatId: selectedChat.id,
-        },
-      })
+      new CustomEvent(
+        "chat-delete-requested",
+        {
+          detail: {
+            chatId: selectedChat.id,
+          },
+        }
+      )
     );
 
     setShowDeleteConfirm(false);
+
     onBack();
   };
 
-  const handleOpenMessageMenu = (messageId) => {
+
+  // ========================================
+  // MENÚ DE MENSAJE
+  // ========================================
+
+  const handleOpenMessageMenu = (
+    messageId
+  ) => {
     setMessageMenu((current) =>
-      current === messageId ? null : messageId
+      current === messageId
+        ? null
+        : messageId
     );
   };
 
+
+  // ========================================
+  // EDITAR MENSAJE
+  // ========================================
+
   const handleStartEdit = (message) => {
-    setEditingMessageId(message.id);
-    setEditingText(message.text);
+    if (!message) {
+      return;
+    }
+
+    setEditingMessageId(
+      message.id
+    );
+
+    setEditingText(
+      message.text || ""
+    );
+
     setMessageMenu(null);
   };
+
 
   const handleCancelEdit = () => {
     setEditingMessageId(null);
     setEditingText("");
   };
 
-  const handleSaveEdit = (messageId) => {
-    if (!editingText.trim()) return;
 
-    editMessage(messageId, editingText);
+  const handleSaveEdit = (
+    messageId
+  ) => {
+    const cleanText =
+      editingText.trim();
+
+    if (!cleanText) {
+      return;
+    }
+
+    editMessage(
+      messageId,
+      cleanText
+    );
 
     setEditingMessageId(null);
     setEditingText("");
   };
 
-  const handleDeleteMessage = (messageId) => {
+
+  // ========================================
+  // ELIMINAR MENSAJE
+  // ========================================
+
+  const handleDeleteMessage = (
+    messageId
+  ) => {
     deleteMessage(messageId);
+
     setMessageMenu(null);
   };
+
+
+  // ========================================
+  // AGREGAR EMOJI
+  // ========================================
+
+  const handleEmojiClick = (emoji) => {
+    setMessageText(
+      (current) =>
+        `${current}${emoji}`
+    );
+
+    setShowEmojiPicker(false);
+  };
+
+
+  // ========================================
+  // PANTALLA INICIAL
+  // ========================================
 
   if (!selectedChat) {
     return (
       <section className="chat-window">
+
         <div className="welcome-content">
+
           <div className="welcome-icon">
             <i className="bi bi-chat-dots"></i>
           </div>
 
           <h1>
             Bienvenido{" "}
-            <span>{user?.username || "usuario"}</span>
+            <span>
+              {user?.username || "usuario"}
+            </span>
           </h1>
 
           <p>
             Seleccioná una conversación para comenzar
           </p>
+
         </div>
+
       </section>
     );
   }
 
+
+  // ========================================
+  // CHAT
+  // ========================================
+
   return (
     <>
       <section className="chat-window conversation">
+
+
+        {/* ==================================
+            HEADER
+        ================================== */}
+
         <header className="conversation-header">
+
           <button
             className="back-button"
             onClick={onBack}
@@ -140,27 +336,41 @@ function ChatWindow({ selectedChat, onBack }) {
             <i className="bi bi-arrow-left"></i>
           </button>
 
+
           <button
             className="contact-header"
-            onClick={() => setShowContactProfile(true)}
+            onClick={() =>
+              setShowContactProfile(true)
+            }
             aria-label="Ver perfil del contacto"
           >
+
             <div className="avatar">
               {selectedChat.avatar}
             </div>
 
             <div className="conversation-info">
-              <h2>{selectedChat.name}</h2>
+
+              <h2>
+                {selectedChat.name}
+              </h2>
 
               <p>
                 {isGroup
-                  ? `${selectedChat.participants?.length || 0} participantes`
+                  ? `${
+                      selectedChat.participants
+                        ?.length || 0
+                    } participantes`
                   : "En línea"}
               </p>
+
             </div>
+
           </button>
 
+
           <div className="conversation-actions">
+
             <button
               className="header-action"
               onClick={handleCall}
@@ -169,6 +379,7 @@ function ChatWindow({ selectedChat, onBack }) {
             >
               <i className="bi bi-telephone"></i>
             </button>
+
 
             <button
               className="header-action"
@@ -179,11 +390,15 @@ function ChatWindow({ selectedChat, onBack }) {
               <i className="bi bi-camera-video"></i>
             </button>
 
+
             <div className="menu-container">
+
               <button
                 className="header-action"
                 onClick={() =>
-                  setShowMenu((current) => !current)
+                  setShowMenu(
+                    (current) => !current
+                  )
                 }
                 aria-label="Más opciones"
                 title="Más opciones"
@@ -191,30 +406,63 @@ function ChatWindow({ selectedChat, onBack }) {
                 <i className="bi bi-three-dots-vertical"></i>
               </button>
 
+
               {showMenu && (
                 <div className="chat-menu">
-                  <button onClick={handleDeleteChat}>
+
+                  <button
+                    onClick={
+                      handleDeleteChat
+                    }
+                  >
+
                     <i className="bi bi-trash"></i>
-                    <span> Borrar chat</span>
+
+                    <span>
+                      Borrar chat
+                    </span>
+
                   </button>
+
                 </div>
               )}
+
             </div>
+
           </div>
+
         </header>
 
+
+        {/* ==================================
+            MENSAJES
+        ================================== */}
+
         <div className="messages">
+
           {messages.map((message) => (
+
             <div
               className={`message ${
                 message.sender
-              } ${isGroup ? "group-message" : ""}`}
+              } ${
+                isGroup
+                  ? "group-message"
+                  : ""
+              }`}
               key={message.id}
             >
+
+
+              {/* IDENTIDAD DEL PARTICIPANTE */}
+
               {isGroup &&
-                message.sender === "received" &&
+                message.sender ===
+                  "received" &&
                 message.senderName && (
+
                   <div className="message-sender">
+
                     <span className="message-sender-avatar">
                       {message.senderAvatar}
                     </span>
@@ -222,34 +470,60 @@ function ChatWindow({ selectedChat, onBack }) {
                     <strong>
                       {message.senderName}
                     </strong>
+
                   </div>
+
                 )}
 
-              {editingMessageId === message.id ? (
+
+              {/* ==================================
+                  EDICIÓN
+              ================================== */}
+
+              {editingMessageId ===
+              message.id ? (
+
                 <div className="message-edit-container">
+
                   <input
                     className="message-edit-input"
                     type="text"
                     value={editingText}
                     autoFocus
                     onChange={(event) =>
-                      setEditingText(event.target.value)
+                      setEditingText(
+                        event.target.value
+                      )
                     }
                     onKeyDown={(event) => {
-                      if (event.key === "Enter") {
-                        handleSaveEdit(message.id);
+
+                      if (
+                        event.key ===
+                        "Enter"
+                      ) {
+                        handleSaveEdit(
+                          message.id
+                        );
                       }
 
-                      if (event.key === "Escape") {
+                      if (
+                        event.key ===
+                        "Escape"
+                      ) {
                         handleCancelEdit();
                       }
+
                     }}
                   />
 
+
                   <div className="message-edit-actions">
+
                     <button
                       type="button"
-                      onClick={handleCancelEdit}
+                      onClick={
+                        handleCancelEdit
+                      }
                     >
                       Cancelar
                     </button>
@@ -257,20 +531,36 @@ function ChatWindow({ selectedChat, onBack }) {
                     <button
                       type="button"
                       onClick={() =>
-                        handleSaveEdit(message.id)
+                        handleSaveEdit(
+                          message.id
+                        )
                       }
                     >
                       Guardar
                     </button>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <div className="message-content-row">
-                    <p>{message.text}</p>
 
-                    {message.sender === "sent" && (
+                  </div>
+
+                </div>
+
+              ) : (
+
+                <>
+
+                  <div className="message-content-row">
+
+                    <p>
+                      {message.text}
+                    </p>
+
+
+                    {/* OPCIONES DEL MENSAJE */}
+
+                    {message.sender ===
+                      "sent" && (
+
                       <div className="message-options">
+
                         <button
                           type="button"
                           className="message-options-button"
@@ -284,17 +574,29 @@ function ChatWindow({ selectedChat, onBack }) {
                           <i className="bi bi-three-dots"></i>
                         </button>
 
-                        {messageMenu === message.id && (
+
+                        {messageMenu ===
+                          message.id && (
+
                           <div className="message-menu">
+
                             <button
                               type="button"
                               onClick={() =>
-                                handleStartEdit(message)
+                                handleStartEdit(
+                                  message
+                                )
                               }
                             >
+
                               <i className="bi bi-pencil"></i>
-                              <span>Editar</span>
+
+                              <span>
+                                Editar
+                              </span>
+
                             </button>
+
 
                             <button
                               type="button"
@@ -304,16 +606,28 @@ function ChatWindow({ selectedChat, onBack }) {
                                 )
                               }
                             >
+
                               <i className="bi bi-trash"></i>
-                              <span>Eliminar</span>
+
+                              <span>
+                                Eliminar
+                              </span>
+
                             </button>
+
                           </div>
+
                         )}
+
                       </div>
+
                     )}
+
                   </div>
 
+
                   <span>
+
                     {message.edited && (
                       <span className="edited-label">
                         editado
@@ -322,26 +636,44 @@ function ChatWindow({ selectedChat, onBack }) {
 
                     {message.time}
 
-                    {message.sender === "sent" && (
+
+                    {message.sender ===
+                      "sent" && (
+
                       <span className="message-status">
                         {" "}
                         <i className="bi bi-check2-all"></i>
                       </span>
+
                     )}
+
                   </span>
+
                 </>
+
               )}
+
             </div>
+
           ))}
 
+
           <div ref={messagesEndRef} />
+
         </div>
+
+
+        {/* ==================================
+            FORMULARIO
+        ================================== */}
 
         <form
           className="message-form"
           onSubmit={handleSubmit}
         >
+
           <div className="emoji-container">
+
             <button
               type="button"
               className="emoji-button"
@@ -356,27 +688,35 @@ function ChatWindow({ selectedChat, onBack }) {
               <i className="bi bi-emoji-smile"></i>
             </button>
 
-            {showEmojiPicker && (
-              <div className="emoji-picker">
-                {emojis.map((emoji) => (
-                  <button
-                    type="button"
-                    key={emoji}
-                    onClick={() => {
-                      setMessageText(
-                        (current) =>
-                          `${current}${emoji}`
-                      );
 
-                      setShowEmojiPicker(false);
-                    }}
-                  >
-                    {emoji}
-                  </button>
-                ))}
+            {showEmojiPicker && (
+
+              <div className="emoji-picker">
+
+                {emojis.map(
+                  (emoji) => (
+
+                    <button
+                      type="button"
+                      key={emoji}
+                      onClick={() =>
+                        handleEmojiClick(
+                          emoji
+                        )
+                      }
+                    >
+                      {emoji}
+                    </button>
+
+                  )
+                )}
+
               </div>
+
             )}
+
           </div>
+
 
           <input
             type="text"
@@ -384,9 +724,12 @@ function ChatWindow({ selectedChat, onBack }) {
             aria-label="Escribir mensaje"
             value={messageText}
             onChange={(event) =>
-              setMessageText(event.target.value)
+              setMessageText(
+                event.target.value
+              )
             }
           />
+
 
           <button
             type="submit"
@@ -395,70 +738,102 @@ function ChatWindow({ selectedChat, onBack }) {
           >
             <i className="bi bi-send-fill"></i>
           </button>
+
         </form>
+
       </section>
 
+
+      {/* ==================================
+          ERROR DE LLAMADA
+      ================================== */}
+
       {showError && (
+
         <div
           className="modal-overlay"
-          onClick={() => setShowError(false)}
+          onClick={() =>
+            setShowError(false)
+          }
         >
+
           <div
             className="modal-card"
             onClick={(event) =>
               event.stopPropagation()
             }
           >
+
             <div className="modal-icon">
               <i className="bi bi-exclamation-triangle"></i>
             </div>
 
-            <h2>Función no disponible</h2>
+            <h2>
+              Función no disponible
+            </h2>
 
             <p>
-              Las llamadas y videollamadas todavía
-              no están disponibles.
+              Las llamadas y videollamadas
+              todavía no están disponibles.
             </p>
 
             <button
               className="modal-button"
-              onClick={() => setShowError(false)}
+              onClick={() =>
+                setShowError(false)
+              }
             >
               Aceptar
             </button>
+
           </div>
+
         </div>
+
       )}
 
+
+      {/* ==================================
+          CONFIRMAR BORRADO
+      ================================== */}
+
       {showDeleteConfirm && (
+
         <div
           className="modal-overlay"
           onClick={() =>
             setShowDeleteConfirm(false)
           }
         >
+
           <div
             className="modal-card"
             onClick={(event) =>
               event.stopPropagation()
             }
           >
+
             <div className="modal-icon">
               <i className="bi bi-trash"></i>
             </div>
 
-            <h2>¿Borrar conversación?</h2>
+            <h2>
+              ¿Borrar conversación?
+            </h2>
 
             <p>
-              Se eliminará esta conversación de la
-              vista de chats.
+              Se eliminará esta conversación
+              de la vista de chats.
             </p>
 
             <div className="modal-actions">
+
               <button
                 className="modal-cancel"
                 onClick={() =>
-                  setShowDeleteConfirm(false)
+                  setShowDeleteConfirm(
+                    false
+                  )
                 }
               >
                 Cancelar
@@ -466,33 +841,50 @@ function ChatWindow({ selectedChat, onBack }) {
 
               <button
                 className="modal-delete"
-                onClick={handleConfirmDelete}
+                onClick={
+                  handleConfirmDelete
+                }
               >
                 Borrar
               </button>
+
             </div>
+
           </div>
+
         </div>
+
       )}
 
+
+      {/* ==================================
+          PERFIL CONTACTO / GRUPO
+      ================================== */}
+
       {showContactProfile && (
+
         <div
           className="profile-overlay"
           onClick={() =>
             setShowContactProfile(false)
           }
         >
+
           <aside
             className="contact-profile"
             onClick={(event) =>
               event.stopPropagation()
             }
           >
+
             <div className="profile-header">
+
               <button
                 className="profile-close"
                 onClick={() =>
-                  setShowContactProfile(false)
+                  setShowContactProfile(
+                    false
+                  )
                 }
                 aria-label="Cerrar perfil"
                 title="Cerrar"
@@ -505,30 +897,48 @@ function ChatWindow({ selectedChat, onBack }) {
                   ? "Información del grupo"
                   : "Información del contacto"}
               </h2>
+
             </div>
 
+
             <div className="profile-content">
+
               <div className="profile-avatar">
                 {selectedChat.avatar}
               </div>
 
-              <h1>{selectedChat.name}</h1>
+              <h1>
+                {selectedChat.name}
+              </h1>
 
               <p className="profile-status">
+
                 {isGroup
-                  ? `${selectedChat.participants?.length || 0} participantes`
+                  ? `${
+                      selectedChat
+                        .participants
+                        ?.length || 0
+                    } participantes`
                   : "En línea"}
+
               </p>
 
+
               <div className="profile-section">
-                <span>Nombre</span>
+
+                <span>
+                  Nombre
+                </span>
 
                 <strong>
                   {selectedChat.name}
                 </strong>
+
               </div>
 
+
               <div className="profile-section">
+
                 <span>
                   {isGroup
                     ? "Participantes"
@@ -536,25 +946,38 @@ function ChatWindow({ selectedChat, onBack }) {
                 </span>
 
                 <strong>
+
                   {isGroup
                     ? selectedChat.participants?.join(
                         ", "
                       )
                     : "En línea"}
+
                 </strong>
+
               </div>
 
+
               <div className="profile-section">
-                <span>Mensajes</span>
+
+                <span>
+                  Mensajes
+                </span>
 
                 <strong>
                   {messages.length}
                 </strong>
+
               </div>
+
             </div>
+
           </aside>
+
         </div>
+
       )}
+
     </>
   );
 }

@@ -1,10 +1,13 @@
+// ========================================
+// OBTENER DATO
+// ========================================
+
 export const getStorageItem = (
   key,
   defaultValue
 ) => {
   try {
-    const value =
-      localStorage.getItem(key);
+    const value = localStorage.getItem(key);
 
     if (value === null) {
       return defaultValue;
@@ -21,6 +24,10 @@ export const getStorageItem = (
   }
 };
 
+
+// ========================================
+// GUARDAR DATO
+// ========================================
 
 export const setStorageItem = (
   key,
@@ -44,6 +51,10 @@ export const setStorageItem = (
 };
 
 
+// ========================================
+// ELIMINAR DATO
+// ========================================
+
 export const removeStorageItem = (
   key
 ) => {
@@ -59,4 +70,88 @@ export const removeStorageItem = (
 
     return false;
   }
+};
+
+
+// ========================================
+// OBTENER CHATS
+// ========================================
+
+export const getSavedChats = (
+  defaultChats
+) => {
+  return getStorageItem(
+    "chats",
+    defaultChats
+  );
+};
+
+
+// ========================================
+// GUARDAR CHATS
+// ========================================
+
+export const saveChats = (
+  chats
+) => {
+  return setStorageItem(
+    "chats",
+    chats
+  );
+};
+
+
+// ========================================
+// OBTENER CONTACTOS
+// ========================================
+
+export const getSavedContacts = (
+  defaultContacts
+) => {
+  return getStorageItem(
+    "contacts",
+    defaultContacts
+  );
+};
+
+
+// ========================================
+// GUARDAR CONTACTOS
+// ========================================
+
+export const saveContacts = (
+  contacts
+) => {
+  return setStorageItem(
+    "contacts",
+    contacts
+  );
+};
+
+
+// ========================================
+// OBTENER MENSAJES
+// ========================================
+
+export const getSavedMessages = (
+  defaultMessages
+) => {
+  return getStorageItem(
+    "messages",
+    defaultMessages
+  );
+};
+
+
+// ========================================
+// GUARDAR MENSAJES
+// ========================================
+
+export const saveMessages = (
+  messages
+) => {
+  return setStorageItem(
+    "messages",
+    messages
+  );
 };
