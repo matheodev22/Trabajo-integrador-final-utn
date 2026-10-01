@@ -1,4 +1,3 @@
-```jsx
 import { useEffect, useState } from "react";
 
 import {
@@ -18,6 +17,7 @@ import { useAuth } from "../Context/AuthContext";
 import {
   initialChats,
   initialContacts,
+  normalizeSavedChats,
   normalizeSavedContacts,
   filterChats,
   filterContacts,
@@ -40,19 +40,32 @@ function ChatList({
 }) {
   const { user, logout } = useAuth();
 
+
+  // ========================================
+  // CHATS Y CONTACTOS
+  // ========================================
+
   const [chatList, setChatList] = useState(() => {
     return getSavedChats(initialChats);
   });
 
   const [contacts, setContacts] = useState(() => {
-    const savedContacts = getSavedContacts(initialContacts);
-    const savedChats = getSavedChats(initialChats);
+    const savedContacts =
+      getSavedContacts(initialContacts);
+
+    const savedChats =
+      getSavedChats(initialChats);
 
     return normalizeSavedContacts(
       savedContacts,
       savedChats
     );
   });
+
+
+  // ========================================
+  // ESTADOS DE LA UI
+  // ========================================
 
   const [activeSection, setActiveSection] =
     useState("chats");
@@ -134,7 +147,7 @@ function ChatList({
 
 
   // ========================================
-  // ELIMINAR CHAT
+  // ELIMINAR CHAT DESDE CHATWINDOW
   // ========================================
 
   useEffect(() => {
@@ -148,11 +161,12 @@ function ChatList({
         return;
       }
 
-      const result = handleChatDeletion(
-        chatList,
-        contacts,
-        chatId
-      );
+      const result =
+        handleChatDeletion(
+          chatList,
+          contacts,
+          chatId
+        );
 
       setChatList(result.chats);
       setContacts(result.contacts);
@@ -189,16 +203,18 @@ function ChatList({
   // FILTROS
   // ========================================
 
-  const filteredChats = filterChats(
-    chatList,
-    search,
-    activeFilter
-  );
+  const filteredChats =
+    filterChats(
+      chatList,
+      search,
+      activeFilter
+    );
 
-  const filteredContacts = filterContacts(
-    contacts,
-    contactSearch
-  );
+  const filteredContacts =
+    filterContacts(
+      contacts,
+      contactSearch
+    );
 
 
   // ========================================
@@ -209,6 +225,7 @@ function ChatList({
     setNewContactName("");
     setShowNewContact(true);
   };
+
 
   const closeNewContactForm = () => {
     setShowNewContact(false);
@@ -223,15 +240,17 @@ function ChatList({
   const handleCreateContact = (event) => {
     event.preventDefault();
 
-    const result = createContactWithChat(
-      newContactName,
-      contacts
-    );
+    const result =
+      createContactWithChat(
+        newContactName,
+        contacts
+      );
 
     if (!result) {
       alert(
         "Ingresá un nombre válido o el contacto ya existe"
       );
+
       return;
     }
 
@@ -263,17 +282,24 @@ function ChatList({
       return;
     }
 
-    const result = openOrCreateContactChat(
-      contact,
-      chatList,
-      contacts
-    );
+    const result =
+      openOrCreateContactChat(
+        contact,
+        chatList,
+        contacts
+      );
 
     if (!result || !result.chat) {
       return;
     }
 
+    // Actualizamos contactos.
     setContacts(result.contacts);
+
+
+    // ======================================
+    // CHAT EXISTENTE
+    // ======================================
 
     if (!result.newChat) {
       setChatList((currentChats) =>
@@ -295,12 +321,25 @@ function ChatList({
       );
     }
 
+
+    // ======================================
+    // CHAT NUEVO
+    // ======================================
+
+    /*
+      Si el contacto no tenía chat,
+      solamente abrimos el chat temporal.
+
+      No se agrega a Chats recientes
+      hasta que se envíe un mensaje.
+    */
+
     onSelectChat(result.chat);
   };
 
 
   // ========================================
-  // ABRIR CHAT
+  // ABRIR CHAT DESDE CHATS
   // ========================================
 
   const handleChatClick = (chat) => {
@@ -331,7 +370,7 @@ function ChatList({
 
 
   // ========================================
-  // MENÚ DE CHAT
+  // ABRIR / CERRAR MENÚ
   // ========================================
 
   const handleOpenChatMenu = (
@@ -349,7 +388,7 @@ function ChatList({
 
 
   // ========================================
-  // ELIMINAR CHAT DESDE LISTA
+  // ELIMINAR CHAT DESDE LA LISTA
   // ========================================
 
   const handleDeleteFromList = (
@@ -358,11 +397,12 @@ function ChatList({
   ) => {
     event.stopPropagation();
 
-    const result = handleChatDeletion(
-      chatList,
-      contacts,
-      chatId
-    );
+    const result =
+      handleChatDeletion(
+        chatList,
+        contacts,
+        chatId
+      );
 
     setChatList(result.chats);
     setContacts(result.contacts);
@@ -386,10 +426,13 @@ function ChatList({
   return (
     <aside className="sidebar">
 
-      {/* PERFIL */}
+
+      {/* ==================================
+          PERFIL
+      ================================== */}
 
       <div
-        className="user-profile"
+        className="user-profile profile-desktop"
         onClick={() =>
           setShowProfile(true)
         }
@@ -402,6 +445,7 @@ function ChatList({
         </div>
 
         <div className="user-profile-info">
+
           <strong>
             {user?.username}
           </strong>
@@ -409,6 +453,7 @@ function ChatList({
           <span>
             Disponible
           </span>
+
         </div>
 
       </div>
@@ -428,11 +473,12 @@ function ChatList({
             </h2>
 
             <button
-              type="button"
               className="new-chat-button"
               aria-label="Nuevo contacto"
               title="Nuevo contacto"
-              onClick={openNewContactForm}
+              onClick={
+                openNewContactForm
+              }
             >
               <i className="bi bi-plus-lg"></i>
             </button>
@@ -445,7 +491,9 @@ function ChatList({
           {showNewContact && (
             <form
               className="new-chat-form"
-              onSubmit={handleCreateContact}
+              onSubmit={
+                handleCreateContact
+              }
             >
 
               <div className="new-contact-title">
@@ -460,6 +508,7 @@ function ChatList({
 
               </div>
 
+
               <input
                 type="text"
                 placeholder="Nombre del contacto"
@@ -472,11 +521,14 @@ function ChatList({
                 autoFocus
               />
 
+
               <div className="new-chat-actions">
 
                 <button
                   type="button"
-                  onClick={closeNewContactForm}
+                  onClick={
+                    closeNewContactForm
+                  }
                 >
                   Cancelar
                 </button>
@@ -510,19 +562,16 @@ function ChatList({
           </div>
 
 
-          {/* ==================================
-              FILTROS
-          ================================== */}
+          {/* FILTROS */}
 
           <div className="chat-filters">
 
             <button
-              type="button"
-              className={
+              className={`filter ${
                 activeFilter === "todos"
-                  ? "filter active"
-                  : "filter"
-              }
+                  ? "active"
+                  : ""
+              }`}
               onClick={() =>
                 setActiveFilter("todos")
               }
@@ -532,14 +581,15 @@ function ChatList({
 
 
             <button
-              type="button"
-              className={
+              className={`filter ${
                 activeFilter === "no-leidos"
-                  ? "filter active"
-                  : "filter"
-              }
+                  ? "active"
+                  : ""
+              }`}
               onClick={() =>
-                setActiveFilter("no-leidos")
+                setActiveFilter(
+                  "no-leidos"
+                )
               }
             >
               No leídos
@@ -547,12 +597,11 @@ function ChatList({
 
 
             <button
-              type="button"
-              className={
+              className={`filter ${
                 activeFilter === "grupos"
-                  ? "filter active"
-                  : "filter"
-              }
+                  ? "active"
+                  : ""
+              }`}
               onClick={() =>
                 setActiveFilter("grupos")
               }
@@ -569,106 +618,108 @@ function ChatList({
 
             {filteredChats.length > 0 ? (
 
-              filteredChats.map((chat) => (
+              filteredChats.map(
+                (chat) => (
 
-                <article
-                  className={`chat-item ${
-                    selectedChat?.id ===
-                    chat.id
-                      ? "selected"
-                      : ""
-                  }`}
-                  key={chat.id}
-                  onClick={() =>
-                    handleChatClick(chat)
-                  }
-                >
+                  <article
+                    className={`chat-item ${
+                      selectedChat?.id ===
+                      chat.id
+                        ? "selected"
+                        : ""
+                    }`}
+                    key={chat.id}
+                    onClick={() =>
+                      handleChatClick(chat)
+                    }
+                  >
 
-                  <div className="avatar">
-                    {chat.avatar}
-                  </div>
-
-                  <div className="chat-info">
-
-                    <strong>
-                      {chat.name}
-                    </strong>
-
-                    <p>
-                      {chat.lastMessage}
-                    </p>
-
-                  </div>
-
-                  <div className="chat-meta">
-
-                    {chat.time && (
-                      <span className="chat-time">
-                        {chat.time}
-                      </span>
-                    )}
-
-                    {Number(chat.unread) > 0 && (
-                      <span className="unread">
-                        {chat.unread}
-                      </span>
-                    )}
-
-                  </div>
+                    <div className="avatar">
+                      {chat.avatar}
+                    </div>
 
 
-                  {/* MENÚ */}
+                    <div className="chat-info">
 
-                  <div className="chat-menu-container">
+                      <strong>
+                        {chat.name}
+                      </strong>
 
-                    <button
-                      type="button"
-                      className="chat-menu-button"
-                      onClick={(event) =>
-                        handleOpenChatMenu(
-                          event,
-                          chat.id
-                        )
-                      }
-                      aria-label={
-                        `Opciones de ${chat.name}`
-                      }
-                    >
-                      <i className="bi bi-three-dots-vertical"></i>
-                    </button>
+                      <p>
+                        {chat.lastMessage}
+                      </p>
+
+                    </div>
 
 
-                    {openMenu === chat.id && (
+                    <div className="chat-meta">
 
-                      <div className="chat-menu">
+                      {chat.time && (
+                        <span className="chat-time">
+                          {chat.time}
+                        </span>
+                      )}
 
-                        <button
-                          type="button"
-                          onClick={(event) =>
-                            handleDeleteFromList(
-                              event,
-                              chat.id
-                            )
-                          }
-                        >
+                      {chat.unread > 0 && (
+                        <span className="unread">
+                          {chat.unread}
+                        </span>
+                      )}
 
-                          <i className="bi bi-trash"></i>
+                    </div>
 
-                          <span>
-                            Eliminar
-                          </span>
 
-                        </button>
+                    {/* MENÚ */}
 
-                      </div>
+                    <div className="chat-menu-container">
 
-                    )}
+                      <button
+                        className="chat-menu-button"
+                        onClick={(event) =>
+                          handleOpenChatMenu(
+                            event,
+                            chat.id
+                          )
+                        }
+                        aria-label={`Opciones de ${chat.name}`}
+                      >
 
-                  </div>
+                        <i className="bi bi-three-dots-vertical"></i>
 
-                </article>
+                      </button>
 
-              ))
+
+                      {openMenu === chat.id && (
+
+                        <div className="chat-menu">
+
+                          <button
+                            onClick={(event) =>
+                              handleDeleteFromList(
+                                event,
+                                chat.id
+                              )
+                            }
+                          >
+
+                            <i className="bi bi-trash"></i>
+
+                            <span>
+                              Eliminar
+                            </span>
+
+                          </button>
+
+                        </div>
+
+                      )}
+
+                    </div>
+
+                  </article>
+
+                )
+              )
 
             ) : (
 
@@ -700,13 +751,13 @@ function ChatList({
 
           </header>
 
+
           <div className="status-list">
 
             {initialStatuses.map(
               (status) => (
 
                 <button
-                  type="button"
                   className="status-item"
                   key={status.id}
                   onClick={() =>
@@ -728,6 +779,7 @@ function ChatList({
                     </span>
 
                   </div>
+
 
                   <div className="status-info">
 
@@ -767,12 +819,14 @@ function ChatList({
               Contactos
             </h2>
 
+
             <button
-              type="button"
               className="new-chat-button"
               aria-label="Nuevo contacto"
               title="Nuevo contacto"
-              onClick={openNewContactForm}
+              onClick={
+                openNewContactForm
+              }
             >
               <i className="bi bi-plus-lg"></i>
             </button>
@@ -780,11 +834,15 @@ function ChatList({
           </header>
 
 
+          {/* NUEVO CONTACTO */}
+
           {showNewContact && (
 
             <form
               className="new-chat-form"
-              onSubmit={handleCreateContact}
+              onSubmit={
+                handleCreateContact
+              }
             >
 
               <div className="new-contact-title">
@@ -799,6 +857,7 @@ function ChatList({
 
               </div>
 
+
               <input
                 type="text"
                 placeholder="Nombre del contacto"
@@ -811,11 +870,14 @@ function ChatList({
                 autoFocus
               />
 
+
               <div className="new-chat-actions">
 
                 <button
                   type="button"
-                  onClick={closeNewContactForm}
+                  onClick={
+                    closeNewContactForm
+                  }
                 >
                   Cancelar
                 </button>
@@ -830,6 +892,8 @@ function ChatList({
 
           )}
 
+
+          {/* BUSCADOR */}
 
           <div className="search-box">
 
@@ -848,6 +912,8 @@ function ChatList({
           </div>
 
 
+          {/* LISTA DE CONTACTOS */}
+
           <div className="contacts-list">
 
             {filteredContacts.length > 0 ? (
@@ -864,11 +930,10 @@ function ChatList({
                   return (
 
                     <button
-                      type="button"
                       className={`contact-item ${
                         contactChat &&
                         selectedChat?.id ===
-                        contactChat.id
+                          contactChat.id
                           ? "selected"
                           : ""
                       }`}
@@ -884,11 +949,13 @@ function ChatList({
                         {contact.avatar}
                       </div>
 
+
                       <div className="contact-info">
 
                         <strong>
                           {contact.name}
                         </strong>
+
 
                         {contactChat && (
                           <p>
@@ -897,6 +964,7 @@ function ChatList({
                         )}
 
                       </div>
+
 
                       {contactChat?.time && (
                         <span className="chat-time">
@@ -941,10 +1009,10 @@ function ChatList({
 
           </header>
 
+
           <div className="settings-list">
 
             <button
-              type="button"
               className="settings-item"
               onClick={onToggleTheme}
             >
@@ -958,6 +1026,7 @@ function ChatList({
                 )}
 
               </span>
+
 
               <div>
 
@@ -977,7 +1046,6 @@ function ChatList({
 
 
             <button
-              type="button"
               className="settings-item logout-setting"
               onClick={logout}
             >
@@ -987,6 +1055,7 @@ function ChatList({
                 <i className="bi bi-box-arrow-right"></i>
 
               </span>
+
 
               <div>
 
@@ -1016,7 +1085,6 @@ function ChatList({
       <nav className="bottom-navigation">
 
         <button
-          type="button"
           className={
             activeSection === "chats"
               ? "active"
@@ -1039,7 +1107,6 @@ function ChatList({
 
 
         <button
-          type="button"
           className={
             activeSection === "statuses"
               ? "active"
@@ -1062,7 +1129,6 @@ function ChatList({
 
 
         <button
-          type="button"
           className={
             activeSection === "contacts"
               ? "active"
@@ -1085,7 +1151,20 @@ function ChatList({
 
 
         <button
-          type="button"
+          className="mobile-profile-button"
+          onClick={() => setShowProfile(true)}
+          aria-label="Perfil"
+        >
+          <span>
+            <i className="bi bi-person-circle"></i>
+          </span>
+          <small>
+            Perfil
+          </small>
+        </button>
+
+
+        <button
           className={
             activeSection === "settings"
               ? "active"
@@ -1130,13 +1209,13 @@ function ChatList({
           >
 
             <button
-              type="button"
               onClick={() =>
                 setSelectedStatus(null)
               }
             >
               <i className="bi bi-arrow-left"></i>
             </button>
+
 
             <div>
 
@@ -1152,12 +1231,11 @@ function ChatList({
 
           </div>
 
+
           <img
             className="status-viewer-image"
             src={selectedStatus.image}
-            alt={
-              `Estado de ${selectedStatus.name}`
-            }
+            alt={`Estado de ${selectedStatus.name}`}
           />
 
         </div>
@@ -1188,13 +1266,13 @@ function ChatList({
             <div className="profile-panel-header">
 
               <button
-                type="button"
                 onClick={() =>
                   setShowProfile(false)
                 }
               >
                 <i className="bi bi-arrow-left"></i>
               </button>
+
 
               <h2>
                 Perfil
@@ -1252,4 +1330,3 @@ function ChatList({
 }
 
 export default ChatList;
-```

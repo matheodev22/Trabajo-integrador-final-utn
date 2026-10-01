@@ -176,6 +176,53 @@ export const initialContacts = [
 
 
 // ============================================
+// NORMALIZAR CHATS GUARDADOS
+// ============================================
+
+export const normalizeSavedChats = (
+  chats,
+  defaultChats = initialChats
+) => {
+  if (!Array.isArray(chats)) {
+    return defaultChats;
+  }
+
+  return chats.map((chat) => {
+    const defaultChat = defaultChats.find(
+      (item) =>
+        Number(item.id) === Number(chat.id)
+    );
+
+    // Si el chat viejo no tiene type,
+    // usamos el type del chat inicial.
+    let type = chat.type;
+
+    if (!type && defaultChat?.type) {
+      type = defaultChat.type;
+    }
+
+    // Si tampoco existe, pero tiene participants,
+    // lo consideramos grupo.
+    if (!type && Array.isArray(chat.participants)) {
+      type = "group";
+    }
+
+    // Si sigue sin type, es contacto.
+    if (!type) {
+      type = "contact";
+    }
+
+    return {
+      ...defaultChat,
+      ...chat,
+      type,
+      unread: Number(chat.unread) || 0,
+    };
+  });
+};
+
+
+// ============================================
 // NORMALIZAR CONTACTOS GUARDADOS
 // ============================================
 
@@ -194,9 +241,7 @@ export const normalizeSavedContacts = (
   return contacts.map((contact) => {
     const existingChat = chats.find(
       (chat) => {
-        if (
-          chat.type !== "contact"
-        ) {
+        if (chat.type !== "contact") {
           return false;
         }
 
@@ -312,10 +357,6 @@ export const getChatByContact = (
 // FILTRAR CHATS
 // ============================================
 
-// ============================================
-// FILTRAR CHATS
-// ============================================
-
 export const filterChats = (
   chats,
   search = "",
@@ -326,7 +367,9 @@ export const filterChats = (
   }
 
   const cleanSearch =
-    search.trim().toLowerCase();
+    String(search || "")
+      .trim()
+      .toLowerCase();
 
   return chats.filter((chat) => {
 
@@ -334,18 +377,21 @@ export const filterChats = (
     // BUSCADOR
     // ========================================
 
+    const chatName =
+      String(chat.name || "").toLowerCase();
+
+    const lastMessage =
+      String(chat.lastMessage || "").toLowerCase();
+
     const matchesSearch =
       !cleanSearch ||
-      chat.name
-        ?.toLowerCase()
-        .includes(cleanSearch) ||
-      chat.lastMessage
-        ?.toLowerCase()
-        .includes(cleanSearch);
+      chatName.includes(cleanSearch) ||
+      lastMessage.includes(cleanSearch);
 
     if (!matchesSearch) {
       return false;
     }
+
 
     // ========================================
     // TODOS
@@ -355,6 +401,7 @@ export const filterChats = (
       return true;
     }
 
+
     // ========================================
     // NO LEÍDOS
     // ========================================
@@ -363,16 +410,54 @@ export const filterChats = (
       return Number(chat.unread) > 0;
     }
 
+
     // ========================================
     // GRUPOS
     // ========================================
 
     if (activeFilter === "grupos") {
-      return chat.type === "group";
+      return (
+        chat.type === "group" ||
+        Array.isArray(chat.participants)
+      );
     }
+
 
     return true;
   });
+};
+
+
+// ============================================
+// FILTRAR CONTACTOS
+// ============================================
+
+export const filterContacts = (
+  contacts,
+  search = ""
+) => {
+  if (!Array.isArray(contacts)) {
+    return [];
+  }
+
+  const cleanSearch =
+    String(search || "")
+      .trim()
+      .toLowerCase();
+
+  if (!cleanSearch) {
+    return contacts;
+  }
+
+  return contacts.filter(
+    (contact) => {
+      const name =
+        String(contact.name || "")
+          .toLowerCase();
+
+      return name.includes(cleanSearch);
+    }
+  );
 };
 
 

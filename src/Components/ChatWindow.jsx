@@ -592,7 +592,7 @@ function ChatWindow({
                               <i className="bi bi-pencil"></i>
 
                               <span>
-                                Editar
+                                 Editar
                               </span>
 
                             </button>
@@ -610,7 +610,7 @@ function ChatWindow({
                               <i className="bi bi-trash"></i>
 
                               <span>
-                                Eliminar
+                                 Eliminar
                               </span>
 
                             </button>
