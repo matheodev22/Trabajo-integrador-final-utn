@@ -1,6 +1,4 @@
-/* =========================
-   PERFIL
-========================= */
+
 
 .profile-overlay {
   position: fixed;
@@ -115,9 +113,7 @@
   font-weight: 400;
 }
 
-/* =========================
-   PERFIL PANEL
-========================= */
+
 
 .profile-panel-overlay {
   position: absolute;
@@ -227,9 +223,7 @@
   font-size: 15px;
 }
 
-/* =========================
-   MODO CLARO
-========================= */
+
 
 body.light-mode .contact-profile {
   background: white;
@@ -267,9 +261,7 @@ body.light-mode .profile-panel-header button:hover {
   background: rgba(0, 0, 0, 0.05);
 }
 
-/* =========================
-   MOBILE
-========================= */
+
 
 @media (max-width: 768px) {
   .contact-profile {

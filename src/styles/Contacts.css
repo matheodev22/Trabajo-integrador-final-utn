@@ -1,6 +1,4 @@
-/* =========================
-   CONTACTOS
-========================= */
+
 
 .contacts-section {
   flex: 1;
@@ -103,9 +101,7 @@
   text-overflow: ellipsis;
 }
 
-/* =========================
-   MODO CLARO
-========================= */
+
 
 body.light-mode .contact-item:hover {
   background: rgba(0, 0, 0, 0.04);
@@ -119,9 +115,7 @@ body.light-mode .contact-info span {
   color: #667781;
 }
 
-/* =========================
-   MOBILE
-========================= */
+
 
 @media (max-width: 768px) {
   .contact-item {
