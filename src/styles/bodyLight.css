@@ -59,6 +59,9 @@ body.light-mode .chat-filters{
 body.light-mode .conversation-header h2 {
   color: #111b21;
 }
+body.light-mode .chat-menu span{
+  color: black;
+}
 
 body.light-mode .conversation-header p {
   color: #667781;

@@ -1,11 +1,13 @@
+/* ================================
+   ESTADOS
+   ================================ */
 
-.statuses-section {
+.statuses-section,
+.contacts-section {
   flex: 1;
   min-height: 0;
-
   display: flex;
   flex-direction: column;
-
   overflow: hidden;
 }
 
@@ -17,20 +19,14 @@
 
 .status-item {
   width: 100%;
-
   border: none;
   background: transparent;
   color: inherit;
-
   cursor: pointer;
-
   display: flex;
   align-items: center;
-
   gap: 12px;
-
   padding: 10px 16px;
-
   text-align: left;
 }
 
@@ -40,62 +36,43 @@
 
 .status-avatar {
   position: relative;
-
   width: 52px;
   height: 52px;
   min-width: 52px;
-
   padding: 2px;
-
   border-radius: 50%;
-
   background: #25d366;
-
-  flex-shrink: 0;
 }
 
 .status-avatar img {
   width: 100%;
   height: 100%;
-
   display: block;
-
   object-fit: cover;
-
   border-radius: 50%;
 }
 
 .status-avatar span {
   position: absolute;
-
   right: -2px;
   bottom: -2px;
-
   width: 20px;
   height: 20px;
-
   border-radius: 50%;
-
   background: #202c33;
   color: white;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-size: 9px;
   font-weight: bold;
 }
 
 .status-info {
-  min-width: 0;
-
   display: flex;
   flex-direction: column;
-
   gap: 3px;
-
-  text-align: left;
+  min-width: 0;
 }
 
 .status-info strong {
@@ -107,14 +84,15 @@
   font-size: 12px;
 }
 
+/* ================================
+   VISOR DE ESTADOS
+   ================================ */
+
 .status-viewer {
   position: absolute;
   inset: 0;
-
   z-index: 300;
-
   background: #000;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -122,24 +100,16 @@
 
 .status-viewer-header {
   position: absolute;
-
   top: 0;
   left: 0;
   right: 0;
-
   height: 70px;
-
   z-index: 2;
-
   display: flex;
   align-items: center;
-
   gap: 10px;
-
   padding: 10px 14px;
-
   color: white;
-
   background: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 0.8),
@@ -150,14 +120,10 @@
 .status-viewer-header button {
   width: 40px;
   height: 40px;
-
   border: none;
   border-radius: 50%;
-
   background: rgba(255, 255, 255, 0.12);
-
   color: white;
-
   font-size: 22px;
   cursor: pointer;
 }
@@ -182,14 +148,6 @@
   height: 100%;
   object-fit: contain;
 }
-
-
-
-body.light-mode .status-item:hover {
-  background: rgba(0, 0, 0, 0.04);
-}
-
-
 
 @media (max-width: 768px) {
   .status-item {
