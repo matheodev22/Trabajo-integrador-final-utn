@@ -1,0 +1,131 @@
+/* =========================
+   CONTACTOS
+========================= */
+
+.contacts-section {
+  flex: 1;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+.contacts-list {
+  flex: 1;
+  min-height: 0;
+
+  overflow-y: auto;
+
+  padding: 5px 0;
+}
+
+.contact-item {
+  width: 100%;
+
+  border: none;
+  background: transparent;
+  color: inherit;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 10px 16px;
+
+  text-align: left;
+}
+
+.contact-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.contact-item .avatar {
+  flex-shrink: 0;
+}
+
+.contact-info {
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+
+  text-align: left;
+}
+
+.contact-info strong {
+  font-size: 14px;
+  text-align: left;
+}
+
+.contact-info span {
+  color: #8696a0;
+  font-size: 12px;
+  text-align: left;
+}
+
+.contact-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  flex: 1;
+  min-width: 0;
+
+  padding: 0;
+
+  border: none;
+  background: transparent;
+  color: inherit;
+
+  text-align: left;
+  cursor: pointer;
+}
+
+.contact-header:hover {
+  opacity: 0.85;
+}
+
+.contact-header .conversation-info {
+  min-width: 0;
+}
+
+.contact-header .conversation-info h2 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =========================
+   MODO CLARO
+========================= */
+
+body.light-mode .contact-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+body.light-mode .contact-info strong {
+  color: #111b21;
+}
+
+body.light-mode .contact-info span {
+  color: #667781;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+  .contact-item {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}

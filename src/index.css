@@ -377,9 +377,7 @@ body {
   color: #8b949e;
   padding-left: 10px;
 }
-body.light-mode .message span{
-  color: #000;
-}
+
 
 
 .message.received {
@@ -608,181 +606,7 @@ body.light-mode .message span{
   background-color: #00b894;
 }
 /* Modo claro */
-body.light-mode {
-  background: #f0f2f5;
-  color: #111b21;
-}
 
-body.light-mode .chat-app {
-  background: #ffffff;
-}
-
-body.light-mode .sidebar {
-  background: #ffffff;
-  border-right-color: #d1d7db;
-}
-
-body.light-mode .sidebar-header,
-body.light-mode .profile-section {
-  background: #f0f2f5;
-}
-
-body.light-mode .chat-item:hover {
-  background: #f5f6f6;
-}
-
-body.light-mode .chat-item.active {
-  background: #e9edef;
-}
-
-body.light-mode .chat-name,
-body.light-mode .sidebar-header h1 {
-  color: #111b21;
-}
-
-body.light-mode .chat-preview,
-body.light-mode .chat-time {
-  color: #667781;
-}
-body.light-mode .header-action:hover{
-  color: black;
-  background-color: #b8b9bb;
-  transition: 0.3s;
-  transform: rotate3d(10PX);
-}
-body.light-mode .chat-window {
- border-left: 1px solid #d1d7db;
-  background: radial-gradient(circle at center, #ffffff 0%, #f6f7f8 50%, #d1d1d1 100%);
-}
-
-body.light-mode .conversation-header {
-  background: #f0f2f5;
-  border-bottom-color: #d1d7db;
-}
-body.light-mode .chat-filters{
-  
-  background-color: #f0f2f5;
-}
-body.light-mode .conversation-header h2 {
-  color: #111b21;
-}
-
-body.light-mode .conversation-header p {
-  color: #667781;
-}
-
-body.light-mode .message.received {
-  background: #ffffff;
-  color: #111b21;
-}
-
-body.light-mode .message-form {
-  background: #f0f2f5;
-  border-top-color: #d1d7db;
-}
-
-body.light-mode .message-form input {
-  background: #ffffff;
-  color: #111b21;
-}
-
-body.light-mode .search-box {
-  background: #f0f2f5;
-  
-}
-
-body.light-mode .search-box input {
-  background: #ffffff;
-  color: #111b21;
-}
-
-body.light-mode .filter-button {
-  background: #f0f2f5;
-  color: #54656f;
-}
-body.light-mode .filter.active {
-      background: #00b894;
-    color: white;
-}
-body.light-mode .filter.active:hover{
-  background-color: #00b894;
-}
-body.light-mode .filter{
-  background: white;
-  color: #000;
-}
-body.light-mode .filter:hover{
-  background-color: #d8d9db73;
-}
-body.light-mode .chat-menu-button:hover {
-  background: #0d11179a;
-}
-body.light-mode .chat-menu{
-  background-color: white;
-  border: #f0f2f5 none;
-}
-body.light-mode .chat-menu button{
-  color: black;
-}
-body.light-mode .chat-menu button:hover{
-  color: white;
-}
-body.light-mode .chat-item.selected{
-  background: #d8d9db73;
-}
-
-body.light-mode .messages {
- background: #efeae2;
-}
-body.light-mode .message.sent{
-  background-color: rgb(198, 255, 198);
-}
-body.light-mode .user-profile{
-  background-color: #f0f2f5;
-      border-bottom: 1px solid #d1d1d1;
-}
-body.light-mode .login-page{
-  background-color: white;
-}
-body.light-mode .login-card{
-  background-color: #f0f2f5;
-      border: 1px solid #f0f2f5;
-}
-body.light-mode .login-form input{
-  background-color: white;
-      border: 1px solid white;
-      color: #000;
-}
-body.light-mode .login-button{
-  border: 1px solid #00b894;
-}
-
-body.light-mode .new-chat-form input{
-  background-color: white;
-      border: none;
-      color: #000;
-}
-body.light-mode .new-chat-actions button{
-  color: #000;
-  background: white;
-}
-body.light-mode .new-chat-actions button[type="submit"]{
-  background: #00b894;
-  color: white;
-}
-body.light-mode .emoji-picker{
-  background-color: white;
-}
-body.light-mode .modal-card{
-  background-color: white;
-}
-body.light-mode .modal-card h2{
-  color: #000;
-}
-body.light-mode .modal-icon{
-  color: #000;
-  
-}
 /* =========================
    RESPONSIVE
 ========================= */
@@ -1217,28 +1041,7 @@ body.light-mode .modal-icon{
     height: 110px;
   }
 }
-body.light-mode .contact-profile{
-  background: white;
-}
-body.light-mode .profile-section{
-  background: white;
-      border-bottom: 1px solid #f0f2f5;
-}
-body.light-mode .profile-header{
-  background: #f0f2f5;
-      border-bottom: 1px solid #f5f6f6;
-}
-body.light-mode .profile-close{
-  color: #000;
-}
-body.light-mode .message-menu {
-  background: white;
 
-}
-body.light-mode .message-menu button{
-  color: #000;
-  
-}
 /* =========================================================
    MOBILE FINAL
    NO MODIFICA EL DISEÑO DE PC
@@ -1853,28 +1656,6 @@ body.light-mode .message-menu button{
    MODO CLARO
    ================================ */
 
-body.light-mode .bottom-navigation {
-  background: #f0f2f5;
-  border-top-color: #e5e5e5;
-}
-
-body.light-mode .bottom-navigation button {
-  color: #667781;
-}
-
-body.light-mode .bottom-navigation button:hover {
-  background: rgba(0, 0, 0, 0.04);
-}
-
-body.light-mode .bottom-navigation button.active {
-  color: #128c7e;
-  background: rgba(18, 140, 126, 0.08);
-}
-
-body.light-mode .status-item:hover,
-body.light-mode .contact-item:hover {
-  background: rgba(0, 0, 0, 0.04);
-}
 
 
 /* ================================
@@ -1902,10 +1683,7 @@ body.light-mode .contact-item:hover {
     border-radius: 30px;
   }
 
-  body.light-mode .bottom-navigation {
-    background: #f5f6f6;
-    border-top-color: #e5e5e5;
-  }
+ 
 
   .status-item,
   .contact-item {
@@ -2094,32 +1872,6 @@ body.light-mode .contact-item:hover {
    MODO CLARO
    ======================================== */
 
-body.light-mode .settings-item:hover {
-  background: rgba(0, 0, 0, 0.04);
-}
-
-body.light-mode .settings-icon {
-  background: #f0f2f5;
-}
-
-body.light-mode .profile-panel-overlay,
-body.light-mode .profile-panel {
-  background: white;
-}
-
-body.light-mode .profile-panel-header {
-  border-bottom-color: white;
-  background-color: #f0f2f5;
-}
-
-body.light-mode .profile-detail {
-  border-bottom-color: #e5e5e5;
-}
-
-body.light-mode .profile-panel-header button:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
 
 /* ========================================
    MOBILE
@@ -2226,24 +1978,7 @@ body.light-mode .profile-panel-header button:hover {
 
 /* Tema claro */
 
-body.light-mode .new-chat-form {
-  background: #f0f2f5;
-  border-bottom-color: #d1d1d1;
-}
 
-body.light-mode .new-contact-title strong {
-  color: #111b21;
-}
-
-body.light-mode .new-contact-title span {
-  color: #667781;
-}
-
-
-body.light-mode .new-chat-actions button[type="button"] {
-  background: #e9edef;
-  color: #111b21;
-}
 /* =====================================================
    CORRECCIÓN DEFINITIVA - BARRA INFERIOR
    ===================================================== */
@@ -2355,18 +2090,6 @@ body.light-mode .new-chat-actions button[type="button"] {
    MODO CLARO
    ===================================================== */
 
-body.light-mode .sidebar .bottom-navigation {
-  background: #f5f6f6 !important;
-}
-
-body.light-mode .sidebar .bottom-navigation button {
-  color: #667781 !important;
-}
-
-body.light-mode .sidebar .bottom-navigation button.active {
-  color: #128c7e !important;
-  background: rgba(18, 140, 126, 0.08) !important;
-}
 /* ================================
    OPCIONES DE MENSAJES
 ================================ */
