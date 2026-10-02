@@ -1,6 +1,4 @@
-// ========================================
-// EMOJIS
-// ========================================
+
 
 export const emojis = [
   "😀", "😂", "🤣", "😊", "😍",
@@ -11,9 +9,7 @@ export const emojis = [
 ];
 
 
-// ========================================
-// MENSAJES INICIALES
-// ========================================
+
 
 export const initialMessages = {
   1: [
@@ -206,9 +202,6 @@ export const initialMessages = {
 };
 
 
-// ========================================
-// CREAR MENSAJE
-// ========================================
 
 export const createMessage = (text) => {
   const cleanText = text?.trim();
@@ -233,9 +226,7 @@ export const createMessage = (text) => {
 };
 
 
-// ========================================
-// AGREGAR MENSAJE
-// ========================================
+
 
 export const addMessage = (
   messages,
@@ -253,9 +244,7 @@ export const addMessage = (
 };
 
 
-// ========================================
-// EDITAR MENSAJE
-// ========================================
+
 
 export const editMessage = (
   messages,
@@ -287,9 +276,6 @@ export const editMessage = (
 };
 
 
-// ========================================
-// ELIMINAR MENSAJE
-// ========================================
 
 export const deleteMessage = (
   messages,
@@ -309,9 +295,7 @@ export const deleteMessage = (
 };
 
 
-// ========================================
-// MARCAR MENSAJES COMO LEÍDOS
-// ========================================
+
 
 export const markMessagesAsRead = (
   messages,

@@ -1,12 +1,4 @@
-// ============================================
-// CHAT LOGIC
-// Toda la lógica relacionada con chats
-// ============================================
 
-
-// ============================================
-// CHATS INICIALES
-// ============================================
 
 export const initialChats = [
   {
@@ -98,9 +90,7 @@ export const initialChats = [
 ];
 
 
-// ============================================
-// CONTACTOS INICIALES
-// ============================================
+
 
 export const initialContacts = [
   {
@@ -175,9 +165,6 @@ export const initialContacts = [
 ];
 
 
-// ============================================
-// NORMALIZAR CHATS GUARDADOS
-// ============================================
 
 export const normalizeSavedChats = (
   chats,
@@ -193,21 +180,18 @@ export const normalizeSavedChats = (
         Number(item.id) === Number(chat.id)
     );
 
-    // Si el chat viejo no tiene type,
-    // usamos el type del chat inicial.
+  
     let type = chat.type;
 
     if (!type && defaultChat?.type) {
       type = defaultChat.type;
     }
 
-    // Si tampoco existe, pero tiene participants,
-    // lo consideramos grupo.
     if (!type && Array.isArray(chat.participants)) {
       type = "group";
     }
 
-    // Si sigue sin type, es contacto.
+    
     if (!type) {
       type = "contact";
     }
@@ -222,9 +206,6 @@ export const normalizeSavedChats = (
 };
 
 
-// ============================================
-// NORMALIZAR CONTACTOS GUARDADOS
-// ============================================
 
 export const normalizeSavedContacts = (
   contacts,
@@ -274,9 +255,7 @@ export const normalizeSavedContacts = (
 };
 
 
-// ============================================
-// BUSCAR CHAT POR ID
-// ============================================
+
 
 export const getChatById = (
   chats,
@@ -303,9 +282,7 @@ export const getChatById = (
 };
 
 
-// ============================================
-// BUSCAR CHAT DE UN CONTACTO
-// ============================================
+
 
 export const getChatByContact = (
   chats,
@@ -353,9 +330,6 @@ export const getChatByContact = (
 };
 
 
-// ============================================
-// FILTRAR CHATS
-// ============================================
 
 export const filterChats = (
   chats,
@@ -373,9 +347,7 @@ export const filterChats = (
 
   return chats.filter((chat) => {
 
-    // ========================================
-    // BUSCADOR
-    // ========================================
+   
 
     const chatName =
       String(chat.name || "").toLowerCase();
@@ -393,27 +365,19 @@ export const filterChats = (
     }
 
 
-    // ========================================
-    // TODOS
-    // ========================================
-
+ 
     if (activeFilter === "todos") {
       return true;
     }
 
 
-    // ========================================
-    // NO LEÍDOS
-    // ========================================
+   
 
     if (activeFilter === "no-leidos") {
       return Number(chat.unread) > 0;
     }
 
 
-    // ========================================
-    // GRUPOS
-    // ========================================
 
     if (activeFilter === "grupos") {
       return (
@@ -428,9 +392,7 @@ export const filterChats = (
 };
 
 
-// ============================================
-// FILTRAR CONTACTOS
-// ============================================
+
 
 export const filterContacts = (
   contacts,
@@ -461,9 +423,7 @@ export const filterContacts = (
 };
 
 
-// ============================================
-// MARCAR CHAT COMO LEÍDO
-// ============================================
+
 
 export const markChatAsRead = (
   chats,
@@ -492,9 +452,7 @@ export const markChatAsRead = (
 };
 
 
-// ============================================
-// ACTUALIZAR ÚLTIMO MENSAJE
-// ============================================
+
 
 export const updateChatLastMessage = (
   chats,
@@ -526,9 +484,7 @@ export const updateChatLastMessage = (
 };
 
 
-// ============================================
-// ELIMINAR CHAT
-// ============================================
+
 
 export const deleteChat = (
   chats,
@@ -553,9 +509,7 @@ export const deleteChat = (
 };
 
 
-// ============================================
-// QUITAR CHAT DEL CONTACTO
-// ============================================
+
 
 export const removeChatFromContact = (
   contacts,
@@ -585,9 +539,7 @@ export const removeChatFromContact = (
 };
 
 
-// ============================================
-// SINCRONIZAR CONTACTOS CON CHATS
-// ============================================
+
 
 export const syncContactsWithChats = (
   contacts,
@@ -616,9 +568,7 @@ export const syncContactsWithChats = (
 };
 
 
-// ============================================
-// ABRIR CHAT DE CONTACTO
-// ============================================
+
 
 export const openContactChat = (
   contact,
@@ -635,9 +585,6 @@ export const openContactChat = (
 };
 
 
-// ============================================
-// PROCESAR MENSAJE ENTRANTE / ENVIADO
-// ============================================
 
 export const handleIncomingMessage = (
   chats,
@@ -665,9 +612,6 @@ export const handleIncomingMessage = (
 };
 
 
-// ============================================
-// ELIMINAR CHAT Y DESVINCULAR CONTACTO
-// ============================================
 
 export const handleChatDeletion = (
   chats,

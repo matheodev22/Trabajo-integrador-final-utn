@@ -48,9 +48,9 @@ function ChatList({
   const { user, logout } = useAuth();
 
 
-  // ========================================
-  // CHATS Y CONTACTOS
-  // ========================================
+ 
+
+ 
 
   const [chatList, setChatList] = useState(() => {
     return getSavedChats(initialChats);
@@ -70,9 +70,7 @@ function ChatList({
   });
 
 
-  // ========================================
-  // ESTADOS DE LA UI
-  // ========================================
+
 
   const [activeSection, setActiveSection] =
     useState("chats");
@@ -99,27 +97,20 @@ function ChatList({
     useState(false);
 
 
-  // ========================================
-  // GUARDAR CHATS
-  // ========================================
+
 
   useEffect(() => {
     saveChats(chatList);
   }, [chatList]);
 
 
-  // ========================================
-  // GUARDAR CONTACTOS
-  // ========================================
+
 
   useEffect(() => {
     saveContacts(contacts);
   }, [contacts]);
 
 
-  // ========================================
-  // RECIBIR MENSAJE ENVIADO
-  // ========================================
 
   useEffect(() => {
     const handleMessageSent = (event) => {
@@ -153,9 +144,6 @@ function ChatList({
   }, []);
 
 
-  // ========================================
-  // ELIMINAR CHAT DESDE CHATWINDOW
-  // ========================================
 
   useEffect(() => {
     const handleChatDelete = (event) => {
@@ -206,10 +194,6 @@ function ChatList({
   ]);
 
 
-  // ========================================
-  // FILTROS
-  // ========================================
-
   const filteredChats =
     filterChats(
       chatList,
@@ -224,9 +208,6 @@ function ChatList({
     );
 
 
-  // ========================================
-  // NUEVO CONTACTO
-  // ========================================
 
   const openNewContactForm = () => {
     setNewContactName("");
@@ -240,9 +221,7 @@ function ChatList({
   };
 
 
-  // ========================================
-  // CREAR CONTACTO + CHAT
-  // ========================================
+
 
   const handleCreateContact = (event) => {
     event.preventDefault();
@@ -280,9 +259,7 @@ function ChatList({
   };
 
 
-  // ========================================
-  // ABRIR CONTACTO
-  // ========================================
+
 
   const handleContactClick = (contact) => {
     if (!contact) {
@@ -300,13 +277,11 @@ function ChatList({
       return;
     }
 
-    // Actualizamos contactos.
+    
     setContacts(result.contacts);
 
 
-    // ======================================
-    // CHAT EXISTENTE
-    // ======================================
+
 
     if (!result.newChat) {
       setChatList((currentChats) =>
@@ -329,25 +304,11 @@ function ChatList({
     }
 
 
-    // ======================================
-    // CHAT NUEVO
-    // ======================================
-
-    /*
-      Si el contacto no tenía chat,
-      solamente abrimos el chat temporal.
-
-      No se agrega a Chats recientes
-      hasta que se envíe un mensaje.
-    */
-
     onSelectChat(result.chat);
   };
 
 
-  // ========================================
-  // ABRIR CHAT DESDE CHATS
-  // ========================================
+
 
   const handleChatClick = (chat) => {
     if (!chat) {
@@ -376,9 +337,7 @@ function ChatList({
   };
 
 
-  // ========================================
-  // ABRIR / CERRAR MENÚ
-  // ========================================
+
 
   const handleOpenChatMenu = (
     event,
@@ -394,9 +353,7 @@ function ChatList({
   };
 
 
-  // ========================================
-  // ELIMINAR CHAT DESDE LA LISTA
-  // ========================================
+
 
   const handleDeleteFromList = (
     event,
@@ -426,17 +383,13 @@ function ChatList({
   };
 
 
-  // ========================================
-  // RENDER
-  // ========================================
+
 
   return (
     <aside className="sidebar">
 
 
-      {/* ==================================
-          PERFIL
-      ================================== */}
+     
 
       <div
         className="user-profile profile-desktop"
@@ -466,9 +419,7 @@ function ChatList({
       </div>
 
 
-      {/* ==================================
-          CHATS
-      ================================== */}
+      
 
       {activeSection === "chats" && (
         <>
@@ -493,7 +444,7 @@ function ChatList({
           </header>
 
 
-          {/* NUEVO CONTACTO */}
+          
 
           {showNewContact && (
             <form
@@ -550,7 +501,7 @@ function ChatList({
           )}
 
 
-          {/* BUSCADOR */}
+          
 
           <div className="search-box">
 
@@ -569,7 +520,7 @@ function ChatList({
           </div>
 
 
-          {/* FILTROS */}
+         
 
           <div className="chat-filters">
 
@@ -619,7 +570,7 @@ function ChatList({
           </div>
 
 
-          {/* LISTA DE CHATS */}
+          
 
           <div className="chat-list">
 
@@ -676,7 +627,7 @@ function ChatList({
                     </div>
 
 
-                    {/* MENÚ */}
+                    
 
                     <div className="chat-menu-container">
 
@@ -742,9 +693,7 @@ function ChatList({
       )}
 
 
-      {/* ==================================
-          ESTADOS
-      ================================== */}
+      
 
       {activeSection === "statuses" && (
 
@@ -812,9 +761,7 @@ function ChatList({
       )}
 
 
-      {/* ==================================
-          CONTACTOS
-      ================================== */}
+      
 
       {activeSection === "contacts" && (
 
@@ -841,7 +788,7 @@ function ChatList({
           </header>
 
 
-          {/* NUEVO CONTACTO */}
+          
 
           {showNewContact && (
 
@@ -900,8 +847,7 @@ function ChatList({
           )}
 
 
-          {/* BUSCADOR */}
-
+          
           <div className="search-box">
 
             <input
@@ -919,7 +865,7 @@ function ChatList({
           </div>
 
 
-          {/* LISTA DE CONTACTOS */}
+          
 
           <div className="contacts-list">
 

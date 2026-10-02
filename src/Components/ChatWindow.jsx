@@ -14,9 +14,7 @@ function ChatWindow({
   const { user } = useAuth();
 
 
-  // ========================================
-  // MENSAJES
-  // ========================================
+ 
 
   const {
     messages,
@@ -26,10 +24,7 @@ function ChatWindow({
   } = useMessages(selectedChat);
 
 
-  // ========================================
-  // ESTADOS DE LA INTERFAZ
-  // ========================================
-
+  
   const [messageText, setMessageText] =
     useState("");
 
@@ -66,25 +61,19 @@ function ChatWindow({
     useState("");
 
 
-  // ========================================
-  // REFERENCIA DEL SCROLL
-  // ========================================
+ 
 
   const messagesEndRef =
     useRef(null);
 
 
-  // ========================================
-  // TIPO DE CHAT
-  // ========================================
+ 
 
   const isGroup =
     selectedChat?.type === "group";
 
 
-  // ========================================
-  // SCROLL AUTOMÁTICO
-  // ========================================
+  
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
@@ -93,9 +82,6 @@ function ChatWindow({
   }, [messages]);
 
 
-  // ========================================
-  // LIMPIAR ESTADOS AL CAMBIAR DE CHAT
-  // ========================================
 
   useEffect(() => {
     setMessageText("");
@@ -110,9 +96,8 @@ function ChatWindow({
   }, [selectedChat?.id]);
 
 
-  // ========================================
-  // ENVIAR MENSAJE
-  // ========================================
+  
+
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -136,9 +121,7 @@ function ChatWindow({
   };
 
 
-  // ========================================
-  // LLAMADA
-  // ========================================
+ 
 
   const handleCall = () => {
     setShowMenu(false);
@@ -146,9 +129,6 @@ function ChatWindow({
   };
 
 
-  // ========================================
-  // VIDEOLLAMADA
-  // ========================================
 
   const handleVideoCall = () => {
     setShowMenu(false);
@@ -156,9 +136,6 @@ function ChatWindow({
   };
 
 
-  // ========================================
-  // BORRAR CHAT
-  // ========================================
 
   const handleDeleteChat = () => {
     setShowMenu(false);
@@ -191,9 +168,7 @@ function ChatWindow({
   };
 
 
-  // ========================================
-  // MENÚ DE MENSAJE
-  // ========================================
+
 
   const handleOpenMessageMenu = (
     messageId
@@ -206,9 +181,6 @@ function ChatWindow({
   };
 
 
-  // ========================================
-  // EDITAR MENSAJE
-  // ========================================
 
   const handleStartEdit = (message) => {
     if (!message) {
@@ -253,9 +225,7 @@ function ChatWindow({
   };
 
 
-  // ========================================
-  // ELIMINAR MENSAJE
-  // ========================================
+
 
   const handleDeleteMessage = (
     messageId
@@ -266,9 +236,6 @@ function ChatWindow({
   };
 
 
-  // ========================================
-  // AGREGAR EMOJI
-  // ========================================
 
   const handleEmojiClick = (emoji) => {
     setMessageText(
@@ -280,9 +247,6 @@ function ChatWindow({
   };
 
 
-  // ========================================
-  // PANTALLA INICIAL
-  // ========================================
 
   if (!selectedChat) {
     return (
@@ -312,18 +276,12 @@ function ChatWindow({
   }
 
 
-  // ========================================
-  // CHAT
-  // ========================================
-
   return (
     <>
       <section className="chat-window conversation">
 
 
-        {/* ==================================
-            HEADER
-        ================================== */}
+      
 
         <header className="conversation-header">
 
@@ -434,9 +392,7 @@ function ChatWindow({
         </header>
 
 
-        {/* ==================================
-            MENSAJES
-        ================================== */}
+        
 
         <div className="messages">
 
@@ -454,7 +410,7 @@ function ChatWindow({
             >
 
 
-              {/* IDENTIDAD DEL PARTICIPANTE */}
+              
 
               {isGroup &&
                 message.sender ===
@@ -476,9 +432,7 @@ function ChatWindow({
                 )}
 
 
-              {/* ==================================
-                  EDICIÓN
-              ================================== */}
+              
 
               {editingMessageId ===
               message.id ? (
@@ -554,7 +508,7 @@ function ChatWindow({
                     </p>
 
 
-                    {/* OPCIONES DEL MENSAJE */}
+                    
 
                     {message.sender ===
                       "sent" && (
@@ -663,9 +617,8 @@ function ChatWindow({
         </div>
 
 
-        {/* ==================================
-            FORMULARIO
-        ================================== */}
+       
+
 
         <form
           className="message-form"
@@ -744,9 +697,7 @@ function ChatWindow({
       </section>
 
 
-      {/* ==================================
-          ERROR DE LLAMADA
-      ================================== */}
+     
 
       {showError && (
 
@@ -793,9 +744,6 @@ function ChatWindow({
       )}
 
 
-      {/* ==================================
-          CONFIRMAR BORRADO
-      ================================== */}
 
       {showDeleteConfirm && (
 
@@ -857,9 +805,7 @@ function ChatWindow({
       )}
 
 
-      {/* ==================================
-          PERFIL CONTACTO / GRUPO
-      ================================== */}
+     
 
       {showContactProfile && (
 

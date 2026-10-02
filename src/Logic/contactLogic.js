@@ -94,17 +94,7 @@ export const createContactWithChat = (
 };
 
 
-/*
-  Busca el chat original del contacto.
 
-  IMPORTANTE:
-  Si el contacto ya tiene chat, devuelve ese mismo chat.
-
-  Si NO tiene chat:
-  - crea un chat vacío
-  - NO modifica la lista de chats
-  - devuelve newChat: true
-*/
 export const openOrCreateContactChat = (
   contact,
   chats,
@@ -117,10 +107,7 @@ export const openOrCreateContactChat = (
   let existingChat = null;
 
 
-  // ----------------------------------------
-  // 1. BUSCAR POR chatId
-  // ----------------------------------------
-
+ 
   if (
     contact.chatId !== null &&
     contact.chatId !== undefined
@@ -134,9 +121,7 @@ export const openOrCreateContactChat = (
   }
 
 
-  // ----------------------------------------
-  // 2. BUSCAR POR contactId
-  // ----------------------------------------
+ 
 
   if (!existingChat) {
     existingChat =
@@ -149,9 +134,7 @@ export const openOrCreateContactChat = (
   }
 
 
-  // ----------------------------------------
-  // 3. BUSCAR POR NOMBRE
-  // ----------------------------------------
+  
 
   if (!existingChat) {
     existingChat =
@@ -164,9 +147,7 @@ export const openOrCreateContactChat = (
   }
 
 
-  // ----------------------------------------
-  // 4. EL CHAT YA EXISTE
-  // ----------------------------------------
+
 
   if (existingChat) {
     const updatedContacts =
@@ -188,9 +169,7 @@ export const openOrCreateContactChat = (
   }
 
 
-  // ----------------------------------------
-  // 5. NO EXISTE → CHAT VACÍO
-  // ----------------------------------------
+
 
   const chatId = Date.now();
 

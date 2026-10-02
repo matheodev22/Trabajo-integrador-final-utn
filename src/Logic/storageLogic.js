@@ -1,6 +1,4 @@
-// ========================================
-// OBTENER DATO
-// ========================================
+
 
 export const getStorageItem = (
   key,
@@ -25,9 +23,6 @@ export const getStorageItem = (
 };
 
 
-// ========================================
-// GUARDAR DATO
-// ========================================
 
 export const setStorageItem = (
   key,
@@ -51,9 +46,7 @@ export const setStorageItem = (
 };
 
 
-// ========================================
-// ELIMINAR DATO
-// ========================================
+
 
 export const removeStorageItem = (
   key
@@ -73,9 +66,7 @@ export const removeStorageItem = (
 };
 
 
-// ========================================
-// OBTENER CHATS
-// ========================================
+
 
 export const getSavedChats = (
   defaultChats
@@ -87,9 +78,6 @@ export const getSavedChats = (
 };
 
 
-// ========================================
-// GUARDAR CHATS
-// ========================================
 
 export const saveChats = (
   chats
@@ -101,9 +89,7 @@ export const saveChats = (
 };
 
 
-// ========================================
-// OBTENER CONTACTOS
-// ========================================
+
 
 export const getSavedContacts = (
   defaultContacts
@@ -115,9 +101,6 @@ export const getSavedContacts = (
 };
 
 
-// ========================================
-// GUARDAR CONTACTOS
-// ========================================
 
 export const saveContacts = (
   contacts
@@ -129,9 +112,6 @@ export const saveContacts = (
 };
 
 
-// ========================================
-// OBTENER MENSAJES
-// ========================================
 
 export const getSavedMessages = (
   defaultMessages
@@ -143,9 +123,6 @@ export const getSavedMessages = (
 };
 
 
-// ========================================
-// GUARDAR MENSAJES
-// ========================================
 
 export const saveMessages = (
   messages

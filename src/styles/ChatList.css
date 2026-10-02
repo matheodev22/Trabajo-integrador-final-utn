@@ -1,6 +1,4 @@
-/* =========================
-   SIDEBAR
-========================= */
+
 
 .sidebar {
   width: 350px;
@@ -300,6 +298,9 @@
   flex-direction: column;
   gap: 3px;
 }
+.contact-info p{
+color: #667781;
+}
 
 .new-contact-title strong {
   font-size: 16px;
@@ -567,9 +568,6 @@ body.light-mode .new-chat-actions button[type="button"] {
     padding: 30px 20px;
     font-size: 14px;
 }
-/* =========================
-   MOBILE
-========================= */
 
 @media (max-width: 768px) {
   .sidebar {

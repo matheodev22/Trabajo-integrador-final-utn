@@ -3,9 +3,6 @@ import img1755 from "../img/IMG_1755.png";
 import img5053 from "../img/IMG_5053.png";
 
 
-// ========================================
-// ESTADOS INICIALES
-// ========================================
 
 export const initialStatuses = [
   {

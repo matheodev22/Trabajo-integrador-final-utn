@@ -22,12 +22,12 @@ function useMessages(selectedChat) {
     initialMessages
   );
 });
-  // Guardar mensajes en localStorage
+ 
   useEffect(() => {
   saveMessages(messages);
 }, [messages]);
 
-  // Marcar mensajes como leídos al abrir un chat
+  
   useEffect(() => {
     if (!chatId) return;
 
@@ -36,7 +36,7 @@ function useMessages(selectedChat) {
     );
   }, [chatId]);
 
-  // Escuchar cuando otro componente marca un chat como leído
+
   useEffect(() => {
     const handleMessagesRead = (event) => {
       const { chatId: eventChatId } = event.detail;
@@ -61,7 +61,7 @@ function useMessages(selectedChat) {
     };
   }, []);
 
-  // Enviar mensaje
+ 
   const sendMessage = (text) => {
     if (!chatId) return null;
 
@@ -86,7 +86,7 @@ function useMessages(selectedChat) {
     return message;
   };
 
-  // Editar mensaje
+ 
   const handleEditMessage = (messageId, newText) => {
     if (!chatId) return;
 
@@ -100,7 +100,7 @@ function useMessages(selectedChat) {
     );
   };
 
-  // Eliminar mensaje
+ 
   const handleDeleteMessage = (messageId) => {
     if (!chatId) return;
 
@@ -113,7 +113,7 @@ function useMessages(selectedChat) {
     );
   };
 
-  // Mensajes del chat seleccionado
+
   const chatMessages = chatId
     ? messages[chatId] || []
     : [];
