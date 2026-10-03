@@ -28,11 +28,7 @@
   }
 
   /* Botones de filtros */
-  .chat-filters {
-    display: flex;
-    width: 100%;
-    gap: 8px;
-  }
+ 
 
   .chat-filters button {
     flex: 1;
@@ -121,13 +117,7 @@
      FILTROS
      ========================= */
 
-  .chat-filters {
-    width: 100%;
-    display: flex;
-    gap: 8px;
-    padding: 0 16px;
-    overflow: hidden;
-  }
+  
 
   .chat-filters button {
     flex: 1;
@@ -391,11 +381,7 @@
      FILTROS
      ========================= */
 
-  .chat-filters {
-    padding-left: 12px;
-    padding-right: 12px;
-    gap: 6px;
-  }
+  
 
   .chat-filters button {
     font-size: 13px;
@@ -448,10 +434,7 @@
     padding-right: 10px;
   }
 
-  .chat-filters {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
+  
 
   .chat-filters button {
     font-size: 12px;

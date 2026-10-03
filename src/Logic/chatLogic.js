@@ -163,7 +163,7 @@ export const initialContacts = [
     chatId: null,
   },
   {
-    id: 10,
+    id: 11,
     name: "juan",
     avatar: "J",
     chatId: null,
