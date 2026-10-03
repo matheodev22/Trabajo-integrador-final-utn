@@ -1,6 +1,4 @@
-/* ================================
-   ESTADOS
-   ================================ */
+
 
 .statuses-section,
 .contacts-section {
@@ -84,9 +82,7 @@
   font-size: 12px;
 }
 
-/* ================================
-   VISOR DE ESTADOS
-   ================================ */
+
 
 .status-viewer {
   position: absolute;

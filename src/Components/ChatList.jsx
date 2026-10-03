@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 
+import "../styles/global.css";
 import "../styles/ChatList.css";
 import "../styles/ChatWindow.css";
 import "../styles/Contacts.css";
 import "../styles/Status.css";
 import "../styles/Profile.css";
 import "../styles/Settings.css";
-import "../styles/bodyLight.css";
+import "../styles/mediaqueries.css";
 import {
   createContactWithChat,
   openOrCreateContactChat,

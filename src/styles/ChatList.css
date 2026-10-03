@@ -1,5 +1,3 @@
-/* CHAT LIST / SIDEBAR */
-/* SIDEBAR */
 
 .sidebar {
   width: 350px;
@@ -135,9 +133,8 @@
 }
 
 
-/* =========================
-   CHAT SELECCIONADO
-========================= */
+
+
 
 .chat-item.selected {
   background: #2a343b;
@@ -187,7 +184,7 @@
 }
 
 
-/* Botón de tema */
+
 .filter.active:hover{
   background-color: #00b894;
 }
@@ -233,9 +230,7 @@
 }
 
 
-/* ================================
-   NAVEGACION INFERIOR
-   ================================ */
+
 
 .bottom-navigation {
   margin-top: auto;
@@ -290,7 +285,6 @@
 }
 
 
-/* Mobile: sidebar */
 @media (max-width: 768px) {
   .sidebar {
     position: absolute !important;
@@ -346,9 +340,6 @@
   }
 }
 
-/* =====================================================
-   CORRECCIÓN DEFINITIVA - BARRA INFERIOR
-   ===================================================== */
 
 .sidebar {
   display: flex !important;
@@ -356,7 +347,7 @@
 }
 
 
-/* BARRA */
+
 
 .sidebar .bottom-navigation {
   position: static !important;
@@ -388,7 +379,7 @@
 }
 
 
-/* BOTONES */
+
 
 .sidebar .bottom-navigation button {
   flex: 1 1 0 !important;
@@ -414,8 +405,6 @@
 }
 
 
-/* ICONOS */
-
 .sidebar .bottom-navigation button span {
   display: block !important;
 
@@ -426,7 +415,7 @@
 }
 
 
-/* TEXTO */
+
 
 .sidebar .bottom-navigation button small {
   display: block !important;
@@ -438,22 +427,22 @@
 }
 
 
-/* ACTIVO */
 
 .sidebar .bottom-navigation button.active {
-  color: #25d366 !important;
+  color: #25d366 ;
   background: rgba(37, 211, 102, 0.08) !important;
 }
 
 
-/* HOVER */
+
 
 .sidebar .bottom-navigation button:hover {
   background: rgba(139, 148, 158, 0.29) !important;
+  color: #25d366 
 }
 
 
-/* Perfil en navegación móvil */
+
 .profile-desktop {
   display: flex;
 }
@@ -529,9 +518,7 @@
   white-space: nowrap;
 }
 
-/* ============================= */
-/* NUEVO CONTACTO */
-/* ============================= */
+
 
 .new-chat-form {
   padding: 14px;

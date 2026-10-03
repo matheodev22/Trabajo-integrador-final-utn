@@ -7,8 +7,8 @@ export const initialChats = [
     type: "contact",
     contactId: 1,
     avatar: "T",
-    lastMessage: "boludo hay q matarlo no puede ser tan burro",
-    time: "14:34",
+    lastMessage: "si creo q si si no fue",
+    time: "14:50",
     unread: 0,
   },
 
@@ -19,14 +19,14 @@ export const initialChats = [
     avatar: "LP",
     participants: [
       "tradeo",
-      "Mati Ortega",
-      "Agus",
+      "Ortega",
+      "deyver",
       "Joel",
-      "Juan Mati",
+      "Mati",
     ],
-    lastMessage: "listo de una jugamos el sabado",
-    time: "14:50",
-    unread: 2,
+    lastMessage: "perfecto entonces queda sabado 20:30",
+    time: "13:46",
+    unread: 1,
   },
 
   {
@@ -35,9 +35,9 @@ export const initialChats = [
     type: "contact",
     contactId: 2,
     avatar: "W",
-    lastMessage: "dale bb",
-    time: "12:31",
-    unread: 2,
+    lastMessage: "compra capeletinis que te encuentro en el chino",
+    time: "12:42",
+    unread: 0,
   },
 
   {
@@ -46,8 +46,8 @@ export const initialChats = [
     type: "contact",
     contactId: 10,
     avatar: "Z",
-    lastMessage: "si boludo, no paro de tener cosas para hacer",
-    time: "17:58",
+    lastMessage: "fuerza xd",
+    time: "12:23",
     unread: 0,
   },
 
@@ -57,8 +57,8 @@ export const initialChats = [
     type: "contact",
     contactId: 3,
     avatar: "M",
-    lastMessage: "matheo despertate!!!! 😡😡😡",
-    time: "11:45",
+    lastMessage: "si ahora voy",
+    time: "11:54",
     unread: 0,
   },
 
@@ -72,9 +72,9 @@ export const initialChats = [
       "Jere",
       "Matheo",
     ],
-    lastMessage: "dejaste comida hecha ma?",
-    time: "11:30",
-    unread: 0,
+    lastMessage: "dale gracias",
+    time: "11:39",
+    unread: 1,
   },
 
   {
@@ -83,8 +83,8 @@ export const initialChats = [
     type: "contact",
     contactId: 4,
     avatar: "A",
-    lastMessage: "Hola abuelo sisi estoy el finde",
-    time: "10:32",
+    lastMessage: "👍",
+    time: "09:32",
     unread: 0,
   },
 ];
@@ -130,15 +130,15 @@ export const initialContacts = [
 
   {
     id: 5,
-    name: "Mati Ortega",
-    avatar: "M",
+    name: "Ortega",
+    avatar: "S",
     chatId: null,
   },
 
   {
     id: 6,
-    name: "Agus",
-    avatar: "A",
+    name: "deyver",
+    avatar: "D",
     chatId: null,
   },
 
@@ -151,14 +151,20 @@ export const initialContacts = [
 
   {
     id: 8,
-    name: "Juan Mati",
-    avatar: "J",
+    name: "Mati",
+    avatar: "M",
     chatId: null,
   },
 
   {
     id: 9,
     name: "Jere",
+    avatar: "J",
+    chatId: null,
+  },
+  {
+    id: 10,
+    name: "juan",
     avatar: "J",
     chatId: null,
   },

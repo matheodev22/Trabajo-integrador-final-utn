@@ -10,9 +10,6 @@ body {
   color: #e6edf3;
 }
 
-/* =========================
-   LOGIN
-========================= */
 
 .login-page {
   min-height: 100vh;
@@ -98,9 +95,7 @@ body {
 }
 
 
-/* =========================
-   CHAT APP
-========================= */
+
 
 .chat-app {
   width: 100%;
@@ -166,7 +161,7 @@ body {
 }
 
 
-/* Mobile general */
+
 @media (max-width: 768px) {
   html,
   body,
