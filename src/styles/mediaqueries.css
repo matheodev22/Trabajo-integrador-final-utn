@@ -29,7 +29,11 @@
 
   /* Botones de filtros */
  
-
+.chat-filters {
+    gap: 8px;
+    padding: 0 15px 15px;
+    display: flex;
+  }
   .chat-filters button {
     flex: 1;
     min-width: 0;
@@ -117,7 +121,10 @@
      FILTROS
      ========================= */
 
-  
+  .chat-filters {
+    gap: 8px;
+    padding: 0 15px 15px;
+    display: flex;}
 
   .chat-filters button {
     flex: 1;

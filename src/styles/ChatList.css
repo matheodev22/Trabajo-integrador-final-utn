@@ -253,7 +253,7 @@
 .bottom-navigation button {
   flex: 1;
   border: none;
-  border-radius: 35px;
+  border-radius: 0px;
   background: transparent;
   color: #8696a0;
   cursor: pointer;
@@ -371,7 +371,7 @@
 
   background: #20282d !important;
   border: none !important;
-  border-radius: 35px !important;
+  border-radius: 25px ;
 
   transform: none !important;
 
@@ -398,10 +398,10 @@
   gap: 3px !important;
 
   border: none !important;
-  border-radius: 35px !important;
+  border-radius: 35px ;
 
   background: transparent !important;
-  color: #8696a0 !important;
+  color: #8696a0 ;
 }
 
 

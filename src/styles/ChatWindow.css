@@ -476,7 +476,7 @@ body.light-mode .message-edit-actions button:first-child{
   color: #53bdeb;
 }
 .back-button {
-    color: #fff;
+    color: black;
     cursor: pointer;
     background-color: #8b949e4b;
     border: none;
