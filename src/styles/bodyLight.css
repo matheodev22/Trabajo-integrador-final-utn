@@ -1,5 +1,6 @@
-body.light-mode .message span{
-  color: #000;
+
+.message .message-sender-avatar{
+  color: white;
 }
 body.light-mode {
   background: #f0f2f5;
@@ -9,6 +10,7 @@ body.light-mode {
 body.light-mode .chat-app {
   background: #ffffff;
 }
+
 
 body.light-mode .sidebar {
   background: #ffffff;
@@ -121,7 +123,7 @@ body.light-mode .chat-menu button{
   color: black;
 }
 body.light-mode .chat-menu button:hover{
-  color: white;
+ 
 }
 body.light-mode .chat-item.selected{
   background: #d8d9db73;
@@ -197,9 +199,49 @@ body.light-mode .message-menu {
   background: white;
 
 }
+body.light-mode .back-button{
+  color: #000;
+}
 body.light-mode .message-menu button{
   color: #000;
   
+}
+body.light-mode .sidebar .contacts-section .contacts-list .contact-info strong {
+
+  color: #000;
+}
+body.light-mode .group-participants{
+    border-top: 1px solid #d1d1d1;
+}
+body.light-mode .group-participant span{
+  color: #000;
+}
+body.light-mode .group-participant:hover{
+  background-color: #d8d9db73;
+}
+body.light-mode .profile-avatar{
+  background-color: #00a884;
+  color: white;
+}
+body.light-mode .sidebar .contacts-section .contacts-list .contact-item.selected {
+  background: #d8d9db73;
+}
+body.light-mode .sidebar .contacts-section .contacts-list .contact-item:hover {
+  background: #d8d9db73;
+  
+}
+body.light-mode .contact-item:hover .contact-menu-dots{
+  color: #9ba5ad;
+}
+body.light-mode .emoji-picker button:hover{
+  background-color: #f0f2f5;
+}
+body.light-mode .message-menu button:hover {
+  background: #8b949e4b;
+}
+body.light-mode .chat-menu button:hover {
+ 
+  background-color: #8b949e4b;
 }
 body.light-mode .bottom-navigation {
   background: #f0f2f5;
@@ -274,13 +316,12 @@ body.light-mode .sidebar .bottom-navigation {
   background: #f5f6f6 !important;
 }
 
-body.light-mode .sidebar .bottom-navigation button {
-  color: #667781 !important;
-  
+.sidebar .bottom-navigation button:hover{
+  color: #128c7e;
 }
 
 body.light-mode .sidebar .bottom-navigation button.active {
-  color: #128c7e !important;
+  color: #128c7e ;
   background: rgba(18, 140, 126, 0.08) !important;
 }
 body.light-mode .message-edit-actions button:first-child{

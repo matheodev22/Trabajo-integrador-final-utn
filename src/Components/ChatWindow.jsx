@@ -7,14 +7,172 @@ import useMessages from "../hooks/useMessages.js";
 import { emojis } from "../Logic/messageLogic";
 
 
+/* ======================================================
+   COLORES DE LOS CONTACTOS DEL GRUPO
+====================================================== */
+
+const senderColors = [
+  {
+    text: "#53bdeb",
+    avatar: "#3a86a8",
+  },
+  {
+    text: "#ff9f43",
+    avatar: "#b86f24",
+  },
+  {
+    text: "#a78bfa",
+    avatar: "#6751a4",
+  },
+  {
+    text: "#34d399",
+    avatar: "#247a5a",
+  },
+  {
+    text: "#f5b84b",
+    avatar: "#9a742f",
+  },
+  {
+    text: "#f472b6",
+    avatar: "#a94f7c",
+  },
+  {
+    text: "#22d3ee",
+    avatar: "#197d8d",
+  },
+  {
+    text: "#fb7185",
+    avatar: "#a83f50",
+  },
+];
+
+
+/* ======================================================
+   OBTENER COLOR DEL CONTACTO
+====================================================== */
+
+const getSenderColor = (name = "") => {
+  let hash = 0;
+
+  for (let i = 0; i < name.length; i++) {
+    hash =
+      (
+        hash * 31 +
+        name.charCodeAt(i)
+      ) >>> 0;
+  }
+
+  return senderColors[
+    hash % senderColors.length
+  ].text;
+};
+
+
+/* ======================================================
+   OBTENER COLOR DEL AVATAR
+====================================================== */
+
+const getSenderAvatarColor = (
+  name = ""
+) => {
+  let hash = 0;
+
+  for (let i = 0; i < name.length; i++) {
+    hash =
+      (
+        hash * 31 +
+        name.charCodeAt(i)
+      ) >>> 0;
+  }
+
+  return senderColors[
+    hash % senderColors.length
+  ].avatar;
+};
+
+
+/* ======================================================
+   OBTENER PARTICIPANTES DEL GRUPO
+====================================================== */
+
+const getGroupParticipants = (chat) => {
+  if (!chat) {
+    return [];
+  }
+
+  if (Array.isArray(chat.participants)) {
+    return chat.participants;
+  }
+
+  if (Array.isArray(chat.members)) {
+    return chat.members;
+  }
+
+  if (Array.isArray(chat.groupMembers)) {
+    return chat.groupMembers;
+  }
+
+  return [];
+};
+
+
+/* ======================================================
+   OBTENER NOMBRE DE PARTICIPANTE
+====================================================== */
+
+const getParticipantName = (participant) => {
+  if (!participant) {
+    return "";
+  }
+
+  if (typeof participant === "string") {
+    return participant;
+  }
+
+  return (
+    participant.name ||
+    participant.username ||
+    participant.fullName ||
+    ""
+  );
+};
+
+
+/* ======================================================
+   OBTENER AVATAR DE PARTICIPANTE
+====================================================== */
+
+const getParticipantAvatar = (
+  participant
+) => {
+  if (!participant) {
+    return "";
+  }
+
+  if (typeof participant === "string") {
+    return participant
+      .charAt(0)
+      .toUpperCase();
+  }
+
+  return (
+    participant.avatar ||
+    participant.name
+      ?.charAt(0)
+      .toUpperCase() ||
+    participant.username
+      ?.charAt(0)
+      .toUpperCase() ||
+    "?"
+  );
+};
+
+
 function ChatWindow({
   selectedChat,
   onBack,
 }) {
   const { user } = useAuth();
-
-
- 
 
   const {
     messages,
@@ -23,8 +181,6 @@ function ChatWindow({
     deleteMessage,
   } = useMessages(selectedChat);
 
-
-  
   const [messageText, setMessageText] =
     useState("");
 
@@ -60,20 +216,22 @@ function ChatWindow({
   const [editingText, setEditingText] =
     useState("");
 
-
- 
-
   const messagesEndRef =
     useRef(null);
-
-
- 
 
   const isGroup =
     selectedChat?.type === "group";
 
+  const groupParticipants =
+    getGroupParticipants(selectedChat);
 
-  
+  const groupParticipantCount =
+    groupParticipants.length;
+
+
+/* ======================================================
+   SCROLL AUTOMÁTICO
+====================================================== */
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
@@ -82,6 +240,9 @@ function ChatWindow({
   }, [messages]);
 
 
+/* ======================================================
+   REINICIAR ESTADOS
+====================================================== */
 
   useEffect(() => {
     setMessageText("");
@@ -96,8 +257,9 @@ function ChatWindow({
   }, [selectedChat?.id]);
 
 
-  
-
+/* ======================================================
+   ENVIAR MENSAJE
+====================================================== */
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -121,7 +283,9 @@ function ChatWindow({
   };
 
 
- 
+/* ======================================================
+   LLAMADA
+====================================================== */
 
   const handleCall = () => {
     setShowMenu(false);
@@ -129,6 +293,9 @@ function ChatWindow({
   };
 
 
+/* ======================================================
+   VIDEOLLAMADA
+====================================================== */
 
   const handleVideoCall = () => {
     setShowMenu(false);
@@ -136,6 +303,9 @@ function ChatWindow({
   };
 
 
+/* ======================================================
+   BORRAR CHAT
+====================================================== */
 
   const handleDeleteChat = () => {
     setShowMenu(false);
@@ -168,7 +338,9 @@ function ChatWindow({
   };
 
 
-
+/* ======================================================
+   MENU DEL MENSAJE
+====================================================== */
 
   const handleOpenMessageMenu = (
     messageId
@@ -181,6 +353,9 @@ function ChatWindow({
   };
 
 
+/* ======================================================
+   EDITAR MENSAJE
+====================================================== */
 
   const handleStartEdit = (message) => {
     if (!message) {
@@ -225,7 +400,9 @@ function ChatWindow({
   };
 
 
-
+/* ======================================================
+   ELIMINAR MENSAJE
+====================================================== */
 
   const handleDeleteMessage = (
     messageId
@@ -236,6 +413,9 @@ function ChatWindow({
   };
 
 
+/* ======================================================
+   EMOJIS
+====================================================== */
 
   const handleEmojiClick = (emoji) => {
     setMessageText(
@@ -247,6 +427,9 @@ function ChatWindow({
   };
 
 
+/* ======================================================
+   PANTALLA DE BIENVENIDA
+====================================================== */
 
   if (!selectedChat) {
     return (
@@ -278,10 +461,12 @@ function ChatWindow({
 
   return (
     <>
+
       <section className="chat-window conversation">
 
-
-      
+        {/* ==================================================
+            HEADER
+        ================================================== */}
 
         <header className="conversation-header">
 
@@ -315,10 +500,9 @@ function ChatWindow({
 
               <p>
                 {isGroup
-                  ? `${
-                      selectedChat.participants
-                        ?.length || 0
-                    } participantes`
+                  ? groupParticipantCount > 0
+                    ? `${groupParticipantCount} participantes`
+                    : "Grupo"
                   : "En línea"}
               </p>
 
@@ -392,7 +576,9 @@ function ChatWindow({
         </header>
 
 
-        
+        {/* ==================================================
+            MENSAJES
+        ================================================== */}
 
         <div className="messages">
 
@@ -409,18 +595,35 @@ function ChatWindow({
               key={message.id}
             >
 
-
-              
+              {/* ============================================
+                  IDENTIDAD DEL CONTACTO EN GRUPO
+              ============================================ */}
 
               {isGroup &&
                 message.sender ===
                   "received" &&
                 message.senderName && (
 
-                  <div className="message-sender">
+                  <div
+                    className="message-sender"
+                    style={{
+                      "--sender-color":
+                        getSenderColor(
+                          message.senderName
+                        ),
+
+                      "--sender-avatar-color":
+                        getSenderAvatarColor(
+                          message.senderName
+                        ),
+                    }}
+                  >
 
                     <span className="message-sender-avatar">
-                      {message.senderAvatar}
+                      {message.senderAvatar ||
+                        message.senderName
+                          .charAt(0)
+                          .toUpperCase()}
                     </span>
 
                     <strong>
@@ -432,7 +635,39 @@ function ChatWindow({
                 )}
 
 
-              
+              {/* ==================================================
+                  MENSAJE ENVIADO POR EL USUARIO EN GRUPO
+              ================================================== */}
+
+              {isGroup &&
+                message.sender === "sent" && (
+
+                  <div
+                    className="message-sender message-sender-own"
+                    style={{
+                      "--sender-color": "#25d366",
+                      "--sender-avatar-color": "#168c4c",
+                    }}
+                  >
+
+                    <span className="message-sender-avatar">
+                      {user?.username
+                        ?.charAt(0)
+                        .toUpperCase() || "T"}
+                    </span>
+
+                    <strong>
+                      {user?.username || "Vos"}
+                    </strong>
+
+                  </div>
+
+                )}
+
+
+              {/* ============================================
+                  EDITAR MENSAJE
+              ============================================ */}
 
               {editingMessageId ===
               message.id ? (
@@ -482,6 +717,7 @@ function ChatWindow({
                       Cancelar
                     </button>
 
+
                     <button
                       type="button"
                       onClick={() =>
@@ -507,8 +743,6 @@ function ChatWindow({
                       {message.text}
                     </p>
 
-
-                    
 
                     {message.sender ===
                       "sent" && (
@@ -546,7 +780,7 @@ function ChatWindow({
                               <i className="bi bi-pencil"></i>
 
                               <span>
-                                 Editar
+                                Editar
                               </span>
 
                             </button>
@@ -564,7 +798,7 @@ function ChatWindow({
                               <i className="bi bi-trash"></i>
 
                               <span>
-                                 Eliminar
+                                Eliminar
                               </span>
 
                             </button>
@@ -589,7 +823,6 @@ function ChatWindow({
                     )}
 
                     {message.time}
-
 
                     {message.sender ===
                       "sent" && (
@@ -617,8 +850,9 @@ function ChatWindow({
         </div>
 
 
-       
-
+        {/* ==================================================
+            INPUT
+        ================================================== */}
 
         <form
           className="message-form"
@@ -635,8 +869,7 @@ function ChatWindow({
                   (current) => !current
                 )
               }
-              aria-label="Abrir emojis"
-              title="Emojis"
+              aria-label="Emojis"
             >
               <i className="bi bi-emoji-smile"></i>
             </button>
@@ -647,11 +880,11 @@ function ChatWindow({
               <div className="emoji-picker">
 
                 {emojis.map(
-                  (emoji) => (
+                  (emoji, index) => (
 
                     <button
+                      key={`${emoji}-${index}`}
                       type="button"
-                      key={emoji}
                       onClick={() =>
                         handleEmojiClick(
                           emoji
@@ -673,21 +906,19 @@ function ChatWindow({
 
           <input
             type="text"
-            placeholder="Escribí un mensaje..."
-            aria-label="Escribir mensaje"
             value={messageText}
             onChange={(event) =>
               setMessageText(
                 event.target.value
               )
             }
+            placeholder="Escribí un mensaje..."
           />
 
 
           <button
             type="submit"
             aria-label="Enviar mensaje"
-            title="Enviar mensaje"
           >
             <i className="bi bi-send-fill"></i>
           </button>
@@ -697,26 +928,18 @@ function ChatWindow({
       </section>
 
 
-     
+      {/* ==================================================
+          MODAL DE ERROR
+      ================================================== */}
 
       {showError && (
 
-        <div
-          className="modal-overlay"
-          onClick={() =>
-            setShowError(false)
-          }
-        >
+        <div className="modal-overlay">
 
-          <div
-            className="modal-card"
-            onClick={(event) =>
-              event.stopPropagation()
-            }
-          >
+          <div className="modal-card">
 
             <div className="modal-icon">
-              <i className="bi bi-exclamation-triangle"></i>
+              <i className="bi bi-info-circle"></i>
             </div>
 
             <h2>
@@ -724,8 +947,7 @@ function ChatWindow({
             </h2>
 
             <p>
-              Las llamadas y videollamadas
-              todavía no están disponibles.
+              Esta función todavía no está disponible.
             </p>
 
             <button
@@ -734,7 +956,7 @@ function ChatWindow({
                 setShowError(false)
               }
             >
-              Aceptar
+              Cerrar
             </button>
 
           </div>
@@ -744,34 +966,26 @@ function ChatWindow({
       )}
 
 
+      {/* ==================================================
+          CONFIRMAR BORRADO
+      ================================================== */}
 
       {showDeleteConfirm && (
 
-        <div
-          className="modal-overlay"
-          onClick={() =>
-            setShowDeleteConfirm(false)
-          }
-        >
+        <div className="modal-overlay">
 
-          <div
-            className="modal-card"
-            onClick={(event) =>
-              event.stopPropagation()
-            }
-          >
+          <div className="modal-card">
 
             <div className="modal-icon">
               <i className="bi bi-trash"></i>
             </div>
 
             <h2>
-              ¿Borrar conversación?
+              ¿Borrar chat?
             </h2>
 
             <p>
-              Se eliminará esta conversación
-              de la vista de chats.
+              Esta acción eliminará la conversación.
             </p>
 
             <div className="modal-actions">
@@ -779,13 +993,12 @@ function ChatWindow({
               <button
                 className="modal-cancel"
                 onClick={() =>
-                  setShowDeleteConfirm(
-                    false
-                  )
+                  setShowDeleteConfirm(false)
                 }
               >
                 Cancelar
               </button>
+
 
               <button
                 className="modal-delete"
@@ -805,7 +1018,9 @@ function ChatWindow({
       )}
 
 
-     
+      {/* ==================================================
+          PERFIL DEL CONTACTO / GRUPO
+      ================================================== */}
 
       {showContactProfile && (
 
@@ -828,12 +1043,8 @@ function ChatWindow({
               <button
                 className="profile-close"
                 onClick={() =>
-                  setShowContactProfile(
-                    false
-                  )
+                  setShowContactProfile(false)
                 }
-                aria-label="Cerrar perfil"
-                title="Cerrar"
               >
                 <i className="bi bi-arrow-left"></i>
               </button>
@@ -841,7 +1052,7 @@ function ChatWindow({
               <h2>
                 {isGroup
                   ? "Información del grupo"
-                  : "Información del contacto"}
+                  : "Perfil"}
               </h2>
 
             </div>
@@ -857,64 +1068,77 @@ function ChatWindow({
                 {selectedChat.name}
               </h1>
 
-              <p className="profile-status">
-
-                {isGroup
-                  ? `${
-                      selectedChat
-                        .participants
-                        ?.length || 0
-                    } participantes`
-                  : "En línea"}
-
-              </p>
+              {isGroup && (
+                <p className="profile-status">
+                  {groupParticipantCount > 0
+                    ? `${groupParticipantCount} participantes`
+                    : "Grupo"}
+                </p>
+              )}
 
 
-              <div className="profile-section">
+              {/* ==================================================
+                  PARTICIPANTES DEL GRUPO
+              ================================================== */}
 
-                <span>
-                  Nombre
-                </span>
+              {isGroup &&
+                groupParticipants.length > 0 && (
 
-                <strong>
-                  {selectedChat.name}
-                </strong>
+                <div className="group-participants">
 
-              </div>
+                  <h3>
+                    Participantes
+                  </h3>
 
+                  <div className="group-participant-list">
 
-              <div className="profile-section">
+                    {groupParticipants.map(
+                      (participant, index) => {
 
-                <span>
-                  {isGroup
-                    ? "Participantes"
-                    : "Estado"}
-                </span>
+                        const participantName =
+                          getParticipantName(
+                            participant
+                          );
 
-                <strong>
+                        const participantAvatar =
+                          getParticipantAvatar(
+                            participant
+                          );
 
-                  {isGroup
-                    ? selectedChat.participants?.join(
-                        ", "
-                      )
-                    : "En línea"}
+                        return (
 
-                </strong>
+                          <div
+                            className="group-participant"
+                            key={`${participantName}-${index}`}
+                          >
 
-              </div>
+                            <div
+                              className="group-participant-avatar"
+                              style={{
+                                background:
+                                  getSenderAvatarColor(
+                                    participantName
+                                  ),
+                              }}
+                            >
+                              {participantAvatar}
+                            </div>
 
+                            <span>
+                              {participantName || "Participante"}
+                            </span>
 
-              <div className="profile-section">
+                          </div>
 
-                <span>
-                  Mensajes
-                </span>
+                        );
+                      }
+                    )}
 
-                <strong>
-                  {messages.length}
-                </strong>
+                  </div>
 
-              </div>
+                </div>
+
+              )}
 
             </div>
 
@@ -927,5 +1151,6 @@ function ChatWindow({
     </>
   );
 }
+
 
 export default ChatWindow;

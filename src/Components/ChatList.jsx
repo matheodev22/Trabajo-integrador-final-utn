@@ -9,6 +9,7 @@ import "../styles/Profile.css";
 import "../styles/Settings.css";
 import "../styles/mediaqueries.css";
 import "../styles/bodyLight.css";
+
 import {
   createContactWithChat,
   openOrCreateContactChat,
@@ -49,13 +50,10 @@ function ChatList({
 }) {
   const { user, logout } = useAuth();
 
-
- 
-
- 
-
   const [chatList, setChatList] = useState(() => {
-    return getSavedChats(initialChats);
+    return normalizeSavedChats(
+      getSavedChats(initialChats)
+    );
   });
 
   const [contacts, setContacts] = useState(() => {
@@ -70,9 +68,6 @@ function ChatList({
       savedChats
     );
   });
-
-
-
 
   const [activeSection, setActiveSection] =
     useState("chats");
@@ -99,20 +94,27 @@ function ChatList({
     useState(false);
 
 
-
+  /* ======================================================
+     GUARDAR CHATS
+  ====================================================== */
 
   useEffect(() => {
     saveChats(chatList);
   }, [chatList]);
 
 
-
+  /* ======================================================
+     GUARDAR CONTACTOS
+  ====================================================== */
 
   useEffect(() => {
     saveContacts(contacts);
   }, [contacts]);
 
 
+  /* ======================================================
+     MENSAJE ENVIADO
+  ====================================================== */
 
   useEffect(() => {
     const handleMessageSent = (event) => {
@@ -146,6 +148,9 @@ function ChatList({
   }, []);
 
 
+  /* ======================================================
+     ELIMINAR CHAT
+  ====================================================== */
 
   useEffect(() => {
     const handleChatDelete = (event) => {
@@ -210,6 +215,9 @@ function ChatList({
     );
 
 
+  /* ======================================================
+     NUEVO CONTACTO
+  ====================================================== */
 
   const openNewContactForm = () => {
     setNewContactName("");
@@ -221,8 +229,6 @@ function ChatList({
     setShowNewContact(false);
     setNewContactName("");
   };
-
-
 
 
   const handleCreateContact = (event) => {
@@ -261,7 +267,9 @@ function ChatList({
   };
 
 
-
+  /* ======================================================
+     ABRIR CONTACTO
+  ====================================================== */
 
   const handleContactClick = (contact) => {
     if (!contact) {
@@ -279,11 +287,7 @@ function ChatList({
       return;
     }
 
-    
     setContacts(result.contacts);
-
-
-
 
     if (!result.newChat) {
       setChatList((currentChats) =>
@@ -305,12 +309,13 @@ function ChatList({
       );
     }
 
-
     onSelectChat(result.chat);
   };
 
 
-
+  /* ======================================================
+     ABRIR CHAT
+  ====================================================== */
 
   const handleChatClick = (chat) => {
     if (!chat) {
@@ -339,7 +344,9 @@ function ChatList({
   };
 
 
-
+  /* ======================================================
+     MENU DE CHAT
+  ====================================================== */
 
   const handleOpenChatMenu = (
     event,
@@ -353,8 +360,6 @@ function ChatList({
         : chatId
     );
   };
-
-
 
 
   const handleDeleteFromList = (
@@ -385,13 +390,12 @@ function ChatList({
   };
 
 
-
-
   return (
     <aside className="sidebar">
 
-
-     
+      {/* ==================================================
+          PERFIL
+      ================================================== */}
 
       <div
         className="user-profile profile-desktop"
@@ -421,7 +425,9 @@ function ChatList({
       </div>
 
 
-      
+      {/* ==================================================
+          CHATS
+      ================================================== */}
 
       {activeSection === "chats" && (
         <>
@@ -445,8 +451,6 @@ function ChatList({
 
           </header>
 
-
-          
 
           {showNewContact && (
             <form
@@ -503,8 +507,6 @@ function ChatList({
           )}
 
 
-          
-
           <div className="search-box">
 
             <input
@@ -522,8 +524,6 @@ function ChatList({
           </div>
 
 
-         
-
           <div className="chat-filters">
 
             <button
@@ -538,7 +538,6 @@ function ChatList({
             >
               Todos
             </button>
-
 
             <button
               className={`filter ${
@@ -555,7 +554,6 @@ function ChatList({
               No leídos
             </button>
 
-
             <button
               className={`filter ${
                 activeFilter === "grupos"
@@ -571,8 +569,6 @@ function ChatList({
 
           </div>
 
-
-          
 
           <div className="chat-list">
 
@@ -628,8 +624,6 @@ function ChatList({
 
                     </div>
 
-
-                    
 
                     <div className="chat-menu-container">
 
@@ -695,7 +689,9 @@ function ChatList({
       )}
 
 
-      
+      {/* ==================================================
+          ESTADOS
+      ================================================== */}
 
       {activeSection === "statuses" && (
 
@@ -763,7 +759,9 @@ function ChatList({
       )}
 
 
-      
+      {/* ==================================================
+          CONTACTOS
+      ================================================== */}
 
       {activeSection === "contacts" && (
 
@@ -774,7 +772,6 @@ function ChatList({
             <h2>
               Contactos
             </h2>
-
 
             <button
               className="new-chat-button"
@@ -789,8 +786,6 @@ function ChatList({
 
           </header>
 
-
-          
 
           {showNewContact && (
 
@@ -849,7 +844,6 @@ function ChatList({
           )}
 
 
-          
           <div className="search-box">
 
             <input
@@ -866,8 +860,6 @@ function ChatList({
 
           </div>
 
-
-          
 
           <div className="contacts-list">
 
@@ -911,7 +903,6 @@ function ChatList({
                           {contact.name}
                         </strong>
 
-
                         {contactChat && (
                           <p>
                             {contactChat.lastMessage}
@@ -921,11 +912,22 @@ function ChatList({
                       </div>
 
 
-                      {contactChat?.time && (
-                        <span className="chat-time">
-                          {contactChat.time}
+                      <div className="contact-meta">
+
+                        {contactChat?.time && (
+                          <span className="chat-time">
+                            {contactChat.time}
+                          </span>
+                        )}
+
+                        <span
+                          className="contact-menu-dots"
+                          aria-hidden="true"
+                        >
+                          <i className="bi bi-three-dots-vertical"></i>
                         </span>
-                      )}
+
+                      </div>
 
                     </button>
 
@@ -948,9 +950,9 @@ function ChatList({
       )}
 
 
-      {/* ==================================
+      {/* ==================================================
           CONFIGURACIÓN
-      ================================== */}
+      ================================================== */}
 
       {activeSection === "settings" && (
 
@@ -1033,9 +1035,9 @@ function ChatList({
       )}
 
 
-      {/* ==================================
+      {/* ==================================================
           NAVEGACIÓN
-      ================================== */}
+      ================================================== */}
 
       <nav className="bottom-navigation">
 
@@ -1107,15 +1109,20 @@ function ChatList({
 
         <button
           className="mobile-profile-button"
-          onClick={() => setShowProfile(true)}
+          onClick={() =>
+            setShowProfile(true)
+          }
           aria-label="Perfil"
         >
+
           <span>
             <i className="bi bi-person-circle"></i>
           </span>
+
           <small>
             Perfil
           </small>
+
         </button>
 
 
@@ -1143,9 +1150,9 @@ function ChatList({
       </nav>
 
 
-      {/* ==================================
+      {/* ==================================================
           VISOR DE ESTADOS
-      ================================== */}
+      ================================================== */}
 
       {selectedStatus && (
 
@@ -1198,9 +1205,9 @@ function ChatList({
       )}
 
 
-      {/* ==================================
+      {/* ==================================================
           PERFIL
-      ================================== */}
+      ================================================== */}
 
       {showProfile && (
 
@@ -1227,7 +1234,6 @@ function ChatList({
               >
                 <i className="bi bi-arrow-left"></i>
               </button>
-
 
               <h2>
                 Perfil
