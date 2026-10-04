@@ -1,85 +1,103 @@
-# Trabajo Final Frontend - Chatweb
+# TP Final Frontend — Aplicación de Mensajería
 
 ## Descripción
 
-Para el trabajo final hice una aplicación web de mensajería inspirada en WhatsApp Web.
+Este proyecto corresponde al Trabajo Práctico Final de Frontend.
 
-La idea principal es poder iniciar sesión, ver las conversaciones, enviar mensajes y manejar contactos y grupos desde una misma aplicación.
+La aplicación consiste en una interfaz de mensajería inspirada en aplicaciones como WhatsApp. Permite iniciar sesión, visualizar conversaciones, buscar chats, enviar mensajes y administrar diferentes elementos de la interfaz.
+
+El objetivo principal del proyecto fue aplicar los conceptos aprendidos durante la cursada de Frontend utilizando React y organizando la aplicación mediante componentes reutilizables, estados, contextos, rutas y custom hooks.
 
 ## Tecnologías utilizadas
 
-- React
-- JavaScript
-- CSS
-- React Router
-- Vite
-- Bootstrap Icons
+* React
+* JavaScript
+* HTML
+* CSS
+* React Router
+* Vite
 
-## Funcionalidades
+## Funcionalidades principales
 
-- Inicio de sesión
-- Lista de chats
-- Enviar mensajes
-- Editar y eliminar mensajes
-- Eliminar chats
-- Emojis
-- Contactos
-- Grupos y participantes
-- Perfil de contactos
-- Búsqueda de chats
-- Modo claro y oscuro
-- Diseño responsive para celular y PC
-- Guardado de información en el navegador
+* Inicio de sesión mediante un formulario.
+* Visualización de conversaciones.
+* Selección de chats.
+* Envío de mensajes.
+* Búsqueda de conversaciones.
+* Manejo de mensajes y estados de lectura.
+* Visualización de contactos.
+* Creación y manejo de grupos.
+* Cambio entre modo claro y modo oscuro.
+* Navegación entre diferentes páginas mediante React Router.
+* Página para rutas no encontradas.
+* Diseño responsive para diferentes tamaños de pantalla.
 
-## Lo utilizado en React
+## Conceptos de Frontend aplicados
 
-En el proyecto se utilizaron:
+Durante el desarrollo se aplicaron los siguientes conceptos trabajados durante la cursada:
 
-- `useState` 
-- `useEffect` 
-- `Context` 
-- `React Router` 
-- `useSearchParams` 
+### Componentes
 
-## Organización
+La interfaz se encuentra dividida en diferentes componentes para separar las distintas partes de la aplicación y facilitar su reutilización y mantenimiento.
 
-El proyecto está dividido en diferentes carpetas.
+### Estados
 
-- `Components`: componentes de la aplicación.
-- `Context`: contextos utilizados en React.
-- `Logic`: funciones relacionadas con la lógica de contactos, mensajes y almacenamiento.
-- `hooks`: custom hooks.
-- `styles`: archivos CSS.
-- `App.jsx`: rutas principales de la aplicación.
+Se utilizan estados de React para controlar información que cambia durante el uso de la aplicación, como los mensajes, conversaciones, contactos, búsqueda y diferentes elementos de la interfaz.
 
-## Responsive
+### Context API
 
-La página está adaptada para diferentes tamaños de pantalla, incluyendo celulares, tablets y computadoras.
+Se utiliza un contexto para compartir información relacionada con el usuario y la sesión entre diferentes componentes sin necesidad de pasar los datos manualmente mediante props.
 
-En celular cambia la distribución de los chats y la conversación para que sea más cómoda de utilizar.
+### React Router
 
-## Dificultades
+Se utiliza React Router para manejar la navegación entre las diferentes páginas de la aplicación.
 
-Durante el desarrollo tuve algunas dificultades principalmente con la organización de la lógica, los estados y la adaptación de la página para celular.
+También se utilizan parámetros de búsqueda mediante `useSearchParams` para realizar la búsqueda de conversaciones.
 
-También fue necesario corregir algunos problemas relacionados con los chats, contactos, grupos y la actualización de los mensajes.
+### Formularios
 
-En general tambien me apoye en la ia sobre ideas ayudas con las trabas y sobre todo enviar para que me devuelva correcion o ayudas directamente. Estuvo muy bien es mi primer projecto importante y primera vez programando, la combinacion de la ia junto con mi conocimiento me estuvieron ayudando muchisimo.
+La aplicación cuenta con formularios para el inicio de sesión y para el envío de mensajes.
 
-## GitHub
+### Custom Hooks
 
-Repositorio:
+Se desarrolló un custom hook para separar la lógica relacionada con los mensajes de la parte visual de los componentes.
 
-https://github.com/matheodev22/Trabajo-integrador-final-utn
+Esto permite mantener los componentes más organizados y reutilizar la lógica cuando es necesario.
 
-## vercel
+### Diseño responsive
 
-Página publicada:
+La aplicación fue desarrollada teniendo en cuenta diferentes tamaños de pantalla, incluyendo dispositivos móviles, tablets y computadoras.
+
+También se incorporaron diferentes estilos para adaptar la interfaz según el tamaño disponible.
+
+## Estructura del proyecto
+
+El proyecto se organiza separando páginas, componentes, contextos, hooks, estilos y otras funcionalidades de la aplicación.
+
+Esta estructura permite mantener el código más ordenado y facilita realizar modificaciones en una parte específica sin afectar innecesariamente al resto del proyecto.
+
+## Dificultades durante el desarrollo
+
+Una de las principales dificultades fue organizar correctamente la lógica de la aplicación y separar las responsabilidades entre los diferentes componentes.
+
+También fue necesario trabajar con estados y contexto para lograr que los cambios realizados en una parte de la aplicación se reflejaran correctamente en otras partes.
+
+Otra dificultad fue implementar la navegación y la búsqueda utilizando React Router, además de adaptar la interfaz para diferentes tamaños de pantalla.
+
+Durante el desarrollo también se realizaron correcciones y pruebas para solucionar errores de lógica, estilos y organización del código.
+
+## Objetivo del proyecto
+
+El objetivo principal fue integrar los conocimientos aprendidos durante la cursada en una aplicación funcional desarrollada con React, aplicando componentes, estados, contexto, formularios, React Router, custom hooks y diseño responsive.
+
+## Despliegue
+
+La aplicación se encuentra desplegada y disponible para ser utilizada desde el siguiente enlace:
 
 https://trabajo-integrador-final-utn.vercel.app/
 
-## Autor
+## Repositorio
 
-Matheo Martinez Chavarria
+El código fuente del proyecto se encuentra disponible en GitHub:
 
-Trabajo Final - 2026
+https://github.com/matheodev22/Trabajo-integrador-final-utn
